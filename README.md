@@ -11,16 +11,25 @@ of that voice, so the voice can be swapped or re-paced and everything follows.
 ## Install
 
 ```bash
-git clone https://github.com/0xclaw-ai/paper-intro-video ~/.claude/skills/paper-intro-video
+npx skills add 0xclaw-ai/paper-intro-video
+```
+
+installs it for any agent the [skills CLI](https://github.com/vercel-labs/skills) supports; it was
+built and tested with Claude Code, where it also installs as a plugin:
+
+```bash
+claude plugin marketplace add 0xclaw-ai/paper-intro-video
+claude plugin install paper-intro-video@0xclaw
 ```
 
 Then ask for a video: *"Make an intro video for our paper. PDF: …, repo: …, site: …"*.
-More prompts, in Chinese and English: [`references/prompts.md`](references/prompts.md).
+More prompts, in Chinese and English: [`prompts.md`](skills/paper-intro-video/references/prompts.md).
 
 ## Without an assistant
 
 ```bash
-cp -r template my-film && cd my-film
+git clone https://github.com/0xclaw-ai/paper-intro-video
+cp -r paper-intro-video/skills/paper-intro-video/template my-film && cd my-film
 node tools/doctor.mjs     # what this machine has; installs nothing
 node tools/make.mjs       # voice → timing → sound → render → checks  →  out/
 ```
@@ -33,10 +42,9 @@ recording work too.
 
 | | |
 | --- | --- |
-| `SKILL.md` | the workflow: facts → script → voice first → scenes → sound, render, checks → handover |
-| `references/` | story, design, motion, the harness, voice, sound, checks, pitfalls, prompts |
-| `template/` | the harness and a 30-second demo film; copy it to start |
+| `skills/paper-intro-video/` | the skill: `SKILL.md` (the workflow: facts → script → voice first → scenes → sound, render, checks → handover), `references/` (story, design, motion, the harness, voice, sound, checks, pitfalls, prompts) and `template/` (the harness and a 30-second demo film; copy it to start) |
 | `examples/0xclaw/` | a complete five-minute film (EMNLP 2026) built on it |
+| `.claude-plugin/` | what makes the repository installable as a Claude Code plugin |
 
 ## Credits
 

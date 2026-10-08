@@ -1,0 +1,11 @@
+{
+  "name": "paper-intro-video",
+  "displayName": "Paper Intro Video",
+  "description": "Make a narrated, animated intro video for a research paper or project: an HTML film rendered frame by frame and timed to its voice-over.",
+  "author": {
+    "name": "0xClaw Team"
+  },
+  "homepage": "https://github.com/0xclaw-ai/paper-intro-video",
+  "repository": "https://github.com/0xclaw-ai/paper-intro-video",
+  "keywords": ["video", "explainer", "research-paper", "animation", "narration", "presentation"]
+}

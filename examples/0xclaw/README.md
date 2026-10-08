@@ -2,8 +2,8 @@
 
 A complete five-minute film on this harness — the intro video for *0xClaw: Autonomous Open-ended
 Agents with Phase-aware Budget Allocation and Temporal Pressure* (EMNLP 2026). It went through
-five review rounds with its authors; `../../SKILL.md` and `../../references/` are what those
-rounds taught. Frame for frame and sample for sample it rebuilds the delivered film (checked when
+five review rounds with its authors; `../../skills/paper-intro-video/SKILL.md` and the
+`references/` beside it are what those rounds taught. Frame for frame and sample for sample it rebuilds the delivered film (checked when
 this example was made).
 
 ```bash

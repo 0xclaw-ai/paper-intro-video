@@ -11,24 +11,28 @@ are timed to the words of that voice — so the voice can be swapped, re-paced o
 everything follows. No video editor, no timeline dragged by hand, nothing that cannot be rebuilt
 from text.
 
-The skill has three parts:
+The skill has two parts, and a worked example in its repository:
 
 | | |
 | --- | --- |
 | `template/` | The harness. Copy it to start a film: engine, stagecraft, tools, and a 30-second demo film that explains itself. |
-| `examples/0xclaw/` | A complete five-minute film on the same harness (an EMNLP 2026 paper). Read it for patterns at full scale: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. `examples/template-demo.mp4` is the demo, rendered. |
 | `references/` | How to do each part well. Read the one you need when you get there (list at the end). |
+| the example | A complete five-minute film on the same harness (an EMNLP 2026 paper). It is not installed with the skill: it is `examples/0xclaw/` in the skill's repository — https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples/0xclaw, or `../../examples/0xclaw/` from this file when the whole repository is on disk. Read it for patterns at full scale: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The reference files call it "the example". The template's demo, rendered, is in the same repository: `examples/template-demo.mp4` (https://github.com/0xclaw-ai/paper-intro-video/blob/main/examples/template-demo.mp4). |
 
 ## The shape of the work
 
 The order matters, and the first three steps are where films are won or lost. Resist starting
 with visuals.
 
-1. **Look at the machine.** Copy `template/` to the project folder and run `node tools/doctor.mjs`.
+1. **Look at the machine.** Copy the contents of `template/` into the project folder — that folder
+   is now the film, and every command below runs in it — and run `node tools/doctor.mjs`.
    It reports what is there (Node 22+, a Chromium, Pythons, a voice) and installs nothing.
+   `node tools/make.mjs` then builds the bundled 30-second demo as it is (about a minute; its
+   narration clips are included, so it needs no speech model) — a quick proof that the pipeline
+   works on this machine before any of it is replaced.
    Anything that needs a download — a Python package, a speech model, a browser — is the user's
    decision: say exactly what, from where and how large, and wait for a yes.
-   → `references/pitfalls.md` has the machine notes.
+   → `references/pitfalls.md` for what to do when something is missing or a tool fails.
 2. **Read the sources and write down the facts.** The paper, the repository, the website. Every
    number that will be on screen goes into `js/data.js` with the table it comes from; anything the
    sources do not say is not claimed (if the user wants a stronger claim — "the first to …" — use
@@ -96,7 +100,7 @@ explicit wish overrides them.
 ```bash
 node tools/doctor.mjs                                    # what is on this machine
 node tools/make.mjs --voice kokoro:af_heart --as-plan --no-render   # first voice: it becomes the plan
-node tools/still.mjs --t 12,31.5                         # full-size frames  -> build/stills/
+node tools/still.mjs --t 12,21.5                         # full-size frames  -> build/stills/
 node tools/sheet.mjs --step 2.5                          # contact sheets    -> build/sheets/
 node tools/when.mjs s-how/steps                          # when each word of a line is said (film time)
 node tools/make.mjs                                      # sound, render, verify, posters -> out/
@@ -120,7 +124,7 @@ each of them can be run alone (their headers say how).
 | `references/voice.md` | synthesizing or recording the narration, pacing, pronunciation, swapping voices |
 | `references/sound.md` | the sound bed, cues, the mix, using other music |
 | `references/qa.md` | every check to run before handing over, and how to report what could not be checked |
-| `references/pitfalls.md` | when a tool fails or the machine surprises you; machine notes |
+| `references/pitfalls.md` | when a tool fails or the machine surprises you |
 | `references/prompts.md` | the prompts a user can start and steer a film with (中文 / English), and how to read their feedback |
 
 Reply to the user in their language. Give file links relative to the folder the session was

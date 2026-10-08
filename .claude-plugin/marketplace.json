@@ -1,0 +1,13 @@
+{
+  "name": "0xclaw",
+  "description": "Agent skills from the 0xClaw team.",
+  "owner": {
+    "name": "0xClaw Team"
+  },
+  "plugins": [
+    {
+      "name": "paper-intro-video",
+      "source": "./"
+    }
+  ]
+}
