@@ -1,0 +1,24 @@
+{
+  "skill_name": "paper-intro-video",
+  "note": "Prompts for evaluating or improving this skill later. Each run is a whole film, so they are expensive: run one at a time, and judge the result by watching it. Nothing here has been run.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我们有一篇 ACL 2027 的论文（PDF 在 ./paper.pdf，代码在 ./repo，项目网站 https://example.org/proj），帮我做一个 3 分钟左右的介绍视频，参会和放网站用。英文口播，英文字幕，另外要一份无字幕的。项目名读作 \"Lumen\"。先看一下本机环境，要下载什么先问我。",
+      "expected_output": "Runs tools/doctor.mjs and asks before any download; collects numbers into js/data.js with their tables; writes a script with a promise, a slogan, a fence, a question, a surprise and a closing sentence; lays in a voice with --as-plan before timing scenes; delivers out/<slug>.mp4 and out/<slug>_captions_en.mp4 with narration; reports verification in numbers and says what could not be verified (hearing).",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "（附三张截图）图1 标题页的会议名太小了看不清，写全称；图2 这一屏字太多；图3 结尾那句换成一句话说清楚我们做了什么。其余都挺好的。",
+      "expected_output": "Archives the current version first; changes only the three things (venue written out with the abbreviation in brackets and enlarged; the dense screen split or replaced by a concrete picture; the end card reduced to one sentence in the statement type that comes up as it is spoken); re-renders; reports what changed and whether the length changed; mentions anything extended beyond the three notes.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "The narration voice sounds too young for this. Can you switch to a male voice, and slow it down a little? Keep everything else.",
+      "expected_output": "Offers or writes short audition samples of a few male Kokoro voices (cannot judge them itself) or picks one and says so; re-synthesizes with a lower --speed and/or longer pauses without --as-plan; rebuilds cue sheet, bed and render so captions and pictures follow the new voice; reports the new length and that nothing was cut; asks the user to listen.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "film",
+  "private": true,
+  "description": "A film made from a web page. No dependencies: this file only tells Node that js/*.js are CommonJS (the tools are .mjs), whatever a package.json further up says.",
+  "type": "commonjs"
+}

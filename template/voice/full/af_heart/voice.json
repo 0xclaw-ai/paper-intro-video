@@ -1,0 +1,9 @@
+{
+ "engine": "kokoro-onnx",
+ "model": "Kokoro-82M v1.0",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lang": "en-us",
+ "word_times": true,
+ "licence": "model weights Apache-2.0 (hexgrad/Kokoro-82M), kokoro-onnx MIT"
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Film — preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/film.css" />
+</head>
+<body>
+
+<!-- The film is this page: a 1920×1080 stage with one <section class="scene"> per scene. js/script.js holds the
+     words and the plan, js/scenes.js what happens on them, css/film.css where things sit. This demo is 30 seconds
+     about the harness itself: keep its three patterns (a dark card, a paper scene with stations, an end card) and
+     replace the content. -->
+<div id="viewport">
+<div id="stage">
+
+  <!-- ═════════ S1 · TITLE (a dark card) ═════════ -->
+  <section class="scene dark" id="s-title">
+    <p class="kicker tt-k">template demo</p>
+    <h1 class="stmt xxl tt-h" data-split>A film that follows<br />its <span class="mk" data-mark="underline" data-color="gold">voice</span>.</h1>
+    <p class="tt-sub">A web page, rendered frame by frame.</p>
+  </section>
+
+  <!-- ═════════ S2 · HOW IT WORKS (paper; two stations the camera travels between) ═════════ -->
+  <section class="scene" id="s-how">
+    <div class="sec-head"><h2 class="sec-title" data-split>Words, then a voice, then pictures.</h2></div>
+
+    <!-- station "steps" -->
+    <div class="steps">
+      <div class="step"><i data-ph="note-pencil" data-w="light"></i><h3 class="stmt lg">the words</h3><p class="src">js/script.js</p></div>
+      <div class="step"><i data-ph="chat-circle-text" data-w="light"></i><h3 class="stmt lg">a voice</h3><p class="src">voice/ → js/voice.js</p></div>
+      <div class="step"><i data-ph="eye" data-w="light"></i><h3 class="stmt lg">the pictures</h3><p class="src">js/scenes.js</p></div>
+    </div>
+    <svg class="ink" id="how-ink"></svg>
+    <p class="hand how-note">on the words</p>
+    <div class="clocks">
+      <p class="kicker">when each word was planned</p>
+      <div class="track plan" id="track-plan"></div>
+      <p class="kicker">when this voice says it</p>
+      <div class="track film" id="track-film"></div>
+    </div>
+
+    <!-- station "rule" -->
+    <div class="rule-card">
+      <div class="hero left"><p class="hero-n v" id="rule-n">12</p><p class="kicker">words at most</p></div>
+      <h3 class="stmt xl rule-h" data-split>One idea<br />per <span class="mk" data-mark="highlight">screen</span>.</h3>
+    </div>
+  </section>
+
+  <!-- ═════════ S3 · END CARD (dark; one sentence, then where to go) ═════════ -->
+  <section class="scene dark" id="s-end">
+    <h1 class="stmt xl end-h" data-split>Now replace these scenes<br />with your own.</h1>
+    <p class="end-files">js/script.js &nbsp;·&nbsp; js/scenes.js &nbsp;·&nbsp; css/film.css &nbsp;·&nbsp; index.html</p>
+  </section>
+
+  <!-- persistent chrome: the brand, the chapter bar, the caption line -->
+  <div id="hud">
+    <div class="hud-brand"><span>your project</span></div>
+    <div class="hud-chapters" id="hud-chapters"></div>
+  </div>
+  <div class="grain"></div>
+  <div id="captions"><div class="cap-inner" id="cap-text"></div></div>
+  <div id="curtain"></div>
+</div>
+</div>
+
+<div id="player">
+  <button id="pl-play">Play</button>
+  <span id="pl-time">0:00.0 / 0:00</span>
+  <input type="range" id="pl-seek" min="0" max="1000" value="0" step="1" />
+  <select id="pl-cap"><option value="en">captions: EN</option><option value="off">captions: off</option></select>
+  <span>space = play/pause · ←/→ = ±1s · ,/. = ±1 frame</span>
+</div>
+
+<!-- order matters: the script, then the voice, then the builder that puts the two together -->
+<script src="vendor/roughjs/rough.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/lib/engine.js"></script>
+<script src="js/lib/annotate.js"></script>
+<script src="js/data.js"></script>
+<script src="js/script.js"></script>
+<script src="js/pacing.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/lib/build.js"></script>
+<script src="js/lib/stage.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/lib/player.js"></script>
+</body>
+</html>

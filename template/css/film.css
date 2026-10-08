@@ -1,0 +1,30 @@
+/* film.css — where things sit in this film, scene by scene (the stage, the type and the marks are css/base.css).
+ * Everything is absolutely placed on a 1920×1080 station; content starts 120 px from the left edge.
+ * Elements that will be animated in need no "hidden" state here: the timeline sets it.
+ */
+
+/* ═════════════ S1 · TITLE ═════════════ */
+.tt-k { position: absolute; left: 124px; top: 290px; }
+.tt-h { position: absolute; left: 120px; top: 344px; }
+.tt-sub { position: absolute; left: 124px; top: 668px; font-family: var(--serif); font-style: italic; font-size: 46px; color: var(--cream-2); }
+
+/* ═════════════ S2 · HOW IT WORKS ═════════════ */
+.steps { position: absolute; left: 120px; right: 120px; top: 330px; display: flex; justify-content: space-between; }
+.step { width: 440px; padding-top: 28px; border-top: 2px solid var(--ink); }
+.step .ph { font-size: 78px; color: var(--violet); }
+.step .stmt { margin-top: 16px; }
+.step .src { margin-top: 12px; font-family: var(--mono); }
+.how-note { position: absolute; left: 1420px; top: 632px; }
+/* two tracks of ticks: where the words were planned, and where a voice really puts them (--k slides one onto the other) */
+.clocks { position: absolute; left: 120px; right: 120px; top: 700px; }
+.clocks .kicker { margin-top: 26px; }
+.track { position: relative; height: 40px; margin-top: 10px; border-bottom: 2px solid var(--rule); --k: 0; }
+.track i { position: absolute; bottom: 0; width: 4px; height: 28px; border-radius: 2px; background: var(--ink-3); left: calc((var(--a) * (1 - var(--k)) + var(--b) * var(--k)) * 1%); }
+.track.film i { background: var(--violet); }
+
+.rule-card { position: absolute; left: 120px; right: 120px; top: 330px; display: flex; align-items: center; gap: 120px; }
+.rule-h { line-height: 1.08; }
+
+/* ═════════════ S3 · END CARD ═════════════ */
+.end-h { position: absolute; left: 0; right: 0; top: 340px; text-align: center; line-height: 1.12; }
+.end-files { position: absolute; left: 0; right: 0; top: 640px; text-align: center; font-family: var(--mono); font-size: 30px; color: var(--cream-2); }

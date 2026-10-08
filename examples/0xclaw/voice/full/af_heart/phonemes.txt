@@ -1,0 +1,88 @@
+01   3.78s  Give this agent a hackathon link. It does the rest, by itself.
+              ɡˈɪv ðɪs ˈeɪdʒənt ɐ hˈækəθˌɑːn lˈɪŋk. ɪt dˈʌz ðə ɹˈɛst, baɪ ɪtsˈɛlf.
+02   1.81s  It took first place in its track.
+              ɪt tˈʊk fˈɜːst plˈeɪs ɪn ɪts tɹˈæk.
+03   4.91s  In five minutes: how it finishes an open-ended project on time and on budget.
+              ɪn fˈaɪv mˈɪnɪts: hˌaʊ ɪt fˈɪnɪʃᵻz ɐn ˈoʊpənˈɛndᵻd pɹˈɑːdʒɛkt ˌɔn tˈaɪm ænd ˌɔn bˈʌdʒɪt.
+04   6.17s  This is Zero X Claw. The idea: a budget for every phase, and a deadline the agent can feel.
+              ðɪs ɪz zˈiəɹoʊ ˈɛks klˈɔː. ðɪ aɪdˈiə: ɐ bˈʌdʒɪt fɔːɹ ˈɛvɹi fˈeɪz, ænd ɐ dˈɛdlaɪn ðɪ ˈeɪdʒənt kæn fˈiːl.
+05   3.54s  Agents do well with a clear target. A hackathon has none.
+              ˈeɪdʒənts dˈuː wˈɛl wɪð ɐ klˈɪɹ tˈɑːɹɡɪt. ɐ hˈækəθˌɑːn hɐz nˈʌn.
+06   4.25s  An open goal, a hard deadline, several deliverables — and one budget.
+              ɐn ˈoʊpən ɡˈoʊl, ɐ hˈɑːɹd dˈɛdlaɪn, sˈɛvɹəl dᵻlˈɪvɚɹəbəlz — ænd wˈʌn bˈʌdʒɪt.
+07   5.21s  Two questions decide everything: how to split the budget, and when to stop adding scope.
+              tˈuː kwˈɛstʃənz dᵻsˈaɪd ˈɛvɹɪθˌɪŋ: hˌaʊ tə splˈɪt ðə bˈʌdʒɪt, ænd wɛn tə stˈɑːp ˈædɪŋ skˈoʊp.
+08   1.69s  Most agents answer neither.
+              mˈoʊst ˈeɪdʒənts ˈænsɚ nˈiːðɚ.
+09   6.55s  Budget methods cap one call. Multi-agent systems split roles. Nobody budgets the whole project.
+              bˈʌdʒɪt mˈɛθədz kˈæp wˈʌn kˈɔːl. mˈʌltaɪˈeɪdʒənt sˈɪstəmz splˈɪt ɹˈoʊlz. nˈoʊbɑːdi bˈʌdʒɪts ðə hˈoʊl pɹˈɑːdʒɛkt.
+10   7.17s  Three things make that hard. Context keeps growing. Budgets are set per call. And agents have no sense of time.
+              θɹˈiː θˈɪŋz mˌeɪk ðæt hˈɑːɹd. kˈɑːntɛkst kˈiːps ɡɹˈoʊɪŋ. bˈʌdʒɪts ɑːɹ sˈɛt pɜː kˈɔːl. ænd ˈeɪdʒənts hæv nˈoʊ sˈɛns ʌv tˈaɪm.
+11   3.54s  Zero X Claw runs the project as seven fixed phases:
+              zˈiəɹoʊ ˈɛks klˈɔː ɹˈʌnz ðə pɹˈɑːdʒɛkt æz sˈɛvən fˈɪkst fˈeɪzᵻz:
+12   4.59s  research, idea, selection, planning, coding, testing, and documentation.
+              ɹᵻsˈɜːtʃ, aɪdˈiə, sᵻlˈɛkʃən, plˈænɪŋ, kˈoʊdɪŋ, tˈɛstɪŋ, ænd dˌɑːkjuːməntˈeɪʃən.
+13   5.53s  Each phase hands on one typed artifact, not the whole history, so the context stays small.
+              ˈiːtʃ fˈeɪz hˈændz ˌɔn wˈʌn tˈaɪpd ˈɑːɹɾɪfˌækt, nˌɑːt ðə hˈoʊl hˈɪstɚɹi, sˌoʊ ðə kˈɑːntɛkst stˈeɪz smˈɔːl.
+14   4.80s  On top sit two small controllers: one for how much, one for how to behave.
+              ˌɔn tˈɑːp sˈɪt tˈuː smˈɔːl kəntɹˈoʊlɚz: wˈʌn fɔːɹ hˌaʊ mˈʌtʃ, wˈʌn fɔːɹ hˌaʊ tə bᵻhˈeɪv.
+15   6.98s  First, the Budget Router: a two-billion-parameter model, fine-tuned on fifty thousand real hackathon projects.
+              fˈɜːst, ðə bˈʌdʒɪt ɹˈaʊɾɚ: ɐ tˈuːbˈɪliənpɚɹˈæmɪɾɚ mˈɑːdəl, fˈaɪntˈuːnd ˌɔn fˈɪfti θˈaʊzənd ɹˈiːəl hˈækəθˌɑːn pɹˈɑːdʒɛkts.
+16   6.72s  Before each phase, it reads the workspace and writes one control token: tokens, time, thinking, and repairs.
+              bᵻfˌɔːɹ ˈiːtʃ fˈeɪz, ɪt ɹˈiːdz ðə wˈɜːkspeɪs ænd ɹˈaɪts wˈʌn kəntɹˈoʊl tˈoʊkən: tˈoʊkənz, tˈaɪm, θˈɪŋkɪŋ, ænd ɹᵻpˈɛɹz.
+17   9.73s  Its training data is Hack Rep: a hundred thousand hackathon repositories, filtered down to fifty-six thousand projects, each cut into seven phases.
+              ɪts tɹˈeɪnɪŋ dˈeɪɾə ɪz hˈæk ɹˈɛp: ɐ hˈʌndɹɪd θˈaʊzənd hˈækəθˌɑːn ɹᵻpˈɑːzɪtˌɔːɹiz, fˈɪltɚd dˌaʊn tə fˈɪftisˈɪks θˈaʊzənd pɹˈɑːdʒɛkts, ˈiːtʃ kˈʌt ˌɪntʊ sˈɛvən fˈeɪzᵻz.
+18   9.73s  There are no budget labels. So we infer them from repository signals, relative to each project's own average. The router learns a pattern, not a size.
+              ðɛɹˌɑːɹ nˈoʊ bˈʌdʒɪt lˈeɪbəlz. sˌoʊ wiː ɪnfˈɜː ðˌɛm fɹʌm ɹᵻpˈɑːzɪtˌɔːɹi sˈɪɡnəlz, ɹˈɛlətˌɪv tʊ ˈiːtʃ pɹˈɑːdʒɛkts ˈoʊn ˈævɹɪdʒ. ðə ɹˈaʊɾɚ lˈɜːnz ɐ pˈætɚn, nˌɑːɾə sˈaɪz.
+19   2.54s  Quick question: which phase should get the most?
+              kwˈɪk kwˈɛstʃən: wˌɪtʃ fˈeɪz ʃˌʊd ɡɛt ðə mˈoʊst?
+20   3.16s  It learned: research needs the least. Coding, the most.
+              ɪt lˈɜːnd: ɹᵻsˈɜːtʃ nˈiːdz ðə lˈiːst. kˈoʊdɪŋ, ðə mˈoʊst.
+21   5.87s  It gets the whole token right ninety-three percent of the time. Prompting bigger models does not come close.
+              ɪt ɡˈɛts ðə hˈoʊl tˈoʊkən ɹˈaɪt nˈaɪntiθɹˈiː pɚsˈɛnt ʌvðə tˈaɪm. pɹˈɑːmptɪŋ bˈɪɡɚ mˈɑːdəlz dʌznˌɑːt kˈʌm klˈoʊs.
+22   4.76s  And that holds for every phase: above zero point nine one on each of the seven.
+              ænd ðæt hˈoʊldz fɔːɹ ˈɛvɹi fˈeɪz: əbˌʌv zˈiəɹoʊ pˈɔɪnt nˈaɪn wˈʌn ˌɔn ˈiːtʃ əv ðə sˈɛvən.
+23   3.69s  Second, the Deadline Framer. No training. No model call.
+              sˈɛkənd, ðə dˈɛdlaɪn fɹˈeɪmɚ. nˈoʊ tɹˈeɪnɪŋ. nˈoʊ mˈɑːdəl kˈɔːl.
+24   5.06s  It reads the token against what earlier phases really spent, and sets a pressure level.
+              ɪt ɹˈiːdz ðə tˈoʊkən ɐɡˈɛnst wʌt ˈɜːlɪɚ fˈeɪzᵻz ɹˈiəli spˈɛnt, ænd sˈɛts ɐ pɹˈɛʃɚ lˈɛvəl.
+25   4.27s  Then it writes that pressure into the prompt as a plain sentence. No numbers.
+              ðˈɛn ɪt ɹˈaɪts ðæt pɹˈɛʃɚɹ ˌɪntʊ ðə pɹˈɑːmpt æz ɐ plˈeɪn sˈɛntəns. nˈoʊ nˈʌmbɚz.
+26   5.23s  Overspend, and the scope narrows: from a working M V P to the critical path only.
+              ˌoʊvɚspˈɛnd, ænd ðə skˈoʊp nˈæɹoʊz: fɹʌm ɐ wˈɜːkɪŋ ˈɛm vˈiː pˈiː tə ðə kɹˈɪɾɪkəl pˈæθ ˈoʊnli.
+27   3.46s  One loop per phase. And the agent itself never changes.
+              wˈʌn lˈuːp pɜː fˈeɪz. ænd ðɪ ˈeɪdʒənt ɪtsˈɛlf nˈɛvɚ tʃˈeɪndʒᵻz.
+28   3.09s  A budget for every phase. A deadline it can feel.
+              ɐ bˈʌdʒɪt fɔːɹ ˈɛvɹi fˈeɪz. ɐ dˈɛdlaɪn ɪt kæn fˈiːl.
+29   5.44s  Does it work? Twenty real hackathons. Ten other agents. One shared model underneath.
+              dˈʌz ɪt wˈɜːk? twˈɛnti ɹˈiːəl hˈækəθˌɑːnz. tˈɛn ˈʌðɚɹ ˈeɪdʒənts. wˈʌn ʃˈɛɹd mˈɑːdəl ˌʌndɚnˈiːθ.
+30   9.77s  Quality is judged blind by a language model. Two hard checks back it up: the project must build and pass a smoke test, and it must do so on the first run.
+              kwˈɔlᵻɾi ɪz dʒˈʌdʒd blˈaɪnd baɪ ɐ lˈæŋɡwɪdʒ mˈɑːdəl. tˈuː hˈɑːɹd tʃˈɛks bˈæk ɪɾ ˈʌp: ðə pɹˈɑːdʒɛkt mˈʌst bˈɪld ænd pˈæs ɐ smˈoʊk tˈɛst, ænd ɪt mˈʌst dˈuː sˌoʊ ɔnðə fˈɜːst ɹˈʌn.
+31   5.59s  First, reliability. Its first run ships a working project, twenty times out of twenty.
+              fˈɜːst, ɹᵻlˌaɪəbˈɪlᵻɾi. ɪts fˈɜːst ɹˈʌn ʃˈɪps ɐ wˈɜːkɪŋ pɹˈɑːdʒɛkt, twˈɛnti tˈaɪmz ˌaʊɾəv twˈɛnti.
+32   5.29s  Second, cost. The same quality as Claude Code, with fifty-nine percent fewer tokens.
+              sˈɛkənd, kˈɔst. ðə sˈeɪm kwˈɔlᵻɾi æz klˈɔːd kˈoʊd, wɪð fˈɪftinˈaɪn pɚsˈɛnt fjˈuːɚ tˈoʊkənz.
+33   3.18s  And the highest novelty score of all eleven systems.
+              ænd ðə hˈaɪɪst nˈɑːvəlɾi skˈɔːɹ ʌv ˈɔːl ᵻlˈɛvən sˈɪstəmz.
+34   4.63s  Cheaper agents exist. They stop early, and score five to nine points lower.
+              tʃˈiːpɚɹ ˈeɪdʒənts ɛɡzˈɪst. ðeɪ stˈɑːp ˈɜːli, ænd skˈɔːɹ fˈaɪv tə nˈaɪn pˈɔɪnts lˈoʊɚ.
+35   9.64s  Against Aris, the second-best baseline, it wins thirteen tasks of twenty. Under a second judge it stays level with Aris, behind only Claude Code.
+              ɐɡˈɛnst ˈæɹɪs, ðə sˈɛkəndbˈɛst bˈeɪslaɪn, ɪt wˈɪnz θˈɜːtiːn tˈæsks ʌv twˈɛnti. ˌʌndɚɹ ɐ sˈɛkənd dʒˈʌdʒ ɪt stˈeɪz lˈɛvəl wɪð ˈæɹɪs, bᵻhˌaɪnd ˈoʊnli klˈɔːd kˈoʊd.
+36   3.31s  Each controller helps on its own. Together, they are best.
+              ˈiːtʃ kəntɹˈoʊlɚ hˈɛlps ˌɔn ɪts ˈoʊn. təɡˈɛðɚ, ðeɪ ɑːɹ bˈɛst.
+37   6.81s  The price is time: about two and a half times slower than Aris. On standard coding benchmarks, nothing is lost.
+              ðə pɹˈaɪs ɪz tˈaɪm: ɐbˌaʊt tˈuː ænd ɐ hˈæf tˈaɪmz slˈoʊɚ ðɐn ˈæɹɪs. ˌɔn stˈændɚd kˈoʊdɪŋ bˈɛntʃmɑːɹks, nˈʌθɪŋ ɪz lˈɔst.
+38   5.85s  The limits: weak labels, twenty tasks, and a fixed phase order. Bounded backtracking comes next.
+              ðə lˈɪmɪts: wˈiːk lˈeɪbəlz, twˈɛnti tˈæsks, ænd ɐ fˈɪkst fˈeɪz ˈɔːɹdɚ. bˈaʊndᵻd bˈæktɹækɪŋ kˈʌmz nˈɛkst.
+39   1.28s  So what does it build?
+              sˌoʊ wʌt dˈʌz ɪt bˈɪld?
+40  11.24s  A token launchpad. A cloud cost optimizer. Code search. A medical document decoder. A trip planner. A moonquake map. A meme copilot. A note-taking vault.
+              ɐ tˈoʊkən lˈɔːntʃpæd. ɐ klˈaʊd kˈɔst ˈɑːptɪmˌaɪzɚ. kˈoʊd sˈɜːtʃ. ɐ mˈɛdɪkəl dˈɑːkjuːmənt dᵻkˈoʊdɚ. ɐ tɹˈɪp plˈænɚ. ɐ mˈuːŋkweɪk mˈæp. ɐ mˈiːm kˈoʊpaɪlət. ɐ nˈoʊttˈeɪkɪŋ vˈɔlt.
+41   4.25s  Researched, planned, coded, tested and documented by the agent.
+              ɹᵻsˈɜːtʃt, plˈænd, kˈoʊdᵻd, tˈɛstᵻd ænd dˈɑːkjuːməntᵻd baɪ ðɪ ˈeɪdʒənt.
+42   4.80s  It is open source. Run it from a terminal or a chat app, and watch every phase.
+              ɪɾ ɪz ˈoʊpən sˈɔːɹs. ɹˈʌn ɪt fɹʌm ɐ tˈɜːmɪnəl ɔːɹ ɐ tʃˈæt ˈæp, ænd wˈɑːtʃ ˈɛvɹi fˈeɪz.
+43   7.19s  We contribute a seven-phase pipeline, two controllers for budget and deadline, and evidence from twenty real hackathons.
+              wiː kəntɹˈɪbjuːt ɐ sˈɛvənfˈeɪz pˈaɪplaɪn, tˈuː kəntɹˈoʊlɚz fɔːɹ bˈʌdʒɪt ænd dˈɛdlaɪn, ænd ˈɛvɪdəns fɹʌm twˈɛnti ɹˈiːəl hˈækəθˌɑːnz.
+44   6.21s  Zero X Claw is the first to quantify open-ended hackathons, and to compete in them autonomously.
+              zˈiəɹoʊ ˈɛks klˈɔː ɪz ðə fˈɜːst tə kwˈɔntᵻfˌaɪ ˈoʊpənˈɛndᵻd hˈækəθˌɑːnz, ænd tə kəmpˈiːt ɪn ðˌɛm ɔːtˈɑːnəməsli.

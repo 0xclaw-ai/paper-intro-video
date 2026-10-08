@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>0xClaw — intro video</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="assets/logo.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/film.css" />
+</head>
+<body>
+
+<div id="viewport">
+<div id="stage">
+
+  <!-- ═════════ S1 · COLD OPEN: story + promise (dark) ═════════ -->
+  <section class="scene dark" id="s-hook">
+    <div class="hook-a">
+      <h1 class="stmt xl l1" data-split>Give an agent a hackathon link.</h1>
+      <div class="prompt" id="hook-prompt">
+        <span class="pr">›</span><span class="cmd" id="hook-cmd"></span><i class="caret" id="hook-caret"></i>
+        <span class="key" id="hook-key">Enter<i data-ph="arrow-right" data-w="regular"></i></span>
+      </div>
+      <div class="hook-phases" id="hook-phases"></div>
+      <h1 class="stmt xl l2" data-split><em>It does the rest. By itself.</em></h1>
+    </div>
+    <div class="hook-b">
+      <div class="place-n">1<sup>st</sup><i class="ring"></i></div>
+      <div class="place-t">
+        <p class="stmt lg" data-split>place in its track</p>
+        <p class="kicker k1"><i data-ph="trophy" data-w="regular"></i>Z.ai Bounty</p>
+        <p class="kicker k2">UK AI Agent Hackathon × OpenClaw</p>
+      </div>
+    </div>
+    <div class="hook-c">
+      <p class="kicker" id="hook-promise-k">In the next <b id="hook-left">4:00</b></p>
+      <h1 class="stmt xl" data-split>How it finishes an open-ended project <span class="mk" data-mark="underline" data-color="gold">on time</span> and <span class="mk" data-mark="underline" data-color="gold">on budget</span>.</h1>
+    </div>
+  </section>
+
+  <!-- ═════════ S2 · TITLE (dark) ═════════ -->
+  <section class="scene dark" id="s-title">
+    <div class="tt-brand"><img class="tt-logo" src="assets/logo.png" alt="" /><img class="tt-word" src="assets/wordmark.png" alt="0xClaw" /></div>
+    <div class="venue tt-venue"><img src="assets/acl-logo.svg" alt="ACL" /><span>EMNLP 2026</span></div>
+    <h2 class="tt-paper" data-split>Autonomous Open-ended Agents with Phase-aware Budget Allocation and Temporal Pressure</h2>
+    <p class="tt-authors">Yu Zhou &nbsp;·&nbsp; Xinyuan Dou &nbsp;·&nbsp; Yudong Cao &nbsp;·&nbsp; Junhao Song</p>
+    <p class="tt-aff">Imperial College London &nbsp;·&nbsp; Zapata Quantum</p>
+    <p class="tt-conf">The 2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)</p>
+    <div class="tt-rule"></div>
+    <div class="tt-slogan">
+      <div class="sg sg-a"><h1 class="stmt" data-split>A budget for <span class="mk" data-mark="underline" data-color="gold">every phase</span>.</h1><div class="sg-fig bud"></div></div>
+      <div class="sg sg-b"><h1 class="stmt" data-split>A deadline it can <span class="mk" data-mark="underline" data-color="gold">feel</span>.</h1><div class="sg-fig prs"></div></div>
+    </div>
+  </section>
+
+  <!-- ═════════ S3 · PROBLEM ═════════ -->
+  <section class="scene" id="s-problem">
+    <header class="sec-head">
+      <h2 class="sec-title">A hackathon gives an agent no clear target.</h2>
+    </header>
+
+    <div class="pb-a">
+      <div class="plot" id="pb-plot">
+        <svg class="plot-ax" viewBox="0 0 860 500" preserveAspectRatio="none">
+          <path class="ax" d="M0 500 V0" pathLength="1" /><path class="ax" d="M0 500 H860" pathLength="1" />
+          <path class="ax-head" d="M-7 12 0 -2 7 12 M848 493 862 500 848 507" />
+        </svg>
+        <span class="ax-t y">time pressure</span><span class="ax-t x">how open the goal is</span>
+        <div class="pt" style="left:20%;top:84%"><i></i><span>Data processing</span></div>
+        <div class="pt" style="left:21%;top:30%"><i></i><span>ML competition</span></div>
+        <div class="pt" style="left:48%;top:60%"><i></i><span>Web assistant</span></div>
+        <div class="pt" style="left:82%;top:47%"><i></i><span>Research</span></div>
+        <div class="pt hack" style="left:70%;top:12%"><i></i><span class="mk" data-mark="circle" data-color="red" data-pad="22">Hackathon</span></div>
+      </div>
+      <ul class="four">
+        <li><i data-ph="compass" data-w="light"></i><span>An open goal</span></li>
+        <li><i data-ph="timer" data-w="light"></i><span>A hard deadline</span></li>
+        <li><i data-ph="stack" data-w="light"></i><span>Several deliverables</span></li>
+        <li><i data-ph="coins" data-w="light"></i><span><span class="mk" data-mark="highlight">One budget</span></span></li>
+      </ul>
+    </div>
+
+    <div class="pb-q">
+      <p class="kicker">Two questions decide everything</p>
+      <h3 class="stmt xl q1"><b>1</b><span>How to split the budget?</span><span class="mk xm" data-mark="cross" data-color="red"></span></h3>
+      <div class="q-fig" id="q-split"></div>
+      <h3 class="stmt xl q2"><b>2</b><span>When to stop adding scope?</span><span class="mk xm" data-mark="cross" data-color="red"></span></h3>
+      <div class="q-fig" id="q-scope"><i class="q-dead"><span>deadline</span></i></div>
+      <p class="hand neither">most agents answer neither</p>
+    </div>
+
+    <div class="pb-f">
+      <div class="fence-row"><p class="kicker">Budget-aware methods</p><h3>cap <em>one call</em></h3><i class="no" data-ph="x" data-w="regular"></i></div>
+      <div class="fence-row"><p class="kicker">Multi-agent systems</p><h3>split up <em>the roles</em></h3><i class="no" data-ph="x" data-w="regular"></i></div>
+      <div class="fence-row ours"><p class="kicker">0xClaw</p><h3>budgets the whole project, <span class="mk" data-mark="highlight">phase by phase</span></h3><i class="yes" data-ph="check" data-w="regular"></i></div>
+    </div>
+
+    <div class="pb-h">
+      <div class="hard-col"><i data-ph="stack" data-w="light"></i><h3>Context keeps growing</h3><p class="hand">typed handoffs</p></div>
+      <div class="hard-col"><i data-ph="coins" data-w="light"></i><h3>Budgets are set per call</h3><p class="hand">Budget Router</p></div>
+      <div class="hard-col"><i data-ph="hourglass-medium" data-w="light"></i><h3>No sense of time</h3><p class="hand">Deadline Framer</p></div>
+    </div>
+  </section>
+
+  <!-- ═════════ S4 · WORKFLOW ═════════ -->
+  <section class="scene" id="s-pipeline">
+    <header class="sec-head">
+      <h2 class="sec-title">Seven phases. Each hands on <span class="mk" data-mark="highlight">one artifact</span>.</h2>
+    </header>
+    <div class="track" id="pl-track"></div>
+    <div class="baton" id="pl-baton"></div>
+    <svg class="ink" id="pl-ink"></svg>
+
+    <div class="pl-ctx">
+      <p class="kicker ctx-k">what the next phase has to read</p>
+      <div class="ctx-row ours"><p class="ctx-name">one typed artifact</p><div class="ctx-track"><div class="ctx-one"></div></div><p class="hand ctx-n2">stays small</p></div>
+      <div class="ctx-row"><p class="ctx-name">the whole history</p><div class="ctx-track"><div class="ctx-hist"></div></div><p class="hand ctx-n1">keeps growing</p></div>
+      <p class="src ctx-src">schematic</p>
+    </div>
+  </section>
+
+  <!-- ═════════ S5 · BUDGET ROUTER ═════════ -->
+  <section class="scene" id="s-router">
+    <header class="sec-head two-head">
+      <h2 class="sec-title">Two small controllers, two questions.</h2>
+    </header>
+    <header class="sec-head br-head">
+      <h2 class="sec-title">How much should this phase get?</h2>
+    </header>
+
+    <div class="two">
+      <div class="two-col c1"><i data-ph="coins" data-w="light"></i><h3 class="stmt xxl"><em>How much?</em></h3><p class="kicker">Budget Router</p></div>
+      <div class="two-col c2"><i data-ph="hourglass-medium" data-w="light"></i><h3 class="stmt xxl"><em>How to behave?</em></h3><p class="kicker">Deadline Framer</p></div>
+      <div class="two-track" id="two-track"></div>
+      <p class="kicker two-note">the seven-phase agent underneath stays as it is</p>
+    </div>
+
+    <div class="br-model">
+      <div class="hero"><p class="hero-n">2B</p><p class="kicker">parameters</p><p class="hero-s">Qwen3.5-2B + LoRA</p></div>
+      <div class="hero-rule"></div>
+      <div class="hero"><p class="hero-n v" id="br-n">50,669</p><p class="kicker">real hackathon projects</p>
+        <div class="blocks" id="br-blocks"></div><p class="src blocks-k">one square = 1,000 projects</p></div>
+    </div>
+
+    <div class="br-token">
+      <div class="sheet br-reads">
+        <p class="kicker">reads</p>
+        <div class="tree-row"><i data-ph="file-text" data-w="regular"></i>context.json</div>
+        <div class="tree-row"><i data-ph="file-text" data-w="regular"></i>research_summary.md</div>
+        <div class="tree-row"><i data-ph="file-text" data-w="regular"></i>selected_idea.json</div>
+        <div class="tree-row"><i data-ph="file-text" data-w="regular"></i>plan.md</div>
+        <p class="kicker next">next phase: coding</p>
+      </div>
+      <svg class="ink" id="br-ink"></svg>
+      <div class="ticket" id="br-ticket">
+        <div class="ticket-top"><p class="kicker">writes · one control token</p><span class="stamp">coding</span></div>
+        <p class="ticket-raw" id="br-raw"></p>
+        <div id="br-fields"></div>
+      </div>
+    </div>
+
+    <div class="br-data">
+      <div class="hero"><p class="hero-n sm" id="fun-1">100,356</p><p class="kicker">hackathon repositories</p></div>
+      <i class="fun-arrow" data-ph="arrow-right" data-w="light"></i>
+      <div class="hero"><p class="hero-n sm" id="fun-2">56,311</p><p class="kicker">valid projects</p></div>
+      <i class="fun-arrow" data-ph="arrow-right" data-w="light"></i>
+      <div class="hero"><p class="hero-n sm v">× 7</p><p class="kicker">phases each</p></div>
+      <p class="src">HackRep · Halmans et al., 2026</p>
+    </div>
+
+    <div class="br-weak">
+      <div class="cen">
+        <p class="kicker cen-k">workload per phase, inferred from the repository</p>
+        <div class="cen-bars" id="cen-bars"></div>
+        <div class="cen-line"><span>this project's average</span></div>
+        <p class="hand cen-n0">no budget labels</p>
+      </div>
+      <div class="cen-side">
+        <h3 class="stmt lg">Labels are relative to each project's <span class="mk" data-mark="highlight">own average</span>.</h3>
+        <p class="hand">a pattern, not a size</p>
+        <p class="src">schematic · per-phase workload of one project</p>
+      </div>
+    </div>
+
+    <div class="br-ask">
+      <p class="kicker">Quick question</p>
+      <h3 class="stmt xxl" data-split>Which phase should get <span class="mk" data-mark="underline" data-color="violet">the most</span>?</h3>
+      <p class="ask-opts" id="ask-opts"></p>
+    </div>
+    <div class="br-learn">
+      <div class="div-head"><span>lean budget · 0.75×</span><span>rich budget · 1.25×</span></div>
+      <div id="br-div"></div>
+      <p class="src">share of HackRep projects in each TOKEN tier · paper Figure 5</p>
+    </div>
+
+    <div class="br-acc">
+      <div class="hero left"><p class="hero-n v xl" id="br-em">93%</p><p class="kicker">whole control token exactly right</p></div>
+      <div class="acc-right">
+        <div class="acc-bars" id="br-acc-bars"></div>
+        <p class="acc-note">GPT-5.4-mini · DeepSeek V4 Flash · GLM-5.1, prompted: <b>all under 24%</b></p>
+      </div>
+    </div>
+
+    <div class="br-phase">
+      <div class="dumb" id="br-dumb"></div>
+      <p class="src">exact match per phase · grey: strongest baseline without fine-tuning · paper Table 2</p>
+    </div>
+  </section>
+
+  <!-- ═════════ S6 · DEADLINE FRAMER ═════════ -->
+  <section class="scene" id="s-framer">
+    <header class="sec-head df-head">
+      <h2 class="sec-title">How should the agent behave under it?</h2>
+    </header>
+
+    <div class="df-main">
+      <div class="df-in">
+        <p class="kicker k-tok">reads the token</p>
+        <p class="df-tok">&lt;PHASE_CODING&gt;&lt;TOKEN_1.25X&gt;<br />&lt;TIME_HIGH&gt;&lt;THINK_LOW&gt;&lt;REPAIR_1&gt;</p>
+        <p class="kicker log-k">against what was really spent</p>
+        <div class="log-row"><span>research</span><div class="log-track"><div class="log-used"></div><b></b></div></div>
+        <div class="log-row"><span>idea</span><div class="log-track"><div class="log-used"></div><b></b></div></div>
+        <div class="log-row"><span>selection</span><div class="log-track"><div class="log-used"></div><b></b></div></div>
+        <div class="log-row"><span>planning</span><div class="log-track"><div class="log-used"></div><b></b></div></div>
+        <div class="log-sums"><p class="log-sum a">on plan</p><p class="log-sum b">over plan</p></div>
+      </div>
+
+      <div class="df-gauge">
+        <svg viewBox="0 0 460 280" id="df-gauge-svg"></svg>
+        <p class="kicker g-tier">pressure level&nbsp;<span id="g-tier-n">2</span>&nbsp;of 4</p>
+        <div class="g-scopes">
+          <h3 class="stmt lg g-scope a"><span class="mk" data-mark="strike" data-color="red">working MVP</span></h3>
+          <h3 class="stmt lg g-scope b">critical path only</h3>
+        </div>
+      </div>
+
+      <div class="win term df-prompt">
+        <div class="win-bar"><i></i><i></i><i></i><span>prompt · coding phase</span></div>
+        <div class="win-body">
+          <p class="pp-wait">waiting for the pressure level<span>…</span></p>
+          <div class="pp-main">
+            <div class="pp-a">You are in the coding phase. <mark>Deliver a working MVP.</mark> Prioritize functionality over polish — a working solution over a perfect one.</div>
+            <div class="pp-b">You are in the coding phase. <mark>Implement the single most critical feature only.</mark> Skip everything else. Get something that runs.</div>
+          </div>
+          <p class="pp-cmd">› implement the project</p>
+        </div>
+      </div>
+
+      <svg class="ink" id="df-ink"></svg>
+      <p class="hand df-n1"><span class="no-ic"><i data-ph="cpu" data-w="light"></i><span class="mk nx" data-mark="slash" data-color="red"></span></span>no training</p>
+      <p class="hand df-n2"><span class="no-ic"><i data-ph="chat-circle-text" data-w="light"></i><span class="mk nx" data-mark="slash" data-color="red"></span></span>no model call</p>
+      <p class="hand df-n3">plain words — <span class="mk" data-mark="underline" data-color="red">no numbers</span></p>
+    </div>
+
+    <div class="loop">
+      <header class="sec-head loop-head">
+        <h2 class="sec-title">One loop per phase.</h2>
+      </header>
+      <svg class="loop-svg" viewBox="0 0 1920 1080" id="loop-svg"></svg>
+      <p class="loop-node n-br"><i data-ph="coins" data-w="light"></i>Budget Router</p>
+      <p class="loop-node n-df"><i data-ph="hourglass-medium" data-w="light"></i>Deadline Framer</p>
+      <p class="loop-node n-ag"><i data-ph="robot" data-w="light"></i>Agent runs the phase</p>
+      <p class="loop-node n-ws"><i data-ph="folder-open" data-w="light"></i>Workspace + spend log</p>
+      <div class="loop-center"><p class="kicker">phase</p><p class="loop-n" id="loop-n">1</p><p class="loop-p" id="loop-p">research</p></div>
+      <p class="hand loop-note">the agent itself never changes</p>
+    </div>
+
+    <div class="slogan">
+      <div class="sg sg-a"><p class="kicker">Budget Router</p><h1 class="stmt" data-split>A budget for <span class="mk" data-mark="highlight">every phase</span>.</h1><div class="sg-fig bud"></div></div>
+      <div class="sg sg-b"><p class="kicker">Deadline Framer</p><h1 class="stmt" data-split>A deadline it can <span class="mk" data-mark="highlight">feel</span>.</h1><div class="sg-fig prs"></div></div>
+    </div>
+  </section>
+
+  <!-- ═════════ S7 · RESULTS ═════════ -->
+  <section class="scene" id="s-results">
+    <header class="sec-head">
+      <h2 class="sec-title multi" id="res-title"></h2>
+    </header>
+
+    <div class="rs-setup">
+      <div class="hero su"><p class="hero-n" id="st-1">20</p><p class="kicker">real hackathons</p><div class="su-obj" id="su-hacks"></div></div>
+      <div class="hero su"><p class="hero-n" id="st-2">10</p><p class="kicker">other agents</p><div class="su-obj" id="su-agents"></div></div>
+      <div class="hero su"><p class="hero-n" id="st-3">1</p><p class="kicker">shared model underneath</p><div class="su-obj"><span class="su-chip" id="su-chip">DeepSeek V4 Flash</span></div></div>
+      <svg class="ink" id="su-ink"></svg>
+      <p class="src">200+ agent runs · paper Table 3</p>
+    </div>
+
+    <div class="rs-eval">
+      <div class="ev"><i data-ph="eye" data-w="light"></i><h3 class="stmt lg">Quality</h3><p>judged blind by an LLM</p></div>
+      <div class="ev"><i data-ph="seal-check" data-w="light"></i><h3 class="stmt lg">Gate</h3><p>builds, and passes a smoke test</p></div>
+      <div class="ev"><i data-ph="flag-checkered" data-w="light"></i><h3 class="stmt lg">pass@1</h3><p>on the very first run</p></div>
+    </div>
+
+    <div class="rs-pass">
+      <div class="hero left"><p class="hero-n v xl">20<span>/</span>20</p><p class="kicker">first run ships a working project</p><p class="hero-s">pass@1 = 1.00</p></div>
+      <div class="dots" id="rs-dots"></div>
+    </div>
+
+    <div class="rs-tok">
+      <div class="tok-bars">
+        <p class="kicker">tokens per hackathon</p>
+        <div class="tb"><span class="tb-name">Claude Code</span><div class="tb-track"><div class="tb-fill" style="--v:1"></div><span class="tb-val" style="--v:1">9.17M</span></div><span class="tb-q">quality 77.1</span></div>
+        <div class="tb ours"><span class="tb-name">0xClaw</span><div class="tb-track"><div class="tb-fill" style="--v:0.4057"></div><span class="tb-val" style="--v:0.4057">3.72M</span></div><span class="tb-q">quality 77.0</span></div>
+        <p class="hand same">same quality</p>
+        <p class="nov"><i data-ph="seal-check" data-w="regular"></i>and the highest novelty of all eleven systems <b>(51.9)</b></p>
+      </div>
+      <svg class="ink" id="tok-ink"></svg>
+      <div class="hero right"><p class="hero-n v xl" id="rs-59">−59%</p><p class="kicker">tokens</p></div>
+    </div>
+
+    <div class="rs-cheap">
+      <div class="sc-plot" id="sc-plot"><svg viewBox="0 0 1180 470" preserveAspectRatio="none" id="sc-svg"></svg>
+        <span class="ax-t x">tokens per hackathon (millions)</span><span class="ax-t y">quality</span></div>
+      <svg class="ink" id="sc-ink"></svg>
+      <p class="hand cheap-note">cheaper — but 5 to 9 points lower</p>
+    </div>
+
+    <div class="rs-stats">
+      <div class="wtl" id="wtl"></div>
+      <h3 class="stmt xl"><b>13</b> wins · 4 ties · 3 losses <span class="vs">vs. ARIS</span></h3>
+      <p class="src">paired Wilcoxon on per-task quality, p = 0.002</p>
+      <div class="j2"><p class="kicker">second judge · GPT-5.5 · quality</p><div class="j2-row" id="j2"></div></div>
+    </div>
+
+    <div class="rs-abl">
+      <div class="abl-grid" id="abl-grid"></div>
+      <svg class="ink" id="abl-ink"></svg>
+      <p class="src">quality from the LLM judge, 0–100 · paper Table 5</p>
+    </div>
+
+    <div class="rs-trade">
+      <div class="hero left"><p class="hero-n xl r">2.5×</p><p class="kicker">wall-clock time vs. ARIS</p>
+        <div class="clk"><div class="clk-row"><span>ARIS</span><div class="clk-fill" style="--v:0.388"></div><b id="clk-a">458 s</b></div><div class="clk-row ours"><span>0xClaw</span><div class="clk-fill" style="--v:1"></div><b id="clk-b">1,180 s</b></div></div>
+      </div>
+      <div class="xfer">
+        <p class="kicker">standard coding benchmarks · pass@1</p>
+        <div class="xfer-row"><div><p class="hero-n sm">1.00</p><p class="kicker">Aider</p></div><div><p class="hero-n sm">0.80</p><p class="kicker">CanItEdit</p></div><div><p class="hero-n sm">0.90</p><p class="kicker">SWE-bench</p></div></div>
+        <p class="hand xfer-note">nothing lost</p>
+        <p class="src">OpenCode and Codex on the same backbone: 1.00 · 0.75 · 0.80</p>
+      </div>
+    </div>
+
+    <div class="rs-lim">
+      <h3 class="stmt xl"><b>1</b>Weak labels</h3>
+      <h3 class="stmt xl"><b>2</b>Twenty tasks</h3>
+      <h3 class="stmt xl"><b>3</b><span class="mk" data-mark="underline" data-color="red">Fixed phase order</span></h3>
+      <p class="hand lim-note">next: bounded backtracking</p>
+    </div>
+  </section>
+
+  <!-- ═════════ S8 · SHOWCASE ═════════ -->
+  <section class="scene" id="s-showcase">
+    <header class="sec-head">
+      <h2 class="sec-title">What it builds.</h2>
+    </header>
+    <div class="tabs" id="show-tabs"><i class="tab-pill" id="tab-pill"></i></div>
+    <div class="show-stage" id="show-stage"></div>
+    <div class="show-wall">
+      <div class="wall" id="wall"></div>
+      <div class="wall-text"><h3 class="stmt xxl" data-split>Built by the agent.<br /><em>End to end.</em></h3></div>
+    </div>
+  </section>
+
+  <!-- ═════════ S9 · USE IT · CONTRIBUTIONS · END ═════════ -->
+  <section class="scene" id="s-outro">
+    <div class="use">
+      <header class="sec-head"><h2 class="sec-title">Run it. Watch every phase.</h2></header>
+      <div class="win term use-term">
+        <div class="win-bar"><i></i><i></i><i></i><span>~/hack — 0xclaw</span></div>
+        <div class="win-body">
+          <div class="term-box"><div class="term-logo">0XCLAW</div><div class="term-ver">Autonomous Hackathon Agent  ·  v0.1.1</div></div>
+          <div class="term-l">Provider: <b>Z.ai</b>   Model: <b>glm-5.1</b></div>
+          <div class="term-l">Type <b>?</b> or <b>/help</b> for commands  ·  <b>!&lt;cmd&gt;</b> for shell  ·  <b>Tab</b> to autocomplete</div>
+          <div class="term-l"><span class="pr">›</span> <span class="c" id="term-cmd"></span></div>
+          <div class="term-pipe"><div class="term-pipe-t">Pipeline<span id="term-count">0/7 phases done</span></div><div id="term-rows"></div></div>
+          <div class="term-foot">Active CLI conversation <b>cli:run-a3c490f39d9f</b></div>
+        </div>
+      </div>
+      <div class="win chat">
+        <div class="chat-bar"><img src="assets/logo.png" alt="" /><div><b>0xClaw</b><em>● bot · online</em></div></div>
+        <div class="chat-body">
+          <div class="msg me m1">Run the whole pipeline</div>
+          <div class="msg m2"><span class="who">0xClaw</span>Got it! Routing budget across <b>7 phases</b>…</div>
+          <div class="msg m3"><span class="who">0xClaw</span><span class="tagp">● PHASE 4 / 7 · PLANNING</span><br />Locked scope: <b>10 → 4</b> features. Coding starts now.<div class="bar"><b></b></div></div>
+          <div class="msg m4"><span class="who">0xClaw</span><b>Phase 5 · Coding</b> · 71% built, on-time.<br /><code>478K / 1.2M tok</code></div>
+        </div>
+      </div>
+      <p class="kicker use-note"><b>Open source · MIT</b><i data-ph="terminal-window" data-w="regular"></i>CLI<i data-ph="telegram-logo" data-w="regular"></i>Telegram<i data-ph="discord-logo" data-w="regular"></i>Discord<i data-ph="slack-logo" data-w="regular"></i>Slack</p>
+    </div>
+
+    <div class="contrib">
+      <header class="sec-head"><h2 class="sec-title">Three contributions.</h2></header>
+      <ol>
+        <li><b>1</b><span>A seven-phase agent with <span class="mk" data-mark="underline" data-color="violet">typed handoffs</span></span><div class="cf" id="cf-1"></div></li>
+        <li><b>2</b><span>Two controllers: a learned <span class="mk" data-mark="underline" data-color="violet">Budget Router</span><br />and a training-free <span class="mk" data-mark="underline" data-color="violet">Deadline Framer</span></span><div class="cf" id="cf-2"></div></li>
+        <li><b>3</b><span>Twenty real hackathons: pass@1 of 1.00, top novelty,<br />Claude Code quality at <span class="mk" data-mark="highlight">−59% tokens</span></span><div class="cf" id="cf-3"></div></li>
+      </ol>
+    </div>
+
+    <div class="end dark">
+      <div class="end-brand"><img class="end-logo" src="assets/logo.png" alt="" /><img class="end-word" src="assets/wordmark.png" alt="0xClaw" /></div>
+      <!-- the same words as the last narration line (cue "ships" in js/script.js): they come up as they are spoken -->
+      <h1 class="stmt end-claim" data-split>0xClaw is the first to quantify<br />open-ended hackathons and to<br />compete in them autonomously.</h1>
+      <div class="end-links">
+        <p><i data-ph="github-logo" data-w="regular"></i>github.com/0xclaw-ai/0xClaw</p>
+        <p><i data-ph="globe" data-w="regular"></i>0xclaw-ai.github.io</p>
+        <p><i data-ph="huggingface" data-w="brand"></i>0xclaw-ai/budgetrouter-qwen3.5-2b-lora</p>
+      </div>
+      <p class="end-credit">Yu Zhou &nbsp;·&nbsp; Xinyuan Dou &nbsp;·&nbsp; Yudong Cao &nbsp;·&nbsp; Junhao Song</p>
+      <p class="end-aff">Imperial College London &nbsp;·&nbsp; Zapata Quantum</p>
+      <div class="venue end-venue"><img src="assets/acl-logo.svg" alt="ACL" /><span>The 2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)</span></div>
+    </div>
+  </section>
+
+  <!-- persistent chrome -->
+  <div id="hud">
+    <div class="hud-brand"><img src="assets/logo.png" alt="" /><span>0xClaw</span></div>
+    <div class="venue hud-venue"><img src="assets/acl-logo.svg" alt="ACL" /><span>EMNLP 2026</span></div>
+    <div class="hud-chapters" id="hud-chapters"></div>
+  </div>
+  <div class="grain"></div>
+  <div id="captions"><div class="cap-inner" id="cap-text"></div></div>
+  <div id="curtain"></div>
+</div>
+</div>
+
+<div id="player">
+  <button id="pl-play">Play</button>
+  <span id="pl-time">0:00.0 / 0:00</span>
+  <input type="range" id="pl-seek" min="0" max="1000" value="0" step="1" />
+  <select id="pl-cap"><option value="en">captions: EN</option><option value="off">captions: off</option></select>
+  <span>space = play/pause · ←/→ = ±1s · ,/. = ±1 frame</span>
+</div>
+
+<script src="vendor/roughjs/rough.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/lib/engine.js"></script>
+<script src="js/lib/annotate.js"></script>
+<script src="js/data.js"></script>
+<script src="js/script.js"></script>
+<script src="js/pacing.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/lib/build.js"></script>
+<script src="js/lib/stage.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/lib/player.js"></script>
+</body>
+</html>
