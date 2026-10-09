@@ -1,0 +1,68 @@
+01   1.43s  One sentence goes in.
+              wˈʌn sˈɛntəns ɡoʊz ˈɪn.
+02   5.78s  Out come three different conversations. In each, two people speak, listen and answer each other.
+              ˈaʊt kˈʌm θɹˈiː dˈɪfɹənt kɑːnvɚsˈeɪʃənz. ɪn ˈiːtʃ, tˈuː pˈiːpəl spˈiːk, lˈɪsən ænd ˈænsɚɹ ˈiːtʃ ˈʌðɚ.
+03   4.80s  Here is how one line of text becomes a two-person audio-visual dialogue.
+              hˈɪɹ ɪz hˌaʊ wˈʌn lˈaɪn ʌv tˈɛkst bɪkˌʌmz ɐ tˈuːpˈɜːsən ˈɔːdɪˌoʊvˈɪʒuːəl dˈaɪəlɑːɡ.
+04   3.01s  This is Chat, from E C C V twenty twenty-six.
+              ðɪs ɪz tʃˈæt, fɹʌm ˈiː sˈiː sˈiː vˈiː twˈɛnti twˈɛntisˈɪks.
+05   2.88s  Both sides of a conversation, from one sentence.
+              bˈoʊθ sˈaɪdz əvə kɑːnvɚsˈeɪʃən, fɹʌm wˈʌn sˈɛntəns.
+06   6.06s  Virtual agents and digital humans learn to converse from data: recordings of two people talking.
+              vˈɜːtʃuːəl ˈeɪdʒənts ænd dˈɪdʒɪɾəl hjˈuːmənz lˈɜːn tə kənvˈɜːs fɹʌm dˈeɪɾə: ɹᵻkˈɔːɹdɪŋz ʌv tˈuː pˈiːpəl tˈɔːkɪŋ.
+07   5.16s  Collecting them is slow, costly and ethically sensitive, so the datasets stay small.
+              kəlˈɛktɪŋ ðˌɛm ɪz slˈoʊ, kˈɔstli ænd ˈɛθɪkli sˈɛnsᵻtˌɪv, sˌoʊ ðə dˈeɪɾəsˌɛts stˈeɪ smˈɔːl.
+08   8.13s  Existing methods need more than text: a face video, a real speaker to react to, or the whole conversation given in advance.
+              ɛɡzˈɪstɪŋ mˈɛθədz nˈiːd mˈɔːɹ ðɐn tˈɛkst: ɐ fˈeɪs vˈɪdɪoʊ, ɐ ɹˈiːəl spˈiːkɚ tə ɹɪˈækt tuː, ɔːɹ ðə hˈoʊl kɑːnvɚsˈeɪʃən ɡˈɪvən ɪn ɐdvˈæns.
+09   1.71s  Chat starts from text alone.
+              tʃˈæt stˈɑːɹts fɹʌm tˈɛkst ɐlˈoʊn.
+10   7.51s  We call this task D I eh D G: from one prompt, generate many different dialogue pairs that respond to each other.
+              wiː kˈɔːl ðɪs tˈæsk dˈiː aɪ ˈeɪ dˈiː dʒˈiː: fɹʌm wˈʌn pɹˈɑːmpt, dʒˈɛnɚɹˌeɪt mˈɛni dˈɪfɹənt dˈaɪəlɑːɡ pˈɛɹz ðæt ɹᵻspˈɑːnd tʊ ˈiːtʃ ˈʌðɚ.
+11   1.62s  It works in three stages.
+              ɪt wˈɜːks ɪn θɹˈiː stˈeɪdʒᵻz.
+12   5.82s  First, a language model writes the dialogue, five to ten turns, and describes both speakers.
+              fˈɜːst, ɐ lˈæŋɡwɪdʒ mˈɑːdəl ɹˈaɪts ðə dˈaɪəlɑːɡ, fˈaɪv tə tˈɛn tˈɜːnz, ænd dᵻskɹˈaɪbz bˈoʊθ spˈiːkɚz.
+13   4.12s  Next, the script becomes speech: two voices on one shared timeline.
+              nˈɛkst, ðə skɹˈɪpt bɪkˌʌmz spˈiːtʃ: tˈuː vˈɔɪsᵻz ˌɔn wˈʌn ʃˈɛɹd tˈaɪmlaɪn.
+14   5.31s  Last, both faces are generated, then refined so that each one responds to the other.
+              lˈæst, bˈoʊθ fˈeɪsᵻz ɑːɹ dʒˈɛnɚɹˌeɪɾᵻd, ðˈɛn ɹᵻfˈaɪnd sˌoʊ ðæt ˈiːtʃ wˈʌn ɹᵻspˈɑːndz tə ðɪ ˈʌðɚ.
+15   3.26s  Before any voice is synthesised, the script is marked up:
+              bᵻfˌɔːɹ ˌɛni vˈɔɪs ɪz sˈɪnθəsˌaɪzd, ðə skɹˈɪpt ɪz mˈɑːɹkt ˈʌp:
+16   5.93s  short replies like uh huh, an emotion for every sentence, the timing, and the sound environment.
+              ʃˈɔːɹt ɹᵻplˈaɪz lˈaɪk ˈʌ hˈʌ, ɐn ɪmˈoʊʃən fɔːɹ ˈɛvɹi sˈɛntəns, ðə tˈaɪmɪŋ, ænd ðə sˈaʊnd ɛnvˈaɪɹənmənt.
+17   3.39s  So the listener can react out loud without taking the turn.
+              sˌoʊ ðə lˈɪsənɚ kæn ɹɪˈækt ˈaʊt lˈaʊd wɪðˌaʊt tˈeɪkɪŋ ðə tˈɜːn.
+18   2.94s  While one person speaks, what should the other one be doing?
+              wˌaɪl wˈʌn pˈɜːsən spˈiːks, wˌʌt ʃˌʊd ðɪ ˈʌðɚ wˈʌn biː dˈuːɪŋ?
+19   2.47s  Listening. And listening is behaviour, too.
+              lˈɪsənɪŋ. ænd lˈɪsənɪŋ ɪz bᵻhˈeɪvjɚ, tˈuː.
+20   3.78s  One module generates the listener's face during every silence.
+              wˈʌn mˈɑːdʒuːl dʒˈɛnɚɹˌeɪts ðə lˈɪsənɚz fˈeɪs dˈʊɹɹɪŋ ˈɛvɹi sˈaɪləns.
+21   5.46s  Another conditions each face on its partner, so its reactions answer what the other person does.
+              ɐnˈʌðɚ kəndˈɪʃənz ˈiːtʃ fˈeɪs ˌɔn ɪts pˈɑːɹtnɚ, sˌoʊ ɪts ɹɪˈækʃənz ˈænsɚ wʌt ðɪ ˈʌðɚ pˈɜːsən dˈʌz.
+22   3.58s  A final step blends the seams between talking and listening.
+              ɐ fˈaɪnəl stˈɛp blˈɛndz ðə sˈiːmz bᵻtwˌiːn tˈɔːkɪŋ ænd lˈɪsənɪŋ.
+23   1.02s  Does it work?
+              dˈʌz ɪt wˈɜːk?
+24   6.81s  Against five methods built for related tasks, Chat is best on six of eight metrics and second on the other two.
+              ɐɡˈɛnst fˈaɪv mˈɛθədz bˈɪlt fɔːɹ ɹᵻlˈeɪɾᵻd tˈæsks, tʃˈæt ɪz bˈɛst ˌɔn sˈɪks ʌv ˈeɪt mˈɛtɹɪks ænd sˈɛkənd ɔnðɪ ˈʌðɚ tˈuː.
+25   4.59s  Sixty people rated the clips. Chat scored highest on all five aspects.
+              sˈɪksti pˈiːpəl ɹˈeɪɾᵻd ðə klˈɪps. tʃˈæt skˈɔːɹd hˈaɪɪst ˌɔn ˈɔːl fˈaɪv ˈæspɛkts.
+26   4.10s  Remove only the partner module, and the reaction score nearly halves.
+              ɹᵻmˈuːv ˈoʊnli ðə pˈɑːɹtnɚ mˈɑːdʒuːl, ænd ðə ɹɪˈækʃən skˈɔːɹ nˌɪɹli hˈævz.
+27   4.80s  Viewers notice too: interactivity drops from four point eight to two point one.
+              vjˈuːɚz nˈoʊɾɪs tˈuː: ˌɪntɚɹæktˈɪvᵻɾi dɹˈɑːps fɹʌm fˈɔːɹ pˈɔɪnt ˈeɪt tə tˈuː pˈɔɪnt wˌʌn.
+28   3.07s  The same pipeline works for stylised faces, too.
+              ðə sˈeɪm pˈaɪplaɪn wˈɜːks fɔːɹ stˈaɪlaɪzd fˈeɪsᵻz, tˈuː.
+29   8.11s  Run at scale, Chat produced Chat A-V-D fifty K: fifty thousand dialogue pairs and a hundred thousand synthetic identities.
+              ɹˈʌn æt skˈeɪl, tʃˈæt pɹədˈuːst tʃˈæt ˈeɪvˈiːdˈiː fˈɪfti kˈeɪ: fˈɪfti θˈaʊzənd dˈaɪəlɑːɡ pˈɛɹz ænd ɐ hˈʌndɹɪd θˈaʊzənd sɪnθˈɛɾɪk aɪdˈɛntᵻɾiz.
+30   2.73s  That is nearly fourteen hundred hours of video.
+              ðæt ɪz nˌɪɹli fˈɔːɹtiːn hˈʌndɹɪd ˈaʊɚz ʌv vˈɪdɪoʊ.
+31   5.53s  Used for pre-training, it improves two facial reaction models on React twenty twenty-four.
+              jˈuːzd fɔːɹ pɹˈiːtɹˈeɪnɪŋ, ɪɾ ɪmpɹˈuːvz tˈuː fˈeɪʃəl ɹɪˈækʃən mˈɑːdəlz ˌɔn ɹɪˈækt twˈɛnti twˈɛntifˈɔːɹ.
+32   3.58s  The code and weights are public. These clips come from that release.
+              ðə kˈoʊd ænd wˈeɪts ɑːɹ pˈʌblɪk. ðiːz klˈɪps kˈʌm fɹʌm ðæt ɹᵻlˈiːs.
+33   7.04s  A new task. A framework with interactive audio and facial refinement. A dataset of fifty thousand pairs.
+              ɐ nˈuː tˈæsk. ɐ fɹˈeɪmwɜːk wɪð ˌɪntɚɹˈæktɪv ˈɔːdɪˌoʊ ænd fˈeɪʃəl ɹᵻfˈaɪnmənt. ɐ dˈeɪɾəsˌɛt ʌv fˈɪfti θˈaʊzənd pˈɛɹz.
+34   5.67s  Chat turns one sentence into a conversation in which both people speak, listen and respond.
+              tʃˈæt tˈɜːnz wˈʌn sˈɛntəns ˌɪntʊ ɐ kɑːnvɚsˈeɪʃən ɪnwˌɪtʃ bˈoʊθ pˈiːpəl spˈiːk, lˈɪsən ænd ɹᵻspˈɑːnd.

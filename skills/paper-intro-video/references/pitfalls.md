@@ -13,7 +13,8 @@ folder — in your assistant's memory or a private file — not in the skill.
   the user's existing environments; a venv inside the project or the TTS folder is fine once they agree.
 - **`python` on Windows may be the Store stub**: it exists, prints nothing and does nothing. If a
   Python step "succeeds" silently with no output, call the interpreter by its full path.
-- **No ffmpeg is needed** (PyAV carries its own); do not assume one exists.
+- **Normal rendering needs no ffmpeg executable** (PyAV carries the libraries). Optional
+  `prep_media.py` needs ffmpeg on PATH; check before preparing source clips.
 - **A `package.json` with `"type": "module"` anywhere above the film** makes Node read `js/*.js`
   as ES modules and the builder fails with "js/script.js has to define the film". The film's own
   `package.json` (`"type": "commonjs"`) prevents it — keep that file when copying the template.
@@ -67,3 +68,21 @@ folder — in your assistant's memory or a private file — not in the skill.
 - **Do not fix what was not reported without saying so**, and say when you extended a fix to
   similar places (the logo lockup was aligned in three places although only one was mentioned).
 - **Facts**: dates, prizes, "first" — only from the sources, or flagged as the user's claim.
+
+## Lessons from the CHAT film
+
+- **Cloud-synced build directories:** iCloud can leave conflict copies with names ending in ` 2`, even
+  inside `.git`. Prefer a non-synced workspace for frame extraction and rendering. Compare before
+  removing apparent duplicates; an old-looking file may contain newer work.
+- **A loaded font can still miss a glyph.** An arrow, multiplication sign or subscript can fall back to
+  a system font although all font faces loaded. Run `audit_fonts.mjs`; use a bundled SVG icon or a
+  supported glyph, then inspect the frame. A global allowlist is not a fix for unexplained fallback.
+- **Line boxes are not ink boxes.** A large numeral near a label can trigger overlap checks even when
+  the glyphs do not touch. Inspect the reported span at full size; the audit trims line boxes as a
+  heuristic, not proof of typographic clearance.
+- **AAC can overshoot.** Measure decoded audio, including a 4× oversampled true-peak estimate. The mux
+  leaves extra headroom, but a gain or source change still needs `check_audio.py` again.
+- **A transient is not always a click.** A short piano hammer attack may legitimately appear in an
+  onset report. Inspect stems and ask for listening feedback instead of flattening every transient.
+- **YouTube Error 153:** a player can fail when the embed sends no HTTP Referer. Test on the real HTTPS
+  site with `strict-origin-when-cross-origin`, not a local file or `no-referrer`; see `publishing.md`.

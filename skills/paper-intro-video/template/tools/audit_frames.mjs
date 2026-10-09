@@ -117,6 +117,7 @@ try {
   await page.goto(pathToFileURL(join(root, 'index.html')).href + `?capture=1&lang=en&cut=${arg('cut', 'full')}`);
   const info = await page.eval('window.__ready');
   const fps = Number(arg('fps', '30')), from = Number(arg('from', '0')), to = Number(arg('to', String(info.duration)));
+  if (![fps, from, to].every(Number.isFinite) || fps <= 0 || from < 0 || to <= from || to > info.duration + 1e-6) throw new Error('Invalid --fps, --from or --to range');
   const t0 = Date.now();
   for (let i = Math.round(from * fps); i / fps < to - 1e-9; i++) {
     const t = i / fps;

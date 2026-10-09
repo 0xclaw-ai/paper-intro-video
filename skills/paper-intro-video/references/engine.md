@@ -1,7 +1,7 @@
 # The harness
 
 Contents: files · the script · the timeline · stagecraft · the two clocks · captions and HUD ·
-sound cues · icons and fonts · looking at frames.
+sound cues · frame-accurate clips · icons and fonts · looking at frames.
 
 ## Files
 
@@ -157,7 +157,7 @@ caption-free and the captioned file come from one capture pass.
 
 ## Icons and fonts
 
-`<i data-ph="name" data-w="light|regular|duotone|brand"></i>`; the bundle is built from
+`<i data-ph="name" data-w="light|regular|duotone|bold|fill|brand"></i>`; the bundle is built from
 `assets/icons/` by `node tools/build_icons.mjs`. Other typefaces: change the Google Fonts link and
 the `--serif/--sans/--mono/--hand` tokens, and set `window.OXFACES = ['500 20px "Your Font"', …]`
 before `player.js` so the page waits for them (marks are measured against real glyphs).
@@ -171,3 +171,36 @@ node tools/render.mjs --from 75 --to 110                           # a stretch a
 ```
 
 Open `index.html` in a browser for a live preview (space, arrows, `,` `.` for frames; `?t=42`).
+
+## Frame-accurate clips and their sound
+
+1. Put owned or cleared source footage outside `media/`. Fill `CLIPS` and optional `SOUNDS` in
+   `tools/prep_media.py`; it needs ffmpeg only for this preparation step. Crop and downscale before
+   extracting JPEGs. `python tools/prep_media.py` creates `media/manifest.js` and numbered frames.
+   Inspect an existing `media/` before `--replace`; replacement keeps it as `media.backup-*`.
+2. Load `media/manifest.js` before `js/media.js` in `index.html` (uncomment the provided tag).
+3. Use an `<img>` and a scene cue:
+   ```js
+   OXMEDIA.play(S, img, 'demo', { at: c.result, from: 1.5 });
+   S.mark('demoSound', c.result); // only when this clip's sound is wanted
+   ```
+   `from` is seconds into the prepared clip. It holds its first selected frame before the cue and its
+   final frame after the end. `window.__seek(t)` returns a promise; every capture must await it.
+4. For sound, set `SOUND_MARKS` in `tools/clip_audio.py` to the same clip and `from`, export the cue
+   sheet, then run the script. It writes `audio/full/clips.wav` and `build/full/duck.json`.
+   Clip sound trims at the playback mark and film boundaries; overlapping clips mix, and clipping fails
+   loudly. Keep source picture and sound on the same time origin. This is not automatic in `make.mjs`:
+   ```bash
+   node tools/export_sfx.mjs
+   python tools/clip_audio.py
+   node tools/render.mjs --audio audio/full/soundtrack.wav,-1 --audio build/full/narration.wav,0 \
+     --audio audio/full/clips.wav,-1 --duck build/full/duck.json,-8
+   ```
+
+An absent manifest entry becomes a labelled plate and console warning, useful for examples without
+redistributable footage. A present entry whose JPEG cannot decode stops capture. Placeholder renders
+are previews, never evidence of model output or a finished deliverable.
+
+For YouTube chapters, add `youtube: 'Title'` to selected scenes in `js/script.js`. This is separate from
+`chapter`, which controls the on-screen progress bar. `export_script.mjs` retains those titles, and
+`chapters.mjs` derives and validates timestamps. Read `publishing.md` before upload.

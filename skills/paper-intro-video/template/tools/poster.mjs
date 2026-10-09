@@ -27,7 +27,7 @@ try {
     const sc = info.scenes.find((s) => s.id === p.scene);
     if (!sc) throw new Error('poster: no scene ' + p.scene);
     const t = p.at < 0 ? sc.start + sc.dur + p.at : sc.start + p.at;
-    await page.eval(`window.__seek(${t})`);
+    await page.eval(`Promise.resolve(window.__seek(${t})).then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`);
     await page.eval(`{ const w = document.querySelector('#${p.scene} .world'); if (w) w.style.transform = 'translate(${-(p.station || 0) * GAP}px, 0px) scale(1)'; document.getElementById('curtain').style.opacity = 0; } new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`);
     const file = join(out, p.name + '.png');
     writeFileSync(file, await page.screenshot());

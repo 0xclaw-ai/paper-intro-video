@@ -13,6 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (n, d) => { const i = process.argv.indexOf('--' + n); return i > 0 ? process.argv[i + 1] : d; };
 const step = Number(arg('step', '0.25'));
+if (!Number.isFinite(step) || step <= 0) throw new Error('--step must be a positive number');
 const allow = new Set(arg('allow', '').split(',').map((s) => s.trim()).filter(Boolean));
 const out = resolve(root, 'build', 'audit');
 mkdirSync(out, { recursive: true });

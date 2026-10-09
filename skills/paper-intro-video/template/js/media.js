@@ -19,6 +19,7 @@
   'use strict';
   const MAN = window.OXMEDIA_MANIFEST || {};
   const pending = new Set();
+  const failed = new Map();
   const warned = new Set();
 
   function plate(name) {
@@ -31,6 +32,7 @@
   function url(name, i) {
     const m = MAN[name];
     if (!m) return plate(name);
+    if (!Number.isInteger(m.frames) || m.frames < 1 || !Number.isFinite(m.fps) || m.fps <= 0) throw new Error('media: invalid manifest for ' + name);
     const n = Math.max(1, Math.min(m.frames, i + 1));
     return m.dir + '/' + String(n).padStart(5, '0') + '.jpg';
   }
@@ -38,8 +40,11 @@
     const u = url(name, i);
     if (img._u === u) return;
     img._u = u;
+    failed.delete(img);
     img.src = u;
-    const p = (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => pending.delete(p));
+    const p = (img.decode ? img.decode() : Promise.resolve()).catch(() => {
+      if (img._u === u) failed.set(img, u);
+    }).then(() => pending.delete(p));
     pending.add(p);
   }
   /** run clip `name` in `img` from scene time o.at; o.from skips that many seconds into the clip */
@@ -50,7 +55,11 @@
     S.call((p, lt) => show(img, name, Math.floor((Math.max(0, lt) + from) * fps + 1e-6)), { at: o.at || 0, dur: o.dur || 600 });
   }
   /** seconds the clip lasts after o.from (0 for a clip that is not on this machine) */
-  const length = (name, from = 0) => (MAN[name] ? MAN[name].frames / MAN[name].fps - from : 0);
+  const length = (name, from = 0) => (MAN[name] ? Math.max(0, MAN[name].frames / MAN[name].fps - from) : 0);
 
-  window.OXMEDIA = { manifest: MAN, url, show, play, length, settle: () => (pending.size ? Promise.all(Array.from(pending)) : true) };
+  async function settle() {
+    while (pending.size) await Promise.all(Array.from(pending));
+    if (failed.size) throw new Error('media: could not decode ' + [...failed.values()].join(', '));
+  }
+  window.OXMEDIA = { manifest: MAN, url, show, play, length, settle };
 })();

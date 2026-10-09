@@ -19,6 +19,18 @@
       "prompt": "The narration voice sounds too young for this. Can you switch to a male voice, and slow it down a little? Keep everything else.",
       "expected_output": "Offers or writes short audition samples of a few male Kokoro voices (cannot judge them itself) or picks one and says so; re-synthesizes with a lower --speed and/or longer pauses without --as-plan; rebuilds cue sheet, bed and render so captions and pictures follow the new voice; reports the new length and that nothing was cut; asks the user to listen.",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "把已有的 ECCV 视频作为 skill 示例，但不要发布原始人物素材，也不要修改已上传的 MP4。把网站和 README 的视频入口检查好。",
+      "expected_output": "Adds an explicitly labelled teaching adaptation with placeholders and ownership notes; preserves the frozen film; distinguishes paper claims, public-release output and source identities; checks covers independently; uses a click-to-load website player and an image link in README; asks before publishing.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "The build finished, but some transitions have thin lines, the arrow looks wrong, and YouTube does not show chapters. Diagnose without global installs.",
+      "expected_output": "Runs the page, encoded-pixel and glyph-font audits; inspects flagged timestamps rather than hiding them; validates 0:00, at least three chapters and minimum 10 seconds; reports decoded AAC true peak or explicitly says it was not measured; uses existing or approved project-local tools.",
+      "files": []
     }
   ]
 }

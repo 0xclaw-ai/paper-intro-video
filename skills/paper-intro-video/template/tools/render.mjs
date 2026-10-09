@@ -111,7 +111,11 @@ try {
     const p = await browser.newPage('about:blank', { dpr });
     await p.goto(pageUrl('lang=off'));
     const info = await p.eval('window.__ready');
-    if (w === 0) console.log(`fonts   : ${Object.entries(info.fonts).map(([k, v]) => `${k}=${v}`).join(' ')}${Object.values(info.fonts).every(Boolean) ? '' : '  (falling back to local fonts)'}`);
+    if (w === 0) {
+      const fontsOk = info.fonts && Object.values(info.fonts).every(Boolean);
+      console.log(`fonts   : ${Object.entries(info.fonts || {}).map(([k, v]) => `${k}=${v}`).join(' ')}${fontsOk ? '' : '  (falling back to local fonts)'}`);
+      if (!fontsOk && !argv.includes('--allow-font-fallback')) throw new Error('A required typeface did not load. The film would change between machines. Restore access to the font host, or pass --allow-font-fallback and inspect every mark.');
+    }
     pages.push(p);
   }
   let next = first, written = first;

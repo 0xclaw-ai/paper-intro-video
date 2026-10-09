@@ -88,3 +88,10 @@ frozen.
   goes through the timeline (`references/engine.md`).
 - No motion for its own sake: floating particles, breathing gradients, parallax backgrounds.
   The stillness number can be gamed that way and the film gets worse.
+
+## Clips are motion too
+
+Use `OXMEDIA.play` for video material, not a self-playing `<video>`; see `engine.md`. Clip frames run in
+film time so their own audio remains synchronised even when narration re-times the surrounding scene.
+In clean-mark mode (`OXCLEAN`), geometric marks still reveal on cue, but without a pen scratch.
+A stillness target is a diagnostic, not a reason to add movement while viewers are reading a result.

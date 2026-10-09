@@ -8,10 +8,16 @@ commands. Report results as numbers, and say plainly what no tool can tell you.
 
 | step | tool | what it proves |
 | --- | --- | --- |
-| clips | `check_clips.py voice/full/<name>` | every line present and made for the current words; speaking rate per line within ±20 % of the median (an outlier is usually a garbled or mispronounced line); no pause over 1 s inside a line; no clipping |
+| clips | `check_clips.py` | every line present and made for the current words; speaking rate within ±20% of the median; no pause over 1 s inside a line; no clipping |
+| contract | `preflight.mjs` | scene ids agree, no self-running animation or `<video>`, a strong claim has `CLAIMS.md` |
+| glyphs | `audit_fonts.mjs` | no unexplained system-font glyph; the build fails if one is found |
 | voice | `narration.py` (its report) | each line has room before the next; word times from the engine agree with heard pauses (expect ≥ 90 % of sentence starts) |
 | picture | `verify.py` | stream facts (duration, 1920×1080, 30 fps, frame count, audio present) and two frames per scene compared with the page: mean difference about 1 on a 0–255 scale is encoder noise; above 4 it flags a mismatch |
-| sound | `check_audio.py` | −16 LUFS (±1.5), peak under −1 dBFS, voice 12–18 dB above the bed, left ear 200 Hz / right ear 240 Hz still separate after AAC |
+| sound | `check_audio.py --strict` | −16 LUFS (±1.5), sample peak and estimated true peak under −1 dB; missing scipy fails rather than passing as unchecked |
+
+The build then runs `audit_video.py --fail seams`. A seam fails the build. Flat frames and jumps are
+printed and must be inspected; a fade can be flat, a blank frame in the middle cannot. Voice level
+above the bed is printed, not enforced: read it, and say when it is outside 12–18 dB.
 
 ## What you run yourself, every time
 
@@ -62,3 +68,25 @@ Say, in the user's language:
 - **What you downloaded or installed**, where, and how large — if anything.
 
 Do not write "done and verified" for something a tool did not check.
+
+## Three audits, three different questions
+
+```bash
+node tools/audit_fonts.mjs --step 0.25
+node tools/audit_frames.mjs --fps 30
+python tools/audit_video.py out/<slug>.mp4 --json build/audit/video.json
+```
+
+- **Fonts:** which font actually drew each glyph, including captions and changing counters? Uses
+  Chromium's platform-font report. Unexplained system-font fallback fails the command. `--allow`
+  accepts named families only when intentional; the 0.25 s default samples time, not every frame.
+- **Page:** text clipping, masked descenders, text overlap, text under images, missing images. Outputs
+  `frames.json` and `spans.json`. Add `data-block` to an opaque panel that should occlude text; use
+  `--blocks` to override the selector. The tool reports findings, not a pass/fail design verdict.
+- **Encode:** one-pixel seams, flat frames and sudden jumps. Exits nonzero for seams or flat frames
+  unless `--no-fail`. Intended page turns and final fades can trigger it; inspect their timestamps.
+
+A screenshot sample cannot establish that every encoded frame is clean. Conversely, these heuristics
+cannot certify taste, factual accuracy or the sound of a voice. Record inspected exceptions and any
+skipped measurement. After technical checks, audit the claims ledger and cover separately. Scan the
+files intended for sharing for keys, private paths, excluded footage and assets without clear rights.

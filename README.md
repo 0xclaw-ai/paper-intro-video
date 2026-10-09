@@ -44,6 +44,7 @@ recording work too.
 | --- | --- |
 | `skills/paper-intro-video/` | the skill: `SKILL.md` (the workflow: facts → script → voice first → scenes → sound, render, checks → handover), `references/` (story, design, motion, the harness, voice, sound, checks, pitfalls, prompts) and `template/` (the harness and a 30-second demo film; copy it to start) |
 | `examples/0xclaw/` | a complete five-minute film (EMNLP 2026) built on it |
+| `examples/chat/` | ECCV 2026 teaching adaptation; source and narration, with placeholders instead of demo footage |
 | `.claude-plugin/` | what makes the repository installable as a Claude Code plugin |
 
 ## Credits
@@ -52,3 +53,13 @@ Bundled: Rough.js (MIT), Phosphor Icons (MIT), Simple Icons (CC0). Typefaces loa
 (SIL OFL). The narration clips were synthesized with Kokoro-82M (Apache-2.0); the sound bed is
 synthesized by the tools. The logo, wordmark and screenshots under `examples/0xclaw/assets/` belong
 to the 0xClaw authors, the ACL logo to the ACL — they are there so the example renders.
+
+## CHAT (ECCV 2026)
+
+[Watch the 3:47 CHAT film](https://youtu.be/9C436tP0OEA) · [Source example](examples/chat/)
+· [Paper](https://arxiv.org/abs/2607.02799) · [Project](https://junhaosong.com/chat/)
+
+The second example shows a different visual identity: clean geometric marks, word-timed method diagrams,
+clip playback and a synthesised piano bed. The source package includes narration and labelled plates in
+place of demo footage. It is a teaching adaptation, not a frame-identical rebuild of the published film.
+Its README records provenance and the known limitation of the published opening caption.

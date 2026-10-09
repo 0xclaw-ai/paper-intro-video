@@ -11,13 +11,20 @@ are timed to the words of that voice — so the voice can be swapped, re-paced o
 everything follows. No video editor, no timeline dragged by hand, nothing that cannot be rebuilt
 from text.
 
-The skill has two parts, and a worked example in its repository:
+The skill has two parts, and worked examples in its repository:
 
 | | |
 | --- | --- |
 | `template/` | The harness. Copy it to start a film: engine, stagecraft, tools, and a 30-second demo film that explains itself. |
 | `references/` | How to do each part well. Read the one you need when you get there (list at the end). |
-| the example | A complete five-minute film on the same harness (an EMNLP 2026 paper). It is not installed with the skill: it is `examples/0xclaw/` in the skill's repository — https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples/0xclaw, or `../../examples/0xclaw/` from this file when the whole repository is on disk. Read it for patterns at full scale: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The reference files call it "the example". The template's demo, rendered, is in the same repository: `examples/template-demo.mp4` (https://github.com/0xclaw-ai/paper-intro-video/blob/main/examples/template-demo.mp4). |
+| `examples/0xclaw/` | A complete five-minute film on the same harness (an EMNLP 2026 paper). It is not installed with the skill: it is `examples/0xclaw/` in the skill's repository — https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples/0xclaw, or `../../examples/0xclaw/` from this file when the whole repository is on disk. Read it for patterns at full scale: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The reference files call it "the example". The template's demo, rendered, is in the same repository: `examples/template-demo.mp4` (https://github.com/0xclaw-ai/paper-intro-video/blob/main/examples/template-demo.mp4). |
+
+| `examples/chat/` | A 3:47 ECCV 2026 film: clean geometric marks, word-timed diagrams, frame-sequence clips, and a claims ledger. [Watch the published film](https://youtu.be/9C436tP0OEA). The source example uses labelled placeholders instead of redistributing the demo footage; see its README for the differences. |
+
+Copy `template/` to start. Do not copy an example over it, and do not borrow one project's colours,
+type or marks for another. The template is the default finished look. Examples show structure and
+scale. A completed build means its mechanical gates passed; it does not judge voice, claims or taste.
+Fix a failing gate. Do not switch the gate off to make the command exit cleanly.
 
 ## The shape of the work
 
@@ -26,17 +33,19 @@ with visuals.
 
 1. **Look at the machine.** Copy the contents of `template/` into the project folder — that folder
    is now the film, and every command below runs in it — and run `node tools/doctor.mjs`.
-   It reports what is there (Node 22+, a Chromium, Pythons, a voice) and installs nothing.
+   It must exit 0. Node, Chromium, the two Python jobs and the page's typefaces are required.
+   Kokoro is optional: the bundled demo already has narration clips.
    `node tools/make.mjs` then builds the bundled 30-second demo as it is (about a minute; its
    narration clips are included, so it needs no speech model) — a quick proof that the pipeline
    works on this machine before any of it is replaced.
    Anything that needs a download — a Python package, a speech model, a browser — is the user's
-   decision: say exactly what, from where and how large, and wait for a yes.
+   decision: say exactly what, from where and how large, and wait for a yes. Use project-local
+   environments and explicit interpreter paths; leave existing environments, global skills and caches alone.
    → `references/pitfalls.md` for what to do when something is missing or a tool fails.
 2. **Read the sources and write down the facts.** The paper, the repository, the website. Every
    number that will be on screen goes into `js/data.js` with the table it comes from; anything the
-   sources do not say is not claimed (if the user wants a stronger claim — "the first to …" — use
-   their words and tell them it goes beyond the paper).
+   sources do not say is not claimed. Keep a `CLAIMS.md` ledger for narration, on-screen labels and
+   demo provenance. Separate paper results from public-release results; unresolved claims stay qualified.
 3. **Write the talk before the pictures.** `js/script.js`: the narration, line by line, structured
    like a good talk — a promise up front, one slogan that returns, the idea fenced off from what
    others do, a question to the audience, a surprise, and at the end the contributions and one
@@ -48,19 +57,22 @@ with visuals.
    pictures against guessed durations and adding a voice later is how films end up with dead air
    or pictures that trail the words. → `references/voice.md`
 5. **Decide the look, then build the scenes.** One idea per screen, a dozen words at most, the
-   point of each screen marked by hand; every narrated phrase acted out on its words; a camera
+   point of each screen visibly marked (hand-drawn or clean geometry); every narrated phrase acted out on its words; a camera
    that never parks. `index.html` (markup), `css/film.css` (where things sit), `js/scenes.js`
    (what happens). Look at stills and contact sheets constantly — you cannot watch the film, but
    you can read frames. → `references/design.md`, `references/motion.md`, `references/engine.md`
-6. **Sound, render, check.** `node tools/make.mjs` does the rest: cue sheet, sound bed, reference
-   stills, render (no captions + English captions from one capture pass), mix at −16 LUFS, frame
-   comparison against the page, poster frames. Then the checks that need no eyes or ears.
-   → `references/sound.md`, `references/qa.md`
+6. **Sound, render, check.** `node tools/make.mjs` stops on a broken scene contract, a missing
+   typeface, a glyph drawn by a system font, a one-pixel seam, clipped audio, or loudness away
+   from −16 LUFS. It also lists flat frames and jumps. Read every one: a fade can be flat, a blank
+   frame in the middle cannot. These gates are generic. They do not prove that a sentence is true
+   or that the voice sounds right. → `references/sound.md`, `references/qa.md`
 7. **Hand over honestly.** The files, what was verified and how, what could not be (you cannot
    hear the voice or the mix — give the user voice samples and ask them to listen with
-   headphones), and the decisions that are theirs.
+   headphones), and the decisions that are theirs. For YouTube, site embeds or README cards, read
+   `references/publishing.md`. Publishing and pushing need separate approval; a rendered file is not an upload.
 8. **Iterate in rounds.** Users review with screenshots. Before a revision, copy the current state
-   to `versions/vN/`. Apply the round, re-render, report what changed. Keep the durable feedback
+   to `versions/vN/`. Apply the round, re-render, report what changed. If the film is frozen,
+   edit only the requested cover or metadata; do not overwrite the approved MP4 or narration. Keep the durable feedback
    (see below) — it applies to the next film too.
 
 ## What the feedback taught
@@ -98,7 +110,8 @@ explicit wish overrides them.
 ## Commands
 
 ```bash
-node tools/doctor.mjs                                    # what is on this machine
+node tools/doctor.mjs                                    # required tools; exit 0 before replacing the demo
+node tools/preflight.mjs                                 # scene contract and reproducible motion
 node tools/make.mjs --voice kokoro:af_heart --as-plan --no-render   # first voice: it becomes the plan
 node tools/still.mjs --t 12,21.5                         # full-size frames  -> build/stills/
 node tools/sheet.mjs --step 2.5                          # contact sheets    -> build/sheets/
@@ -108,6 +121,10 @@ node tools/make.mjs --voice kokoro:bm_george             # another voice: the fi
 node tools/make.mjs --voice kokoro:af_heart --only 4,17  # two lines changed: redo only those
 node tools/make.mjs --samples af_bella,am_michael        # audition files for the user to choose a voice
 node tools/stillness.mjs                                 # where does nothing move?
+node tools/audit_fonts.mjs                               # glyph-level font fallback
+node tools/audit_frames.mjs                              # layout spans to inspect
+python tools/audit_video.py out/<slug>.mp4                # encoded seams, flat frames, jumps
+node tools/chapters.mjs                                  # scene youtube: fields -> chapters.txt
 ```
 
 `make.mjs` only runs the ordinary tools in `tools/` in the right order with the right Python;
@@ -124,6 +141,7 @@ each of them can be run alone (their headers say how).
 | `references/voice.md` | synthesizing or recording the narration, pacing, pronunciation, swapping voices |
 | `references/sound.md` | the sound bed, cues, the mix, using other music |
 | `references/qa.md` | every check to run before handing over, and how to report what could not be checked |
+| `references/publishing.md` | uploading to YouTube, chapters, honest covers, website embeds and GitHub README links |
 | `references/pitfalls.md` | when a tool fails or the machine surprises you |
 | `references/prompts.md` | the prompts a user can start and steer a film with (中文 / English), and how to read their feedback |
 

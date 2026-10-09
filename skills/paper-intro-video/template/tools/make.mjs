@@ -39,6 +39,7 @@ const node = (what, f, ...a) => run(what, process.execPath, [tool(f), ...a]);
 const timing = () => JSON.parse(readFileSync(join(root, 'build', cut, 'timing.json'), 'utf8'));
 
 node('script → timing', 'export_script.mjs', '--cut', cut);
+node('preflight', 'preflight.mjs');
 
 if (arg('samples', null)) {
   if (!ttsDir()) { console.error('Kokoro is not set up on this machine: see the top of tools/voice_kokoro.py (a one-time download — ask first).'); process.exit(1); }
@@ -99,10 +100,11 @@ if (existsSync(vdir)) for (const f of readdirSync(vdir)) if (f.endsWith('.png'))
 mkdirSync(vdir, { recursive: true });
 const times = t.scenes.flatMap((s) => [s.start + s.dur * 0.35, s.start + s.dur * 0.8]).map((x) => (Math.round(x * 10) / 10).toFixed(1));   // on the frame grid
 node('reference stills', 'still.mjs', '--cut', cut, '--lang', 'off', '--out', vdir, '--t', times.join(','));
-node('render', 'render.mjs', '--cut', cut);
+node('glyph fonts', 'audit_fonts.mjs', '--cut', cut, '--step', arg('font-step', '0.25'));
+node('render', 'render.mjs', '--cut', cut, ...(flag('allow-font-fallback') ? ['--allow-font-fallback'] : []));
 run('verify', findPython('av'), [tool('verify.py'), '--cut', cut]);
-run('sound check', findPython('av'), [tool('check_audio.py'), '--cut', cut]);
-run('every frame of the encode', findPython('av'), [tool('audit_video.py'), join(root, 'out', t.slug + (t.cuts.length > 1 ? `_${cut}` : '') + '.mp4'), '--no-fail']);
+run('sound check', findPython('av'), [tool('check_audio.py'), '--cut', cut, '--strict']);
+run('encoded frames', findPython('av'), [tool('audit_video.py'), join(root, 'out', t.slug + (t.cuts.length > 1 ? `_${cut}` : '') + '.mp4'), '--fail', 'seams']);
 if (timing().scenes.some((s) => s.youtube)) node('YouTube chapters', 'chapters.mjs', '--cut', cut);
 node('poster frames', 'poster.mjs', '--cut', cut);
 if (flag('web')) {

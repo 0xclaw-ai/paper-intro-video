@@ -32,7 +32,7 @@ raise saturation — and check the contrast of cream text on it.
 ## Rules a screen has to pass
 
 - **One idea, a dozen words.** Count them. Labels and numbers on figures do not count; sentences do.
-- **The point is marked, by hand.** `<span class="mk" data-mark="underline|highlight|circle|…">`.
+- **The point is visibly marked.** `<span class="mk" data-mark="underline|highlight|circle|…">`.
   One or two marks per screen; a screen where everything is marked has no point.
 - **A big number stands alone.** `.hero-n` at 240 px, a small tracked kicker under it, nothing
   competing. It counts up while it is said.
@@ -66,7 +66,7 @@ bottom 170 px of every station free of content that matters.
 
 ## Icons, logos, images
 
-- Icons: Phosphor (MIT), bundled in `assets/icons/phosphor/` in three weights; `light` for large
+- Icons: Phosphor (MIT), bundled in `assets/icons/phosphor/` with weights available in the local bundle; `light` for large
   icons, `regular` for small ones. `<i data-ph="funnel" data-w="light"></i>`. To add one, put its
   SVG in the folder and run `node tools/build_icons.mjs` (getting a new SVG is a download: ask).
   Brand marks: Simple Icons (CC0) in `assets/icons/simple-icons/`.
@@ -87,3 +87,14 @@ bottom 170 px of every station free of content that matters.
 - A camera key must never cut a headline or a figure at the frame edge, and must never push a
   figure into the headline that stays put. Scales between 1.0 and 1.15 are almost always enough;
   2× only for a deliberate macro shot of one detail.
+
+## Clean marks for a different identity
+
+For a crisp, technical look, set `window.OXCLEAN = true` before `js/lib/annotate.js`. Marks become straight
+underlines, flat highlights, ellipses and chevron arrows; the stage helper suppresses their pen sound.
+`window.OXROUGH` scales roughness when clean mode is off. The template stays hand-drawn by default.
+Choose deliberately; CHAT uses clean marks rather than imposing the annotated-paper look on its brand.
+
+The underline's text-coloured ground stroke in `base.css` clears descenders. Match it to the actual ground
+if a marked word sits on a custom-coloured panel. Scenes bleed 3 px in their own ground to hide fractional
+pixel seams during page turns. Check the encoded frames, not just the browser preview.

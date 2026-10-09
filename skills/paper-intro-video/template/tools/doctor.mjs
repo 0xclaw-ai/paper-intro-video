@@ -24,7 +24,8 @@ for (const kind of ['av', 'sci', 'pil']) {
 }
 const tts = ttsDir();
 const ttsPy = findPython('tts', { must: false });
-line(Boolean(tts && ttsPy), 'a natural voice (Kokoro-82M)', tts && ttsPy ? `${tts}  ·  ${ttsPy}` : (tts ? `model files in ${tts}, but no Python with kokoro-onnx` : 'not set up — tools/voice_kokoro.py explains the one-time download (about 400 MB); ask before downloading'));
+const voiceReady = Boolean(tts && ttsPy);
+console.log(`${voiceReady ? 'ok     ' : 'optional'}  ${'a natural voice (Kokoro-82M)'.padEnd(34)} ${voiceReady ? `${tts}  ·  ${ttsPy}` : (tts ? `model files in ${tts}, but no Python with kokoro-onnx` : 'not set up — the included demo still builds; tools/voice_kokoro.py explains the one-time download (about 400 MB); ask before downloading')}`);
 if (process.platform === 'win32') {
   const r = spawnSync('powershell', ['-NoProfile', '-Command', 'Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).GetInstalledVoices() | ForEach-Object { $_.VoiceInfo.Name + " [" + $_.VoiceInfo.Culture + "]" }'], { encoding: 'utf8' });
   const voices = (r.stdout || '').split(/\r?\n/).filter((v) => /en-/i.test(v));
@@ -59,4 +60,5 @@ if (process.platform === 'darwin') {
   if (synced) console.log('\nnote: iCloud Drive syncs this folder. Sync conflicts leave copies named "… 2" (media/, build/, .git);'
     + ' a folder outside ~/Documents and ~/Desktop avoids them.');
 }
-console.log(missing ? `\n${missing} thing(s) missing. Nothing was installed.` : '\nEverything needed is here.');
+console.log(missing ? `\n${missing} required thing(s) missing. Nothing was installed.` : '\nEverything required is here.');
+process.exit(missing ? 1 : 0);

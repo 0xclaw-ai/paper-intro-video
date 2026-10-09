@@ -23,6 +23,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('video', nargs='?')
     ap.add_argument('--cut', default='full')
+    ap.add_argument('--strict', action='store_true', help='exit 1 on clipping, loudness outside -16±1.5 LUFS, or an unmeasured true peak')
     args = ap.parse_args()
     timing = json.load(open(os.path.join(ROOT, 'build', args.cut, 'timing.json'), encoding='utf-8'))
     path = args.video or os.path.join(ROOT, 'out', timing.get('slug', 'film') + (f'_{args.cut}' if len(timing.get('cuts', [args.cut])) > 1 else '') + '.mp4')
@@ -45,12 +46,17 @@ def main():
     loud, peak = mux.lufs(x.astype(np.float32)), 20 * np.log10(np.abs(x).max() + 1e-12)
     print(f'{os.path.basename(path)}: {a.codec_context.name} {sr} Hz, {n / sr:.2f}s · loudness {loud:.1f} LUFS'
           + ('' if abs(loud + 16) < 1.5 else '  <-- the mix aims at -16') + f' · peak {peak:.1f} dBFS' + ('' if peak <= -0.9 else '  <-- above -1 dBFS'))
+    problems = []
+    if abs(loud + 16) >= 1.5: problems.append(f'loudness {loud:.1f} LUFS')
+    if peak > -0.9: problems.append(f'peak {peak:.1f} dBFS')
     try:                                                         # AAC decoding overshoots the mix's sample peak
         from scipy.signal import resample_poly
         tp = 20 * np.log10(max(np.abs(resample_poly(x[:, k], 4, 1)).max() for k in range(x.shape[1])) + 1e-12)
         print(f'  true peak {tp:.2f} dBTP (4x oversampled)' + ('' if tp <= -1.0 else '  <-- above -1 dBTP: a platform that normalises can clip it'))
+        if tp > -1.0: problems.append(f'true peak {tp:.2f} dBTP')
     except ImportError:
         print('  true peak: not measured (needs scipy)')
+        problems.append('true peak not measured')
 
     vpath = os.path.join(ROOT, 'build', args.cut, 'voice.json')
     cues = json.load(open(vpath, encoding='utf-8'))['cues'] if timing.get('voice') and os.path.exists(vpath) else []
@@ -83,6 +89,8 @@ def main():
         ok = level['left'][200] - level['left'][240] > 30 and level['right'][240] - level['right'][200] > 30
         print(f"  binaural pair ({length:.1f}s without speech at {g0:.1f}s): left 200 Hz {level['left'][200]:.1f} dB / 240 Hz {level['left'][240]:.1f} dB · "
               f"right 200 Hz {level['right'][200]:.1f} dB / 240 Hz {level['right'][240]:.1f} dB" + ('  — separate' if ok else '  <-- the two ears are not separate (another bed, or a mono fold-down?)'))
+    if args.strict and problems:
+        raise SystemExit('sound check failed: ' + '; '.join(problems))
 
 
 if __name__ == '__main__':

@@ -1,20 +1,16 @@
 #!/usr/bin/env python
-"""Cut video clips into frame sequences the page can show frame-accurately (js/media.js), plus their sound.
+"""Cut source clips into frame sequences for js/media.js, plus optional sound.
 
-    python tools/prep_media.py            # (re)builds media/ from CLIPS and SOUNDS below; nothing else is touched
+    python tools/prep_media.py              # create media/ from CLIPS and SOUNDS below
+    python tools/prep_media.py --replace    # keep existing media/ as media.backup-*, then replace it
 
-Why frames and not <video>: every frame of the film is a pure function of time and is rendered by several
-tabs in any order, so a clip must show exactly frame N at time t. An <img> per frame, decoded before the
-capture (js/media.js), does that; a <video> element seeks inexactly and asynchronously, and the same frame
-renders differently from one run to the next.
-
-Fill CLIPS (and SOUNDS, for clips whose own sound plays in the film) with your sources, run this, then load
-media/manifest.js before js/media.js in index.html. Paths are relative to the film's folder. Crop each clip to
-its own picture (measure any black bars once) and scale it to the size it is shown at: the frames are the
-largest part of a film folder. Needs ffmpeg on the PATH.
-Writes media/<clip>/00001.jpg ... , media/manifest.js (window.OXMEDIA_MANIFEST) and media/audio/<clip>.wav.
+Paths are relative to the film folder. Crop black bars and scale to the displayed size before encoding:
+frames are the largest part of a film folder. Requires ffmpeg on PATH. Sources must stay outside media/.
+A failed conversion leaves the current media/ untouched. Existing files are never deleted by this tool.
+Load media/manifest.js before js/media.js; the renderer waits for each JPEG to decode before capture.
 """
-import json, os, shutil, subprocess
+import argparse, json, os, re, shutil, subprocess, tempfile, time
+from pathlib import Path
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'media')
@@ -23,7 +19,7 @@ OUT = os.path.join(ROOT, 'media')
 CLIPS = {
     # 'demo': ('../footage/demo.mp4', 12.0, 8.0, 'crop=1600:800:0:40', 30, 3),
 }
-# name of a clip above: (source, start s, length s) of the sound that plays with it (tools/clip_audio.py lays it in)
+# clip name: (source, start s, length s); tools/clip_audio.py places it on the film timeline
 SOUNDS = {
     # 'demo': ('../footage/demo.mp4', 14.5, 5.0),
 }
@@ -33,30 +29,74 @@ def run(args):
     subprocess.run(['ffmpeg', '-v', 'error', '-y'] + args, check=True)
 
 
+def source(path):
+    p = (Path(ROOT) / path).resolve()
+    if not p.is_file() or p.is_relative_to(Path(OUT).resolve()):
+        raise SystemExit(f'source must be an existing file outside media/: {path}')
+    return str(p)
+
+
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--replace', action='store_true', help='back up existing media/ before replacing it')
+    args = ap.parse_args()
     if not CLIPS:
-        raise SystemExit('No clips: fill CLIPS at the top of tools/prep_media.py with your sources first.')
-    if os.path.isdir(OUT):
-        shutil.rmtree(OUT)
-    os.makedirs(os.path.join(OUT, 'audio'))
-    manifest = {}
+        raise SystemExit('No clips: fill CLIPS at the top of tools/prep_media.py first.')
+    if os.path.lexists(OUT) and (os.path.islink(OUT) or not os.path.isdir(OUT)):
+        raise SystemExit('media/ must be a directory, not a file or symlink.')
+    if os.path.exists(OUT) and not args.replace:
+        raise SystemExit('media/ already exists. Inspect it, then use --replace to keep a backup and rebuild.')
     for name, (src, start, length, vf, fps, q) in CLIPS.items():
-        src = os.path.normpath(os.path.join(ROOT, src))
-        d = os.path.join(OUT, name)
-        os.makedirs(d)
-        run(['-ss', f'{start:.3f}', '-i', src, '-t', f'{length:.3f}', '-vf', f'{vf},fps={fps}', '-q:v', str(q), '-start_number', '1', os.path.join(d, '%05d.jpg')])
-        frames = len([f for f in os.listdir(d) if f.endswith('.jpg')])
-        manifest[name] = {'dir': f'media/{name}', 'fps': fps, 'frames': frames, 'src': os.path.relpath(src, ROOT), 'start': start}
-        print(f'{name:16s} {frames:4d} frames @ {fps} fps  from {os.path.relpath(src, ROOT)} {start:.1f}s')
+        if not re.fullmatch(r'[A-Za-z0-9_-]+', name) or name == 'audio':
+            raise SystemExit(f'invalid clip name: {name}')
+        source(src)
+        if start < 0 or length <= 0 or fps <= 0 or not 2 <= q <= 31:
+            raise SystemExit(f'invalid clip settings: {name}')
     for name, (src, start, length) in SOUNDS.items():
-        src = os.path.normpath(os.path.join(ROOT, src))
-        out = os.path.join(OUT, 'audio', f'{name}.wav')
-        run(['-ss', f'{start:.3f}', '-i', src, '-t', f'{length:.3f}', '-vn', '-ac', '2', '-ar', '48000', '-c:a', 'pcm_s16le',
-             '-af', f'afade=t=in:d=0.04,afade=t=out:st={length - 0.06:.3f}:d=0.06', out])
-        manifest[name]['sound'] = {'wav': f'media/audio/{name}.wav', 'start': start, 'length': length}
-        print(f'{name:16s} sound {length:.1f}s from {start:.1f}s')
-    with open(os.path.join(OUT, 'manifest.js'), 'w') as f:
-        f.write('/* generated by tools/prep_media.py */\nwindow.OXMEDIA_MANIFEST = ' + json.dumps(manifest, indent=1) + ';\n')
+        source(src)
+        if name not in CLIPS or start < 0 or length < 0.06:
+            raise SystemExit(f'invalid sound settings: {name}')
+    if not shutil.which('ffmpeg'):
+        raise SystemExit('ffmpeg is required for source clip preparation (not for normal rendering).')
+
+    with tempfile.TemporaryDirectory(prefix='.media-', dir=ROOT) as work:
+        stage = Path(work) / 'media'
+        (stage / 'audio').mkdir(parents=True)
+        manifest = {}
+        for name, (src, start, length, vf, fps, q) in CLIPS.items():
+            src = source(src)
+            d = stage / name
+            d.mkdir()
+            filters = ','.join(filter(None, [vf, f'fps={fps}']))
+            run(['-ss', f'{start:.3f}', '-i', src, '-t', f'{length:.3f}', '-vf', filters,
+                 '-q:v', str(q), '-start_number', '1', str(d / '%05d.jpg')])
+            frames = len(list(d.glob('*.jpg')))
+            if not frames:
+                raise SystemExit(f'{name}: no frames extracted; media/ was not changed.')
+            manifest[name] = {'dir': f'media/{name}', 'fps': fps, 'frames': frames,
+                              'src': os.path.relpath(src, ROOT), 'start': start}
+            print(f'{name:16s} {frames:4d} frames @ {fps} fps')
+        for name, (src, start, length) in SOUNDS.items():
+            run(['-ss', f'{start:.3f}', '-i', source(src), '-t', f'{length:.3f}', '-vn', '-ac', '2',
+                 '-ar', '48000', '-c:a', 'pcm_s16le', '-af',
+                 f'afade=t=in:d=0.04,afade=t=out:st={length - 0.06:.3f}:d=0.06',
+                 str(stage / 'audio' / f'{name}.wav')])
+            manifest[name]['sound'] = {'wav': f'media/audio/{name}.wav', 'start': start, 'length': length}
+        (stage / 'manifest.js').write_text('/* generated by tools/prep_media.py */\nwindow.OXMEDIA_MANIFEST = '
+                                         + json.dumps(manifest, indent=1) + ';\n', encoding='utf-8')
+        backup = None
+        if os.path.exists(OUT):
+            backup = OUT + f'.backup-{time.time_ns()}'
+            os.rename(OUT, backup)
+        try:
+            os.rename(stage, OUT)
+        except OSError:
+            if backup:
+                os.rename(backup, OUT)
+            raise
+        if backup:
+            print(f'Previous media kept at {os.path.basename(backup)}')
+        print('media/manifest.js written')
 
 
 if __name__ == '__main__':

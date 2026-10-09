@@ -2,6 +2,7 @@
 // `node tools/doctor.mjs` prints what was found and what is missing.
 //
 //   OX_PYTHON       a Python with av (PyAV), numpy, pillow      — encoding, muxing, verifying
+//                   a .venv inside the film folder is used when the variable is unset
 //   OX_PYTHON_SCI   a Python with numpy, scipy                  — narration, sound bed (defaults to OX_PYTHON)
 //   OX_PYTHON_TTS   a Python with kokoro-onnx                   — the Kokoro voice (defaults to <tts>/venv)
 //   OX_TTS          the folder with kokoro-v1.0.onnx and voices-v1.0.bin (default: .tts/ in the project, then ~/.ox-tts)
@@ -50,7 +51,7 @@ function condaPrefixes() {
 }
 
 function candidates(kind) {
-  const list = [process.env[NEEDS[kind].env], process.env.OX_PYTHON];
+  const list = [process.env[NEEDS[kind].env], process.env.OX_PYTHON, join(root, '.venv', 'bin', 'python'), join(root, '.venv', 'Scripts', 'python.exe')];
   for (const d of ttsFolders()) list.push(join(d, 'venv', 'Scripts', 'python.exe'), join(d, 'venv', 'bin', 'python'));
   list.push('python', 'python3');
   for (const p of condaPrefixes()) list.push(join(p, 'python.exe'), join(p, 'bin', 'python'));

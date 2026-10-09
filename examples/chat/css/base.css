@@ -1,0 +1,149 @@
+/* base.css — what every film shares: the 1920×1080 stage, the tokens, the type, the marks, the caption line.
+ *
+ * Art direction (change the tokens to change the film): an annotated paper. Warm paper stock, ink, one accent
+ * and a highlighter; a serif for statements with very few words per screen, a quiet tracked sans for labels,
+ * a mono for code, a hand for notes; hand-drawn marks (Rough.js) for emphasis; real product windows as props.
+ * Dark cards (.dark) use a dark tone of the paper's own hue — never black — and reach past the frame.
+ * A film's own layout goes in css/film.css.
+ */
+:root {
+  --paper: #F3F0E7;
+  --sheet: #FBFAF5;
+  --ink: #191713;
+  --ink-2: #57534A;
+  --ink-3: #9A9588;
+  --bar: #B9B5A8;
+  --rule: rgba(25, 23, 19, 0.18);
+  --rule-soft: rgba(25, 23, 19, 0.09);
+  --night: #4A3A18;
+  --cream: #F3F0E7;
+  --cream-2: rgba(243, 240, 231, 0.62);
+  --night-rule: rgba(243, 240, 231, 0.2);
+  --violet: #5A33D6;
+  --gold: #F2B32C;
+  --red: #CF4326;
+  --green: #1E7B57;
+  --serif: 'Newsreader', 'Source Serif 4', Georgia, 'Noto Serif SC', serif;
+  --sans: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', Consolas, monospace;
+  --hand: 'Caveat', 'Segoe Print', cursive;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: #14110B; overflow: hidden; }
+body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+img { display: block; }
+ol, ul { list-style: none; }
+
+#viewport { position: absolute; inset: 0; overflow: hidden; }
+#stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; background: var(--night); }
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: 0.5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.32  0 0 0 0 0.26  0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 300px 300px; }
+
+/* ───────────── scenes + shared type ───────────── */
+/* a scene is an opaque page; inside it, a strip of 1920-wide stations (the world) that the camera looks at */
+.scene { position: absolute; inset: 0; display: none; overflow: hidden; background: var(--paper); }
+.scene.dark, .station.dark { background: var(--night); color: var(--cream); }
+/* a dark card inside a paper scene reaches past the frame, so no camera move can show a paper edge around it */
+.station.dark { box-shadow: 0 0 0 240px var(--night); }
+.world { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+.station { position: absolute; top: 0; width: 1920px; height: 1080px; }
+.chrome { position: absolute; inset: 0; pointer-events: none; }
+#stage.measuring .scene { display: block !important; }
+.dark { color: var(--cream); }
+.ph { display: inline-flex; width: 1em; height: 1em; flex: none; }
+.ph svg { width: 100%; height: 100%; display: block; }
+/* kinetic type: a word is a mask (.w) and the part that rises inside it (.wi) */
+.w { display: inline-block; white-space: nowrap; overflow: hidden; vertical-align: top; padding: 0.12em 0.08em 0.18em; margin: -0.12em -0.08em -0.18em; }
+.w.nomask { overflow: visible; padding: 0; margin: 0; }
+.wi { display: inline-block; }
+
+.kicker { display: flex; align-items: center; gap: 12px; font-family: var(--sans); font-weight: 500; font-size: 21px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); white-space: nowrap; }
+.kicker .ph { font-size: 26px; }
+.dark .kicker { color: var(--cream-2); }
+.stmt { font-family: var(--serif); font-weight: 400; line-height: 1.06; letter-spacing: -0.02em; }
+.stmt em { font-style: italic; }
+.stmt.md { font-size: 54px; }
+.stmt.lg { font-size: 68px; }
+.stmt.xl { font-size: 100px; }
+.stmt.xxl { font-size: 124px; line-height: 1.03; }
+.stmt.xxxl { font-size: 168px; line-height: 1.02; letter-spacing: -0.026em; }
+.src { font-family: var(--sans); font-size: 21px; color: var(--ink-3); letter-spacing: 0.02em; }
+.hand { font-family: var(--hand); font-weight: 700; font-size: 58px; line-height: 1; color: var(--violet); white-space: nowrap; }
+
+.sec-head { position: absolute; left: 120px; top: 116px; transform-origin: 0 0; }
+.sec-label { display: flex; align-items: center; font-family: var(--sans); font-weight: 500; font-size: 21px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+.sec-label .num { font-family: var(--mono); letter-spacing: 0; color: var(--violet); margin-right: 16px; font-size: 22px; }
+.sec-title { font-family: var(--serif); font-weight: 500; font-size: 74px; line-height: 1.05; letter-spacing: -0.02em; white-space: nowrap; }
+.sec-title.multi { position: relative; height: 78px; }
+.sec-title.multi > span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+
+/* hand-drawn marks (Rough.js, see js/annotate.js) */
+.mk { position: relative; display: inline-block; white-space: nowrap; }
+.mk > svg.rough { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.mk > .mk-t { position: relative; }
+.mk.xm { width: 0.62em; height: 0.62em; flex: none; }
+svg.ink { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; pointer-events: none; }
+svg.rough path, svg.ink path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+.hero { text-align: center; }
+.hero.left { text-align: left; }
+.hero.right { text-align: right; }
+.hero .kicker { justify-content: center; margin-top: 6px; }
+.hero.left .kicker { justify-content: flex-start; }
+.hero.right .kicker { justify-content: flex-end; }
+.hero-n { font-family: var(--serif); font-weight: 400; font-size: 240px; line-height: 0.92; letter-spacing: -0.04em; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+.hero-n.v { color: var(--violet); }
+.hero-n.r { color: var(--red); }
+.hero-n.xl { font-size: 300px; }
+.hero-n.sm { font-size: 150px; }
+.hero-n span { color: var(--ink-3); margin: 0 4px; }
+.hero-s { margin-top: 10px; min-height: 44px; font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink-2); }
+
+/* windows — the props */
+.win { position: absolute; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 0 rgba(25,23,19,0.08), 0 30px 60px rgba(25,23,19,0.22); }
+.term { background: #1c1e26; color: #a9adbd; font-family: var(--mono); }
+.win-bar { height: 44px; display: flex; align-items: center; gap: 9px; padding: 0 18px; background: #22242e; border-bottom: 1px solid #101117; }
+.win-bar i { width: 13px; height: 13px; border-radius: 50%; background: #ff5f57; }
+.win-bar i:nth-child(2) { background: #febc2e; }
+.win-bar i:nth-child(3) { background: #28c840; }
+.win-bar span { flex: 1; text-align: center; margin-right: 62px; font-size: 15.5px; color: #8b8fa3; }
+.win-body { padding: 20px 28px; font-size: 20px; line-height: 1.5; }
+.sheet { position: absolute; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; box-shadow: 0 1px 0 rgba(25,23,19,0.06), 0 18px 40px rgba(25,23,19,0.1); }
+.tree-row { display: flex; align-items: center; gap: 14px; height: 54px; font-family: var(--mono); font-size: 22px; color: var(--ink); white-space: nowrap; }
+.tree-row .ph { font-size: 28px; color: var(--ink-2); }
+
+/* ───────────── HUD + captions ───────────── */
+#hud { position: absolute; inset: 0; pointer-events: none; }
+.hud-brand { position: absolute; left: 56px; top: 28px; display: flex; align-items: center; gap: 14px; font-family: var(--sans); font-weight: 600; font-size: 25px; letter-spacing: 0.01em; }
+.hud-brand img { height: 44px; }
+.venue { display: flex; align-items: center; gap: 16px; font-family: var(--sans); font-weight: 600; letter-spacing: 0.1em; white-space: nowrap; }
+.venue img { height: 1.5em; width: auto; flex: none; }
+.dark .venue img { box-sizing: content-box; padding: 0.22em 0.3em; border-radius: 0.22em; background: var(--cream); }   /* the logo keeps its light ground */
+.hud-venue { position: absolute; right: 56px; top: 30px; font-size: 26px; color: var(--ink); }
+.hud-chapters { position: absolute; left: 56px; right: 56px; bottom: 24px; display: flex; gap: 14px; }
+.hud-ch { flex: 1; }
+.hud-ch span { display: block; font-family: var(--sans); font-weight: 500; font-size: 17px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; white-space: nowrap; }
+.hud-ch span em { font-style: normal; font-family: var(--mono); letter-spacing: 0; margin-right: 8px; }
+.hud-ch i { display: block; height: 2px; background: var(--rule); position: relative; }
+.hud-ch i b { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: var(--ink); }
+.hud-ch.on span { color: var(--ink); }
+.hud-ch.on span em { color: var(--violet); }
+.hud-ch.done span { color: var(--ink-2); }
+
+#captions { position: absolute; left: 0; right: 0; bottom: 78px; display: flex; justify-content: center; pointer-events: none; }
+#captions .cap-inner { max-width: 1500px; padding: 0 30px; text-align: center; font-family: var(--sans); font-size: 37px; font-weight: 600; line-height: 1.3; text-wrap: balance;
+  color: var(--ink); -webkit-text-stroke: 8px var(--paper); paint-order: stroke fill; text-shadow: 0 0 10px var(--paper), 0 0 22px var(--paper); }
+#captions .cap-inner.on-dark { color: var(--cream); -webkit-text-stroke-color: var(--night); text-shadow: 0 0 10px var(--night), 0 0 22px var(--night); }
+#captions .cap-inner.zh { font-family: 'Noto Sans SC', 'Microsoft YaHei', var(--sans); font-size: 35px; letter-spacing: 0.02em; }
+body.nocap #captions { display: none; }
+#curtain { position: absolute; inset: 0; background: var(--night); pointer-events: none; opacity: 0; }
+
+/* ───────────── preview player chrome (never present in renders) ───────────── */
+#player { position: fixed; left: 0; right: 0; bottom: 0; height: 54px; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: #15130f; border-top: 1px solid rgba(243,240,231,0.16); font-family: var(--mono); font-size: 13px; color: #a8a393; z-index: 10; }
+#player button { height: 32px; padding: 0 14px; border-radius: 6px; border: 1px solid rgba(243,240,231,0.3); background: transparent; color: #f3f0e7; font: inherit; cursor: pointer; }
+#player input[type=range] { flex: 1; accent-color: #f2b32c; }
+#player select { height: 32px; border-radius: 6px; background: #15130f; color: #f3f0e7; border: 1px solid rgba(243,240,231,0.3); font: inherit; padding: 0 8px; }
+body.capture #player { display: none; }
+/* renderer-only: caption overlays on a transparent page */
+body.caponly #stage { background: transparent !important; }
+body.caponly .scene, body.caponly #hud, body.caponly #curtain, body.caponly .grain { display: none !important; }

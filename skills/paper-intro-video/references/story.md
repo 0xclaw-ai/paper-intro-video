@@ -56,7 +56,7 @@ A cue in `js/script.js` is one narration line: a sentence or two that belong to 
   hear the result; a wrong name is the first thing they will.
 - **No claim beyond the sources.** "First", "best", "state of the art", dates, prizes: only what
   the paper or repository says, in its wording ("second-best baseline", not "runner-up"). When the
-  user asks for a stronger claim, write it — and tell them it is theirs.
+  user asks for a stronger claim, identify the missing evidence and agree on a qualified version.
 - **Leave room for the picture.** A line that describes exactly what is on screen is wasted; say
   the meaning, show the thing.
 - **Mark lines whose sentences each bring a picture** with `breath: 1.0` — the voice then pauses at
@@ -82,3 +82,16 @@ Could a person outside the field follow the problem scene? Is each line one idea
 claim more than the sources? Is the last sentence about the work rather than about gratitude?
 Then show the user the storyline in a few lines (not the whole script) and keep going — they
 steer by reviewing versions, not by approving outlines.
+
+## A claims ledger, including the pictures
+
+Keep `CLAIMS.md`: wording, source (paper section/table or public URL), and status. Audit narration,
+on-screen labels, captions, title, description and cover separately. Correct narration does not excuse an
+unsupported caption. A shared prompt shown beside several pairs does not establish how their identities
+were made. State what the footage establishes, not what the arrangement suggests.
+
+Distinguish the paper system, the released implementation, real source identities and generated behaviour.
+Keep that qualifier visible for the whole clip. A schematic is not a measured trace. Rounded narration
+("nearly 1,400 hours") may accompany an exact on-screen value (1,388.9), but keep the same unit and scope.
+Use digits in `en` and pronunciation in `say`; changing captions need not regenerate the approved voice.
+The CHAT example's ledger shows how to retain a known limitation without presenting it as verified.

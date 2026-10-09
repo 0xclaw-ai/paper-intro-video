@@ -14,3 +14,10 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.skill
+
+# local environments and prepared footage (never redistribute by accident)
+.venv/
+media.backup-*/
+.media-*/
+examples/chat/media/*
+!examples/chat/media/manifest.js

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>CHAT · ECCV 2026 — film preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;650;700;750&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/film.css" />
+<script>
+  // the faces the page waits for before anything is measured (js/lib/player.js); marks are geometric strokes (js/lib/annotate.js)
+  window.OXFACES = ['400 20px Archivo', '500 20px Archivo', '600 20px Archivo', '650 20px Archivo', '700 20px Archivo', '750 20px Archivo',
+    '400 20px "IBM Plex Mono"', '500 20px "IBM Plex Mono"', '600 20px "IBM Plex Mono"'];
+  window.OXROUGH = 0.22;
+  window.OXCLEAN = true;
+</script>
+</head>
+<body>
+
+<!-- The CHAT film. js/script.js holds the words, js/data.js every number (with its place in the paper),
+     js/scenes.js what happens on the words, css/film.css where things sit. Clips are frame sequences
+     (tools/prep_media.py, js/media.js). Everything that is generated says so on screen. -->
+<div id="viewport">
+<div id="stage">
+
+  <!-- ═════════ COLD OPEN (dark): one sentence in, three conversations out ═════════ -->
+  <section class="scene dark" id="s-open">
+    <div class="pf" id="open-field">
+      <span class="pf-label">One prompt</span>
+      <p class="pf-text"><span id="open-typed"></span><i class="caret" id="open-caret"></i></p>
+      <span class="pf-enter" id="open-enter"><i data-ph="arrow-up" data-w="bold"></i></span>
+    </div>
+    <svg class="ink" id="open-ink"></svg>
+    <div class="open-row">
+      <figure class="clipwin" id="open-a"><img class="clip" alt="" /><i class="split"></i></figure>
+      <figure class="clipwin" id="open-b"><img class="clip" alt="" /><i class="split"></i></figure>
+      <figure class="clipwin" id="open-c"><img class="clip" alt="" /><i class="split"></i></figure>
+    </div>
+    <p class="kicker open-note">Demo footage omitted from this source example</p>
+  </section>
+
+  <!-- ═════════ TITLE (dark) ═════════ -->
+  <section class="scene dark" id="s-title">
+    <div class="tt-brand"><img src="assets/img/logo.webp" alt="" /><span>CHAT</span></div>
+    <img class="tt-eccv" src="assets/img/eccv_on_dark.svg" alt="ECCV 2026, Malmö" />
+    <h1 class="tt-h" data-split>Conversational Human Audio-visual<br />Talking Dialogue Generation</h1>
+    <p class="tt-slogan" data-split>Both sides of a conversation, from one sentence.</p>
+    <div class="tt-authors" id="tt-authors"></div>
+    <div class="tt-affils" id="tt-affils"></div>
+    <p class="tt-venue">European Conference on Computer Vision (ECCV 2026)</p>
+  </section>
+
+  <!-- ═════════ WHY IT MATTERS ═════════ -->
+  <section class="scene" id="s-need">
+    <div class="sec-head"><h2 class="sec-title" data-split>Learning to converse takes data.</h2></div>
+    <div class="need-row">
+      <div class="need-who">
+        <div class="item" id="need-agent"><span class="ico-tile"><i data-ph="chat-teardrop-dots" data-w="fill"></i></span><span>Virtual agents</span></div>
+        <div class="item" id="need-human"><span class="ico-tile"><i data-ph="user-focus" data-w="fill"></i></span><span>Digital humans</span></div>
+      </div>
+      <svg class="ink" id="need-ink"></svg>
+      <div class="rec" id="need-rec">
+        <p class="rec-head"><i class="dot"></i>REC</p>
+        <div class="lane a"><span class="who">A</span><b style="left:48px;width:230px"></b><b style="left:430px;width:150px"></b></div>
+        <div class="lane b"><span class="who">B</span><b style="left:300px;width:120px"></b><b style="left:600px;width:110px"></b></div>
+        <p class="rec-cap">Recordings of two people talking</p>
+      </div>
+    </div>
+    <div class="cost-col">
+      <p class="stmt" id="cost-1" data-split>Slow.</p>
+      <p class="stmt" id="cost-2" data-split>Costly.</p>
+      <p class="stmt" id="cost-3" data-split><span class="mk" data-mark="underline" data-color="red">Ethically sensitive.</span></p>
+    </div>
+    <p class="so-small" id="so-small" data-split>So the datasets stay <span class="mk" data-mark="highlight">small.</span></p>
+  </section>
+
+  <!-- ═════════ WHAT OTHERS NEED ═════════ -->
+  <section class="scene" id="s-fence">
+    <div class="sec-head"><h2 class="sec-title" data-split>Other methods need more than text.</h2></div>
+    <div class="fence">
+      <div class="row" id="f1"><span class="what">Face video editing</span><span class="needs"><span class="k">needs</span><span class="tag ghost">a face video</span></span></div>
+      <div class="row" id="f2"><span class="what">Facial reaction generation</span><span class="needs"><span class="k">needs</span><span class="tag ghost">a real speaker</span></span></div>
+      <div class="row" id="f3"><span class="what">Talking-pair generation</span><span class="needs"><span class="k">needs</span><span class="tag ghost">the conversation, given in advance</span></span></div>
+      <div class="row ours" id="f4"><span class="what">CHAT</span><span class="needs"><span class="k">needs</span><span class="tag blue">one sentence</span></span></div>
+    </div>
+    <div class="task">
+      <p class="task-acr" id="task-acr"><span>D</span><span>I</span><span>A</span><span>D</span><span>G</span></p>
+      <p class="task-full" id="task-full"><b>D</b>yadic <b>I</b>nteractive <b>A</b>udio-visual <b>D</b>ialogue <b>G</b>eneration</p>
+      <div class="eq" id="task-eq">
+        <p class="f">D<sub>1</sub>, D<sub>2</sub>, …, D<sub>N</sub> = H(P)</p>
+        <div class="legend">
+          <span class="mono">P</span><span>one prompt describing the scenario</span>
+          <span class="mono">D<sub>n</sub></span><span>a pair of clips that respond to each other</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ THREE STAGES ═════════ -->
+  <section class="scene" id="s-pipe">
+    <div class="sec-head"><h2 class="sec-title" data-split>Three stages.</h2></div>
+    <div class="stages">
+      <svg class="ink" id="pipe-ink"></svg>
+      <div class="stage-col c1" id="st-1">
+        <div class="sheet">
+          <div class="id-txt"><span><b>A</b>a thoughtful gentleman</span><span><b>B</b>a vibrant lady</span></div>
+          <div class="script-lines" id="script-lines"></div>
+          <p class="turns-note">5–10 turns</p>
+        </div>
+        <p class="cap">Dialogue <span class="acr">TDG</span></p>
+      </div>
+      <div class="stage-col c2" id="st-2">
+        <div class="sheet">
+          <div class="lane a"><span class="who">A</span><b style="left:48px;width:140px"></b><b style="left:300px;width:110px"></b></div>
+          <div class="lane b"><span class="who">B</span><b style="left:196px;width:96px"></b><b style="left:200px;width:0" class="bc"></b></div>
+          <div class="axis"></div>
+          <p class="axis-note">one shared timeline</p>
+        </div>
+        <p class="cap">Speech <span class="acr">DADG</span></p>
+      </div>
+      <div class="stage-col c3" id="st-3">
+        <div class="sheet">
+          <div class="faces2"><img class="clip" id="pipe-faces" alt="" /></div>
+          <p class="note">talking, listening, refined</p>
+        </div>
+        <p class="cap">Faces <span class="acr">IFBG</span></p>
+      </div>
+      <div class="baton" id="baton"></div>
+    </div>
+  </section>
+
+  <!-- ═════════ THE LISTENER ═════════ -->
+  <section class="scene" id="s-listen">
+    <div class="ask"><p class="stmt" id="ask-h" data-split>While one person speaks,<br />what should the other one be doing?</p></div>
+    <div class="answer"><p class="stmt" id="answer-h" data-split><span class="mk" data-mark="underline" data-color="violet">Listening.</span></p><p class="sub" id="answer-sub">And listening is behaviour, too.</p></div>
+    <figure class="clipwin" id="listen-win"><img class="clip" alt="" /><i class="split"></i></figure>
+    <figure class="clipwin" id="listen-win-b"><img class="clip" alt="" /><i class="split"></i></figure>
+    <svg class="ink" id="listen-ink"></svg>
+    <div class="listen-notes">
+      <div class="n" id="ln-1"><span class="acr">SFBG</span><p>The silent face is generated too</p></div>
+      <div class="n" id="ln-2"><span class="acr">RFBG</span><p>Each face sees its partner</p></div>
+      <div class="n" id="ln-3"><span class="acr">TCR</span><p>Seams blended</p></div>
+    </div>
+    <div class="seg-strip" id="seg-strip">
+      <i class="t" style="left:0;width:316px"></i><i class="s" style="left:326px;width:238px"></i><i class="t" style="left:574px;width:342px"></i><i class="s" style="left:926px;width:289px"></i>
+      <span class="blend" id="blend-1" style="left:261px"></span><span class="blend" id="blend-2" style="left:509px"></span><span class="blend" id="blend-3" style="left:861px"></span>
+    </div>
+    <div class="demo-label" id="demo-b-label">
+      <p class="kicker">Generated dialogue, with its own sound</p>
+      <p class="big">Speaking. Listening. Answering.</p>
+    </div>
+  </section>
+
+  <!-- ═════════ MARKING UP THE SCRIPT ═════════ -->
+  <section class="scene" id="s-audio">
+    <div class="sec-head"><h2 class="sec-title" data-split>Marked up before it is spoken.</h2></div>
+    <div class="mu">
+      <div class="mu-sheet" id="mu-sheet">
+        <span class="mu-scan" id="mu-scan"></span>
+        <span class="tag ghost mu-room" id="mu-room">sound environment</span>
+        <div class="row" style="top:104px"><span class="s">A</span><i style="width:420px"></i><span class="tag" id="mu-e1">emotion</span></div>
+        <div class="row" style="top:196px"><span class="s">B</span><span class="tag blue" id="mu-bc">uh-huh</span><i style="width:160px;opacity:0" id="mu-bc-gap"></i></div>
+        <div class="row" style="top:288px"><span class="s">A</span><i style="width:300px"></i><span class="tag" id="mu-e2">emotion</span></div>
+        <div class="row" style="top:380px"><span class="s">B</span><i style="width:360px"></i><span class="tag" id="mu-e3">emotion</span></div>
+        <div class="mu-ticks" id="mu-ticks"><b style="left:0"></b><em style="left:0">t<sub>0</sub></em><b style="left:250px"></b><em style="left:250px">t<sub>1</sub></em><b style="left:470px"></b><em style="left:470px">t<sub>2</sub></em><b style="left:690px"></b><em style="left:690px">t<sub>3</sub></em></div>
+      </div>
+      <div class="mu-tl" id="mu-tl">
+        <div class="lane a"><span class="who">A</span><b style="left:48px;width:600px"></b></div>
+        <div class="lane b"><span class="who">B</span></div>
+        <div class="bub" id="mu-bub" style="left:330px"><span class="tag blue">uh-huh</span></div>
+        <p class="cap">A short reply, while A keeps the turn</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ RESULTS ═════════ -->
+  <section class="scene" id="s-results">
+    <div class="sec-head"><h2 class="sec-title" data-split>Does it work?</h2></div>
+    <p class="kicker vs" id="vs">Against Hallo3, SadTalker, DIM, EDTalk and ReactDiff. Mean of 1000 samples.</p>
+    <div class="tiles" id="tiles"></div>
+    <div class="study">
+      <div class="hero left"><p class="hero-n v" id="study-n">0</p><p class="kicker">participants rated the clips</p></div>
+      <div class="bars" id="bars"></div>
+    </div>
+  </section>
+
+  <!-- ═════════ REMOVE ONE MODULE ═════════ -->
+  <section class="scene" id="s-surprise">
+    <div class="sec-head"><h2 class="sec-title" data-split>Remove one module.</h2></div>
+    <div class="race">
+      <div class="r full" id="race-full"><p class="n">Full CHAT</p><div class="track"><b></b></div><p class="val" id="race-full-v">0</p></div>
+      <div class="r cut" id="race-cut"><p class="n">Without the partner module (RFBG)</p><div class="track"><b></b></div><p class="val" id="race-cut-v">0</p></div>
+      <p class="unit">Reaction score FRCorr (×10<sup>−2</sup>), mean of 1000 samples</p>
+    </div>
+    <div class="viewers" id="viewers"><span class="n">Interactivity, rated by viewers</span><span class="v hi" id="vw-hi">4.8</span><span class="arrow"><i data-ph="arrow-right" data-w="light"></i></span><span class="v lo" id="vw-lo">2.1</span></div>
+  </section>
+
+  <!-- ═════════ STYLISED ═════════ -->
+  <section class="scene" id="s-styles">
+    <div class="sec-head"><h2 class="sec-title" data-split>Stylised faces, too.</h2></div>
+    <figure class="clipwin" id="styles-win"><img class="clip" alt="" /><i class="split"></i></figure>
+    <div class="styles-label" id="styles-label"><span class="tag ghost">Generated dialogue, with its own sound</span></div>
+  </section>
+
+  <!-- ═════════ DATASET ═════════ -->
+  <section class="scene" id="s-data">
+    <p class="ds-name" id="ds-name"><b>CHAT</b>-AVD-50k</p>
+    <div class="ds-nums">
+      <div><p class="hero-n" id="ds-pairs">0</p><p class="kicker">dialogue pairs</p></div>
+      <div><p class="hero-n" id="ds-ids">0</p><p class="kicker">synthetic identities</p></div>
+      <div><p class="hero-n v" id="ds-hours">0</p><p class="kicker">hours of video</p></div>
+    </div>
+    <div class="down" id="down">
+      <div class="r" id="dn-1"><p class="n">PerFRDiff</p><div class="track"><i></i><b></b></div><p class="val"></p></div>
+      <div class="r" id="dn-2"><p class="n">ReactDiff</p><div class="track"><i></i><b></b></div><p class="val"></p></div>
+      <p class="legend"><span><i style="background:var(--bar)"></i>trained on REACT 2024 only</span><span><i style="background:var(--blue)"></i>pre-trained on CHAT-AVD-50k first</span><span>FRCorr (×10<sup>−2</sup>), higher is better</span></p>
+      <p class="foot" id="dn-foot"></p>
+    </div>
+  </section>
+
+  <!-- ═════════ THE PUBLIC RELEASE (dark) ═════════ -->
+  <section class="scene dark" id="s-release">
+    <p class="kicker rel-src" id="rel-src">Public CHAT code. Identities from the HDTF dataset.</p>
+    <div class="hero-clip" id="hero-clip"><img class="clip" id="hero-0" alt="" /><img class="clip" id="hero-1" alt="" /><img class="clip" id="hero-2" alt="" /><img class="clip" id="hero-3" alt="" /></div>
+    <div class="wall" id="wall"></div>
+    <div class="rel-label" id="rel-label">
+      <p class="stmt">Code and weights are public.</p>
+      <p class="src">Clips generated with the public CHAT code. Identities from the HDTF dataset.</p>
+    </div>
+  </section>
+
+  <!-- ═════════ END CARD (dark) ═════════ -->
+  <section class="scene dark" id="s-end">
+    <div class="sum" id="sum">
+      <div class="r"><span class="acr">01</span><p class="stmt">A new task.</p></div>
+      <div class="r"><span class="acr">02</span><p class="stmt">Interactive audio and facial refinement.</p></div>
+      <div class="r"><span class="acr">03</span><p class="stmt">A dataset of 50,000 dialogue pairs.</p></div>
+    </div>
+    <h1 class="end-h" id="end-h" data-split><span class="accent">CHAT</span> turns one sentence into a conversation in which both people speak, listen and respond.</h1>
+    <div class="end-links" id="end-links">
+      <span class="k">Project</span><span class="v">junhaosong.com/chat</span>
+      <span class="k">Code</span><span class="v">github.com/Rqcker/chat</span>
+      <span class="k">Paper</span><span class="v">doi.org/10.1007/978-3-032-37252-9_33</span>
+    </div>
+    <div class="end-qr" id="end-qr"><img src="assets/img/qr.png" alt="" /></div>
+    <div class="end-venue" id="end-venue"><img src="assets/img/eccv_on_dark.svg" alt="ECCV 2026, Malmö" /><i class="rule"></i><p><b>Song et al.</b><span>European Conference on Computer Vision (ECCV 2026)</span></p></div>
+    <p class="end-disc" id="end-disc">Narration: synthetic voice (Kokoro-82M). Every face and voice in the clips is generated.</p>
+  </section>
+
+  <!-- persistent chrome: the CHAT mark, the venue, the chapter bar, the caption line -->
+  <div id="hud">
+    <div class="hud-brand"><img src="assets/img/logo.webp" alt="" /><span>CHAT</span></div>
+    <div class="hud-venue"><img src="assets/img/eccv_skyline.svg" alt="" /><i class="rule"></i><span><b>ECCV</b> 2026</span></div>
+    <div class="hud-chapters" id="hud-chapters"></div>
+  </div>
+  <div class="grain"></div>
+  <div id="captions"><div class="cap-inner" id="cap-text"></div></div>
+  <div id="curtain"></div>
+</div>
+</div>
+
+<div id="player">
+  <button id="pl-play">Play</button>
+  <span id="pl-time">0:00.0 / 0:00</span>
+  <input type="range" id="pl-seek" min="0" max="1000" value="0" step="1" />
+  <select id="pl-cap"><option value="en">captions: EN</option><option value="off">captions: off</option></select>
+  <span>space = play/pause · ←/→ = ±1s · ,/. = ±1 frame</span>
+</div>
+
+<!-- order matters: the script, then the voice, then the builder that puts the two together -->
+<script src="vendor/roughjs/rough.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/lib/engine.js"></script>
+<script src="js/lib/annotate.js"></script>
+<script src="js/data.js"></script>
+<script src="js/script.js"></script>
+<script src="js/pacing.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/lib/build.js"></script>
+<script src="js/lib/stage.js"></script>
+<script src="media/manifest.js"></script>
+<script src="js/media.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/lib/player.js"></script>
+</body>
+</html>

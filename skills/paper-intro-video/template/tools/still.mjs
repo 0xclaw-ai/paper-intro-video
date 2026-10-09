@@ -20,8 +20,7 @@ try {
   const info = await page.eval('window.__ready');
   console.log(`duration ${info.duration.toFixed(2)}s · fonts: ${Object.entries(info.fonts).map(([k, v]) => `${k}=${v}`).join(' ')}`);
   for (const t of times) {
-    await page.eval(`window.__seek(${t})`);
-    await page.eval('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
+    await page.eval(`Promise.resolve(window.__seek(${t})).then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`);
     const file = join(outDir, `t_${t.toFixed(2).padStart(7, '0')}.png`);
     writeFileSync(file, await page.screenshot());
     console.log('wrote', file);

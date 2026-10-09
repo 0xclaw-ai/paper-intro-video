@@ -47,7 +47,8 @@ Another voice later: `node tools/make.mjs --voice kokoro:bm_george` — the film
 
 | tool | |
 | --- | --- |
-| `make.mjs` | runs everything below in the right order |
+| `make.mjs` | runs the tools below in order; a failing gate stops the build |
+| `preflight.mjs` | scene contract, reproducible motion, claim ledger; `make.mjs` runs it first |
 | `doctor.mjs`, `env.mjs` | what the machine has; where the Pythons and the voice are |
 | `export_script.mjs` | `js/script.js` (+ voice) → `build/full/timing.json`, subtitles (`script/full/*.srt`, `.vtt`), `narration.md` |
 | `voice_kokoro.py`, `voice_sapi.ps1` | narration clips → `voice/full/<name>/` |
@@ -67,3 +68,14 @@ timing); `css/base.css` the shared look. Each file's header says what it does.
 Rough.js (MIT) in `vendor/`; Phosphor Icons (MIT) and Simple Icons (CC0) in `assets/icons/`; the
 typefaces are loaded from Google Fonts (SIL OFL). The demo's narration clips were synthesized with
 Kokoro-82M (Apache-2.0). The sound bed is synthesized here from sine waves and noise.
+
+## Optional clips and final audits
+
+`js/media.js` plays JPEG sequences prepared by `tools/prep_media.py` (ffmpeg required only for extraction).
+Enable the manifest tag in `index.html`; configure `tools/clip_audio.py` for sound aligned to scene marks.
+Missing clips show labelled plates; failed decodes stop capture. Keep source footage outside `media/`.
+
+Before delivery run `audit_fonts.mjs`, `audit_frames.mjs` and `audit_video.py`; inspect findings rather
+than equating a completed build with clean frames. `check_audio.py` reports a 4× true-peak estimate when
+scipy is available. `chapters.mjs` validates scene `youtube:` titles for YouTube. Detailed workflows live
+in the skill's `references/engine.md`, `qa.md` and `publishing.md`.

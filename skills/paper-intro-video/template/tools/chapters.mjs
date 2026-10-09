@@ -18,6 +18,7 @@ const cut = arg('cut', 'full');
 const T = JSON.parse(readFileSync(join(root, 'build', cut, 'timing.json'), 'utf8'));
 const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 const MIN = 10;
+if (!Number.isFinite(T.duration) || T.duration <= 0) throw new Error('Invalid film duration');
 
 const marked = T.scenes.filter((s) => s.youtube);
 if (!marked.length) {
@@ -25,31 +26,37 @@ if (!marked.length) {
   for (const s of T.scenes) console.log(`  ${mmss(s.start)}  ${s.id}  ${s.title}`);
   process.exit(0);
 }
+for (const s of marked) if (typeof s.youtube !== 'string' || /[\r\n]/.test(s.youtube) || !s.youtube.trim()) throw new Error('Chapter titles must be non-empty single lines');
 const firstLine = (s) => Math.min(...T.cues.filter((c) => c.scene === s.id).map((c) => c.start), s.start + s.dur);
 let ch = marked.map((s, i) => ({ title: s.youtube, at: i === 0 ? 0 : Math.floor(T.cues.some((c) => c.scene === s.id) ? firstLine(s) : s.start) }));
 const inLine = (t) => T.cues.some((c) => c.start < t && t < c.end);
 const len = (i) => (i + 1 < ch.length ? ch[i + 1].at : T.duration) - ch[i].at;
+const legal = (at, previous, next) => Number.isFinite(at) && at >= previous + MIN && at <= next - MIN && !inLine(at);
 
 for (let i = 0; i < ch.length; i++) {
   if (len(i) >= MIN) continue;
   if (i === 0) {                                              // the opening chapter is short: start the next one later
     if (ch.length < 2) break;
     let ok = false;
-    for (let at = MIN; at <= MIN + 5 && (ch.length < 3 || at <= ch[2].at - MIN); at++) if (!inLine(at)) { ch[1].at = at; ok = true; break; }
+    const nextBound = ch.length < 3 ? T.duration : ch[2].at;
+    for (let at = MIN; at <= MIN + 5; at++) if (legal(at, 0, nextBound)) { ch[1].at = at; ok = true; break; }
     if (!ok) { console.log(`  "${ch[1].title}" joins "${ch[0].title}"`); ch.splice(1, 1); }
     i = -1; continue;
   }
   const end = i + 1 < ch.length ? ch[i + 1].at : T.duration;  // a later chapter is short: start it earlier
   let moved = false;
-  for (let at = Math.floor(end - MIN); at >= ch[i - 1].at + MIN && at > end - MIN - 5; at--) if (!inLine(at)) { ch[i].at = at; moved = true; break; }
+  for (let at = Math.floor(end - MIN); at >= ch[i - 1].at + MIN && at > end - MIN - 5; at--) if (legal(at, ch[i - 1].at, end)) { ch[i].at = at; moved = true; break; }
   if (!moved) { console.log(`  "${ch[i].title}" would last ${len(i).toFixed(1)} s: it joins "${ch[i - 1].title}"`); ch.splice(i, 1); }
   i = Math.max(-1, i - 2);                                    // look at its neighbours again
 }
 const bad = [];
 if (ch.length < 3) bad.push(`only ${ch.length} chapters (YouTube needs at least 3)`);
-ch.forEach((c, i) => { if (len(i) < MIN) bad.push(`"${c.title}" lasts ${len(i).toFixed(1)} s`); });
+ch.forEach((c, i) => {
+  if (!Number.isFinite(c.at) || c.at < 0 || len(i) < MIN) bad.push(`"${c.title}" has an invalid start or lasts less than ${MIN} s`);
+  if (i > 0 && inLine(c.at)) bad.push(`"${c.title}" starts inside a spoken line; choose a different scene boundary`);
+});
 const lines = ch.map((c) => `${mmss(c.at)} ${c.title}`);
 writeFileSync(join(root, 'build', cut, 'chapters.txt'), lines.join('\n') + '\n', 'utf8');
 ch.forEach((c, i) => console.log(`${lines[i].padEnd(40)} ${len(i).toFixed(1)} s`));
-if (bad.length) { console.log('YouTube will not show these chapters: ' + bad.join('; ')); process.exit(1); }
+if (bad.length) { console.log('Chapter checks failed: ' + bad.join('; ')); process.exit(1); }
 console.log(`build/${cut}/chapters.txt: ${ch.length} chapters, each at least ${MIN} s`);
