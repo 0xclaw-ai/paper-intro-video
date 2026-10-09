@@ -66,8 +66,8 @@ timing); `css/base.css` the shared look. Each file's header says what it does.
 ## Licences of what is bundled
 
 Rough.js (MIT) in `vendor/`; Phosphor Icons (MIT) and Simple Icons (CC0) in `assets/icons/`; the
-typefaces are loaded from Google Fonts (SIL OFL). The demo's narration clips were synthesized with
-Kokoro-82M (Apache-2.0). The sound bed is synthesized here from sine waves and noise.
+typefaces are loaded from Google Fonts (SIL OFL). The demo's narration clips were synthesised with
+Kokoro-82M (Apache-2.0). The sound bed is synthesised here from sine waves and noise.
 
 ## Optional clips and final audits
 

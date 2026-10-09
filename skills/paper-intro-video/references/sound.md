@@ -1,6 +1,6 @@
 # Sound: the bed, the cues, the mix
 
-Everything is synthesized by `tools/music.py` from two files that are exported from the film
+Everything is synthesised by `tools/music.py` from two files that are exported from the film
 (`build/full/timing.json`, `build/full/sfx.json`), so the sound follows the edit and the voice.
 Nothing is sampled: there is nothing to license.
 

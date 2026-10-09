@@ -1,6 +1,6 @@
 ---
 name: paper-intro-video
-description: "Make a narrated, animated intro or explainer video (MP4) for a research paper, project or product from its PDF, code and website. The film is an HTML page rendered frame by frame; a synthesized or recorded voice-over drives captions and pictures word by word; the sound bed is synthesized; every step has a check. Use this skill whenever the user wants an intro video, explainer video, paper video, conference presentation video (ACL, EMNLP, NeurIPS, CVPR and the like), video abstract, project trailer or launch video (in Chinese, 介绍视频, 论文视频, 讲解视频, 宣传视频, 参会视频), or wants to revise one made this way (another voice, new wording, pacing, look, captions), even if they only say 'make a video for our paper' or send a PDF and a repo link and ask for 'something to show at the conference'."
+description: "Make a narrated, animated intro or explainer video (MP4) for a research paper, project or product from its PDF, code and website. The film is an HTML page rendered frame by frame; a synthesised or recorded voice-over drives captions and pictures word by word; the sound bed is synthesised; every step has a check. Use this skill whenever the user wants an intro video, explainer video, paper video, conference presentation video (ACL, EMNLP, NeurIPS, CVPR and the like), video abstract, project trailer or launch video, or wants to revise one made this way (another voice, new wording, pacing, look, captions), even if they only say 'make a video for our paper' or send a PDF and a repo link and ask for 'something to show at the conference'."
 ---
 
 # Paper intro video
@@ -50,7 +50,7 @@ with visuals.
    others do, a question to the audience, a surprise, and at the end the contributions and one
    sentence that says what the work is. Short lines that can be said in one breath.
    → `references/story.md`
-4. **Voice first.** Synthesize the narration and make its pacing the plan
+4. **Voice first.** Synthesise the narration and make its pacing the plan
    (`node tools/make.mjs --voice kokoro:af_heart --as-plan --no-render`). From here on a line lasts
    as long as it is really spoken and `S.w('cue', 'word')` knows when each word is said. Timing
    pictures against guessed durations and adding a voice later is how films end up with dead air
@@ -137,12 +137,12 @@ each of them can be run alone (their headers say how).
 | `references/design.md` | choosing the look, laying out a screen, title and end cards, captions, icons |
 | `references/motion.md` | making a scene move: beats on words, the camera, kinetic type, marks, the stillness check |
 | `references/engine.md` | the harness itself: files, the timeline and stage functions, the two clocks, cue sheet, adding icons and fonts |
-| `references/voice.md` | synthesizing or recording the narration, pacing, pronunciation, swapping voices |
+| `references/voice.md` | synthesising or recording the narration, pacing, pronunciation, swapping voices |
 | `references/sound.md` | the sound bed, cues, the mix, using other music |
 | `references/qa.md` | every check to run before handing over, and how to report what could not be checked |
 | `references/publishing.md` | uploading to YouTube, chapters, honest covers, website embeds and GitHub README links |
 | `references/pitfalls.md` | when a tool fails or the machine surprises you |
-| `references/prompts.md` | the prompts a user can start and steer a film with (中文 / English), and how to read their feedback |
+| `references/prompts.md` | the prompts a user can start and steer a film with, and how to read their feedback |
 
 Reply to the user in their language. Give file links relative to the folder the session was
 opened in, not to the film's folder — a link that the app cannot resolve looks like a missing file.

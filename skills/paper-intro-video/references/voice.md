@@ -64,7 +64,7 @@ it. Names, acronyms, numbers and coined words are where it goes wrong:
   of `tools/voice_kokoro.py` (it already turns espeak's "hack-a-thun" into "hackathon").
 - Ask the user how the project's name and the people's names are said.
 
-Then re-synthesize only the changed lines: `node tools/make.mjs --voice kokoro:af_heart --only 4,17`.
+Then re-synthesise only the changed lines: `node tools/make.mjs --voice kokoro:af_heart --only 4,17`.
 
 ## What can be checked without ears
 

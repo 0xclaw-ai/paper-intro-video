@@ -8,6 +8,8 @@ renders it frame by frame, a voice is laid over it, and captions and pictures ar
 of that voice, so the voice can be swapped or re-paced and everything follows.
 [`examples/template-demo.mp4`](examples/template-demo.mp4) shows 30 seconds of it.
 
+Ask an agent: "Research and use this skill: https://github.com/0xclaw-ai/paper-intro-video"
+
 ## Install
 
 ```bash
@@ -23,7 +25,7 @@ claude plugin install paper-intro-video@0xclaw
 ```
 
 Then ask for a video: *"Make an intro video for our paper. PDF: …, repo: …, site: …"*.
-More prompts, in Chinese and English: [`prompts.md`](skills/paper-intro-video/references/prompts.md).
+More prompts: [`prompts.md`](skills/paper-intro-video/references/prompts.md).
 
 ## Without an assistant
 
@@ -48,7 +50,7 @@ recording work too.
 | `tests/` | checks for clip timing, chapters and the scene contract |
 | `.claude-plugin/` | Claude Code plugin manifest |
 
-## License
+## Licence
 
 The skill and template are [MIT](LICENSE), copyright 0xClaw Team.
 Bundled libraries, fonts, names and example images keep their own terms: [NOTICE](NOTICE.md).

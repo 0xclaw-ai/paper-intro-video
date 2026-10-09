@@ -57,7 +57,7 @@ frozen.
 
 - Give each idea of a scene its own station and travel between them (0.9 s, a soft whoosh is added
   automatically). Stations are 2400 px apart, so a neighbour never shows.
-- Within a station, lean toward what is being talked about: `{ x: 800, y: 470, s: 1.16 }`. Keep
+- Within a station, lean towards what is being talked about: `{ x: 800, y: 470, s: 1.16 }`. Keep
   scales between 1.0 and 1.15; one macro shot (2×) per film at most.
 - After every camera pass, render a contact sheet and look for cut headlines, figures at the
   frame edge, figures pushed into the headline that stays put, and strips of the wrong ground.

@@ -42,7 +42,7 @@
     const out = [];
     for (const part of parts) {
       const last = out[out.length - 1];
-      const joined = last === undefined ? part : last + (/[一-鿿]$/.test(last) || /^[一-鿿]/.test(part) ? '' : ' ') + part;
+      const joined = last === undefined ? part : last + (/[\u4e00-\u9fff]$/.test(last) || /^[\u4e00-\u9fff]/.test(part) ? '' : ' ') + part;
       if (last !== undefined && joined.length <= max) out[out.length - 1] = joined;
       else out.push(part);
     }
