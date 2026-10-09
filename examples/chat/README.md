@@ -14,7 +14,7 @@ A **teaching adaptation**, not a frame-identical copy of the uploaded film:
 
 - The 13 scenes, script, paper-reported numbers, word timings and 34 Kokoro `af_heart` narration clips.
 - CHAT typography and colours; clean geometric marks (`OXCLEAN`); the shared-timeline diagram,
-  listening behaviour, ablation and dataset scenes; title and end cards.
+  listening behaviour, ablation and dataset scenes; title and end cards. The icon folder keeps only the five icons this film draws.
 - A synthesised piano score (`tools/piano.py`), built from the harness's sound bed.
 - [CLAIMS.md](CLAIMS.md), including the published opening caption's known limitation, and
   [YOUTUBE.md](YOUTUBE.md), with the published film link and chapter workflow.

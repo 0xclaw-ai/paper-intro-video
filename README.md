@@ -42,10 +42,11 @@ recording work too.
 
 | | |
 | --- | --- |
-| `skills/paper-intro-video/` | the skill: `SKILL.md` (the workflow: facts → script → voice first → scenes → sound, render, checks → handover), `references/` (story, design, motion, the harness, voice, sound, checks, pitfalls, prompts) and `template/` (the harness and a 30-second demo film; copy it to start) |
-| `examples/0xclaw/` | a complete five-minute film (EMNLP 2026) built on it |
-| `examples/chat/` | ECCV 2026 teaching adaptation; source and narration, with placeholders instead of demo footage |
-| `.claude-plugin/` | what makes the repository installable as a Claude Code plugin |
+| `skills/paper-intro-video/` | the skill, its references (including publishing) and `template/` |
+| `examples/0xclaw/` | a complete five-minute EMNLP 2026 film |
+| `examples/chat/` | an ECCV 2026 teaching adaptation: narration and placeholders, no demo footage |
+| `tests/` | checks for clip timing, chapters and the scene contract |
+| `.claude-plugin/` | Claude Code plugin manifest |
 
 ## License
 

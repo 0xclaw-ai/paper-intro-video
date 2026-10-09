@@ -81,6 +81,7 @@ if (!voice && timing().voice && !existsSync(join(root, 'build', cut, 'narration.
   const a = [tool('narration.py'), '--cut', cut, '--clips', clips, '--pause', String(V.pause || 0)];
   if (V.max_pause) a.push('--max-pause', String(V.max_pause));
   run('lay the voice on the film again', findPython('sci'), a);
+  run('look at the clips', findPython('sci'), [tool('check_clips.py'), clips, '--cut', cut]);
 }
 
 node('cue sheet', 'export_sfx.mjs', '--cut', cut);

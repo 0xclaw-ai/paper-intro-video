@@ -8,7 +8,7 @@ commands. Report results as numbers, and say plainly what no tool can tell you.
 
 | step | tool | what it proves |
 | --- | --- | --- |
-| clips | `check_clips.py` | every line present and made for the current words; speaking rate within ±20% of the median; no pause over 1 s inside a line; no clipping |
+| clips | `check_clips.py` | when a voice is laid in or restored: every line matches the current words; rate within ±20% of the median; no internal pause over 1 s; no clipping |
 | contract | `preflight.mjs` | scene ids agree, no self-running animation or `<video>`, a strong claim has `CLAIMS.md` |
 | glyphs | `audit_fonts.mjs` | no unexplained system-font glyph; the build fails if one is found |
 | voice | `narration.py` (its report) | each line has room before the next; word times from the engine agree with heard pauses (expect ≥ 90 % of sentence starts) |

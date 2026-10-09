@@ -18,7 +18,6 @@ The skill has two parts, and worked examples in its repository:
 | `template/` | The harness. Copy it to start a film: engine, stagecraft, tools, and a 30-second demo film that explains itself. |
 | `references/` | How to do each part well. Read the one you need when you get there (list at the end). |
 | `examples/0xclaw/` | A complete five-minute film on the same harness (an EMNLP 2026 paper). It is not installed with the skill: it is `examples/0xclaw/` in the skill's repository — https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples/0xclaw, or `../../examples/0xclaw/` from this file when the whole repository is on disk. Read it for patterns at full scale: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The reference files call it "the example". The template's demo, rendered, is in the same repository: `examples/template-demo.mp4` (https://github.com/0xclaw-ai/paper-intro-video/blob/main/examples/template-demo.mp4). |
-
 | `examples/chat/` | A 3:47 ECCV 2026 film: clean geometric marks, word-timed diagrams, frame-sequence clips, and a claims ledger. [Watch the published film](https://youtu.be/9C436tP0OEA). The source example uses labelled placeholders instead of redistributing the demo footage; see its README for the differences. |
 
 Copy `template/` to start. Do not copy an example over it, and do not borrow one project's colours,
@@ -35,7 +34,7 @@ with visuals.
    is now the film, and every command below runs in it — and run `node tools/doctor.mjs`.
    It must exit 0. Node, Chromium, the two Python jobs and the page's typefaces are required.
    Kokoro is optional: the bundled demo already has narration clips.
-   `node tools/make.mjs` then builds the bundled 30-second demo as it is (about a minute; its
+   `node tools/make.mjs` then builds the bundled 30-second demo as it is (a few minutes; its
    narration clips are included, so it needs no speech model) — a quick proof that the pipeline
    works on this machine before any of it is replaced.
    Anything that needs a download — a Python package, a speech model, a browser — is the user's
