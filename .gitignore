@@ -13,7 +13,10 @@ __pycache__/
 node_modules/
 .DS_Store
 Thumbs.db
-*.skill
+.env
+.env.*
+*.pem
+*.key
 
 # local environments and prepared footage (never redistribute by accident)
 .venv/

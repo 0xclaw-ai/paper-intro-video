@@ -47,12 +47,10 @@ recording work too.
 | `examples/chat/` | ECCV 2026 teaching adaptation; source and narration, with placeholders instead of demo footage |
 | `.claude-plugin/` | what makes the repository installable as a Claude Code plugin |
 
-## Credits
+## License
 
-Bundled: Rough.js (MIT), Phosphor Icons (MIT), Simple Icons (CC0). Typefaces load from Google Fonts
-(SIL OFL). The narration clips were synthesized with Kokoro-82M (Apache-2.0); the sound bed is
-synthesized by the tools. The logo, wordmark and screenshots under `examples/0xclaw/assets/` belong
-to the 0xClaw authors, the ACL logo to the ACL — they are there so the example renders.
+The skill and template are [MIT](LICENSE), copyright 0xClaw Team.
+Bundled libraries, fonts, names and example images keep their own terms: [NOTICE](NOTICE.md).
 
 ## CHAT (ECCV 2026)
 
