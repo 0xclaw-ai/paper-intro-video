@@ -27,7 +27,7 @@ try {
   const step = Number(arg('step', '0.5')), from = Number(arg('from', '0.6')), to = Number(arg('to', String(info.duration - 0.8)));
   for (let t = from; t <= to + 1e-6; t += step) times.push(+t.toFixed(3));
   for (const [k, t] of times.entries()) {
-    await page.eval(`window.__seek(${t}); new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`);
+    await page.eval(`Promise.resolve(window.__seek(${t})).then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`);
     writeFileSync(join(dir, `f_${String(k).padStart(4, '0')}.png`), await page.screenshot());
   }
   writeFileSync(join(dir, 'times.json'), JSON.stringify({ cut, step, times, scenes: info.scenes }));

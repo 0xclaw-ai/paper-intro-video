@@ -169,7 +169,7 @@
       if (!paths.length) return;
       const each = dur / paths.length;
       S.fromTo(paths, { strokeDashoffset: MK.HIDDEN }, { strokeDashoffset: 0 }, { at, dur: each, stagger: each, ease: 'inOutQuad' });
-      if (!o.quiet) S.sfx('pen', at, { dur, g: o.g || 0.8 });
+      if (!o.quiet && !MK.CLEAN) S.sfx('pen', at, { dur, g: o.g || 0.8 });          // geometric strokes (OXCLEAN) are drawn without the pen's scratch
     };
     const MARK_DUR = { underline: 0.55, highlight: 0.6, circle: 0.85, cross: 0.4, strike: 0.4, tick: 0.3 };
     const mark = (S, target, at, o = {}) => {

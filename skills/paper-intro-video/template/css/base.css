@@ -43,6 +43,14 @@ ol, ul { list-style: none; }
 /* a scene is an opaque page; inside it, a strip of 1920-wide stations (the world) that the camera looks at */
 .scene { position: absolute; inset: 0; display: none; overflow: hidden; background: var(--paper); }
 .scene.dark, .station.dark { background: var(--night); color: var(--cream); }
+/* each scene reaches 3 px past its edges in its own ground, so no hairline of the stage shows where two scenes
+   meet at a fractional pixel during a page turn (tools/audit_video.py finds exactly that line) */
+.scene { box-shadow: 0 0 0 3px var(--paper); }
+.scene.dark { box-shadow: 0 0 0 3px var(--night); }
+/* with window.OXCLEAN an underline runs behind its words and breaks around their descenders: the words
+   carry a halo of their ground */
+.mk[data-mark="underline"] > .mk-t { -webkit-text-stroke: 0.07em var(--paper); paint-order: stroke fill; }
+.dark .mk[data-mark="underline"] > .mk-t { -webkit-text-stroke-color: var(--night); }
 /* a dark card inside a paper scene reaches past the frame, so no camera move can show a paper edge around it */
 .station.dark { box-shadow: 0 0 0 240px var(--night); }
 .world { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }

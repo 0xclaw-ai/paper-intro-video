@@ -2,7 +2,7 @@
 // Launches a headless Chromium with its own throwaway profile, so it never touches a
 // browser session the user already has open.
 import { spawn } from 'node:child_process';
-import { mkdtempSync, existsSync, readdirSync } from 'node:fs';
+import { mkdtempSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir, homedir } from 'node:os';
 import { join } from 'node:path';
 
@@ -154,6 +154,9 @@ export async function launch({ width = 1920, height = 1080, extraArgs = [], need
     try { ws.close(); } catch { /* ignore */ }
     await new Promise((r) => setTimeout(r, 300));
     if (proc.exitCode === null) proc.kill();
+    // the throwaway profile leaves with its browser, so no run leaves anything behind in the system temp folder
+    if (proc.exitCode === null && proc.signalCode === null) await new Promise((r) => { proc.once('exit', r); setTimeout(r, 3000); });
+    try { rmSync(profile, { recursive: true, force: true }); } catch { /* best effort */ }
   }
 
   return { exe, newPage, close, send };

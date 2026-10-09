@@ -3,7 +3,8 @@
 
     python tools/check_audio.py [out/<film>.mp4] [--cut full]
 
-Decodes the AAC track of the MP4 and reports: loudness (target -16 LUFS) and peak (below -1 dBFS);
+Decodes the AAC track of the MP4 and reports: loudness (target -16 LUFS), peak (below -1 dBFS) and true peak
+(below -1 dBTP);
 the level while somebody speaks and between lines; how far the voice sits above the bed (the voice
 is centred, so the side signal while speaking is the bed alone); and whether the binaural pair
 survived the encode — 200 Hz in the left ear only, 240 Hz in the right only — measured in the
@@ -44,6 +45,12 @@ def main():
     loud, peak = mux.lufs(x.astype(np.float32)), 20 * np.log10(np.abs(x).max() + 1e-12)
     print(f'{os.path.basename(path)}: {a.codec_context.name} {sr} Hz, {n / sr:.2f}s · loudness {loud:.1f} LUFS'
           + ('' if abs(loud + 16) < 1.5 else '  <-- the mix aims at -16') + f' · peak {peak:.1f} dBFS' + ('' if peak <= -0.9 else '  <-- above -1 dBFS'))
+    try:                                                         # AAC decoding overshoots the mix's sample peak
+        from scipy.signal import resample_poly
+        tp = 20 * np.log10(max(np.abs(resample_poly(x[:, k], 4, 1)).max() for k in range(x.shape[1])) + 1e-12)
+        print(f'  true peak {tp:.2f} dBTP (4x oversampled)' + ('' if tp <= -1.0 else '  <-- above -1 dBTP: a platform that normalises can clip it'))
+    except ImportError:
+        print('  true peak: not measured (needs scipy)')
 
     vpath = os.path.join(ROOT, 'build', args.cut, 'voice.json')
     cues = json.load(open(vpath, encoding='utf-8'))['cues'] if timing.get('voice') and os.path.exists(vpath) else []

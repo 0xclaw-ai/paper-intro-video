@@ -29,7 +29,7 @@ for (const cut of want === 'all' ? CUTS : [want]) {
   mkdirSync(join(root, 'script', cut), { recursive: true });
   writeFileSync(join(root, 'build', cut, 'timing.json'), JSON.stringify({
     cut, cuts: CUTS, slug: S.slug, title: S.title, posters: S.posters, fps: S.fps, beat: S.beat, duration: S.duration, plan: S.plan, voice: S.voice,
-    scenes: S.scenes.map((s) => ({ id: s.id, title: s.title, start: s.start, dur: s.dur, c: s.c })),
+    scenes: S.scenes.map((s) => ({ id: s.id, title: s.title, start: s.start, dur: s.dur, c: s.c, ...(s.youtube ? { youtube: s.youtube } : {}) })),
     cues: S.cues, captions: S.captions,
   }, null, 2));
   const langs = Object.keys(S.captions);

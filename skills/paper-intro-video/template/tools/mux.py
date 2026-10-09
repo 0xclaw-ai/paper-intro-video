@@ -108,10 +108,10 @@ def main():
     loud = None
     if args.lufs is not None and args.audio:
         mix *= 10 ** ((args.lufs - lufs(mix)) / 20)
-        over = np.abs(mix).max() / 0.89                          # -1 dBFS ceiling: bend the few peaks above it, do not turn everything down
-        if over > 1.0:
-            hot = np.abs(mix) > 0.7
-            mix[hot] = np.sign(mix[hot]) * (0.7 + 0.19 * np.tanh((np.abs(mix[hot]) - 0.7) / 0.19))
+        over = np.abs(mix).max() / 0.85                          # -1.4 dBFS ceiling: AAC overshoots by ~0.2 dB, so the decoded file's true peak stays near -1.2 dBTP
+        if over > 1.0:                                           # bend the few peaks above the knee (it never exceeds 0.68 + 0.17), do not turn everything down
+            hot = np.abs(mix) > 0.68
+            mix[hot] = np.sign(mix[hot]) * (0.68 + 0.17 * np.tanh((np.abs(mix[hot]) - 0.68) / 0.17))
         loud = lufs(mix)
     peak = float(np.abs(mix).max()) if n else 0.0
     if peak > 0.98:

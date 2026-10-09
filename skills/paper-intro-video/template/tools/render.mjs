@@ -76,7 +76,7 @@ try {
     const segs = timing.captions[lang];
     for (let i = 0; i < segs.length; i++) {
       const c = segs[i];
-      await page.eval(`window.__seek(${(c.start + c.end) / 2}); new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`);
+      await page.eval(`Promise.resolve(window.__seek(${(c.start + c.end) / 2})).then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`);
       const box = await page.eval(`(() => { const r = document.getElementById('cap-text').getBoundingClientRect(); const m = 40; return { x: Math.max(0, Math.floor(r.left) - m), y: Math.max(0, Math.floor(r.top) - m), width: Math.ceil(r.width) + 2 * m, height: Math.min(1080 - Math.max(0, Math.floor(r.top) - m), Math.ceil(r.height) + 2 * m) }; })()`);
       const file = join(bdir, 'captions', `${lang}_${String(i).padStart(2, '0')}.png`);
       writeFileSync(file, await page.screenshot({ clip: box }));
@@ -134,7 +134,7 @@ try {
       const i = next++;
       if (i >= last) return;
       while (ready.size > workers * 6) await new Promise((r) => setTimeout(r, 15));   // back-pressure
-      await p.eval(`window.__seek(${i / fps}); new Promise(r => requestAnimationFrame(() => r(1)))`);
+      await p.eval(`Promise.resolve(window.__seek(${i / fps})).then(() => new Promise(r => requestAnimationFrame(() => r(1))))`);
       ready.set(i, await p.screenshot());
       flush();
     }

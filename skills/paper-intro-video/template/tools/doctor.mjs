@@ -4,7 +4,7 @@
 // is the user's decision — ask before fetching it.
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { findBrowser, launch } from './cdp.mjs';
 import { NEEDS, findPython, root, ttsDir } from './env.mjs';
@@ -47,5 +47,16 @@ const timing = join(root, 'build', 'full', 'timing.json');
 if (existsSync(timing)) {
   const t = JSON.parse(readFileSync(timing, 'utf8'));
   console.log(`\nthis film: "${t.title || t.slug}" · ${Math.floor(t.duration / 60)}:${(t.duration % 60).toFixed(1).padStart(4, '0')} · ` + (t.voice ? `voice "${t.voice.name}", ${t.voice.lines}/${t.cues.length} lines` : 'no voice yet'));
+}
+// A film folder that iCloud Drive syncs (a synced ~/Documents or ~/Desktop counts) collects conflict copies named
+// "… 2" while the tools write thousands of frames: in media/, in build/, even inside .git. Say so once.
+if (process.platform === 'darwin') {
+  let synced = /\/Library\/Mobile Documents\//.test(root);
+  for (let d = root; !synced && d !== dirname(d); d = dirname(d)) {
+    const r = spawnSync('xattr', ['-p', 'com.apple.file-provider-domain-id', d], { encoding: 'utf8' });
+    synced = r.status === 0 && /CloudDocs/.test(r.stdout || '');
+  }
+  if (synced) console.log('\nnote: iCloud Drive syncs this folder. Sync conflicts leave copies named "… 2" (media/, build/, .git);'
+    + ' a folder outside ~/Documents and ~/Desktop avoids them.');
 }
 console.log(missing ? `\n${missing} thing(s) missing. Nothing was installed.` : '\nEverything needed is here.');

@@ -14,6 +14,7 @@
 .step .ph { font-size: 78px; color: var(--violet); }
 .step .stmt { margin-top: 16px; }
 .step .src { margin-top: 12px; font-family: var(--mono); }
+.step .src .ph { font-size: 1em; color: inherit; vertical-align: -0.12em; }   /* an arrow is an icon: the mono face has no → */
 .how-note { position: absolute; left: 1420px; top: 632px; }
 /* two tracks of ticks: where the words were planned, and where a voice really puts them (--k slides one onto the other) */
 .clocks { position: absolute; left: 120px; right: 120px; top: 700px; }

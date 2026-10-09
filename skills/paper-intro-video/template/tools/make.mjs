@@ -102,6 +102,8 @@ node('reference stills', 'still.mjs', '--cut', cut, '--lang', 'off', '--out', vd
 node('render', 'render.mjs', '--cut', cut);
 run('verify', findPython('av'), [tool('verify.py'), '--cut', cut]);
 run('sound check', findPython('av'), [tool('check_audio.py'), '--cut', cut]);
+run('every frame of the encode', findPython('av'), [tool('audit_video.py'), join(root, 'out', t.slug + (t.cuts.length > 1 ? `_${cut}` : '') + '.mp4'), '--no-fail']);
+if (timing().scenes.some((s) => s.youtube)) node('YouTube chapters', 'chapters.mjs', '--cut', cut);
 node('poster frames', 'poster.mjs', '--cut', cut);
 if (flag('web')) {
   const name = t.slug + (t.cuts.length > 1 ? `_${cut}` : '');

@@ -64,7 +64,8 @@
       scenes: SCRIPT.scenes.map((s) => ({ id: s.id, start: s.start, dur: s.dur })),
     };
   })();
-  window.__seek = (t) => { tl.seek(t); return true; };
+  // a seek is complete once every clip frame it put on screen is decoded (js/media.js); the renderer awaits it
+  window.__seek = (t) => { tl.seek(t); return window.OXMEDIA ? window.OXMEDIA.settle() : true; };
   window.__sfx = () => ({ cut: SCRIPT.cut, duration: tl.duration, marks: tl.marks, events: tl.sfx.slice().sort((x, y) => x.t - y.t) });
   window.__setLang = setLang;
 

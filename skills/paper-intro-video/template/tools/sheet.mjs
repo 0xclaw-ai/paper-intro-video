@@ -24,7 +24,7 @@ try {
   const times = list ? list.split(',').map(Number) : [];
   if (!list) for (let t = from; t < to - 1e-6; t += step) times.push(+t.toFixed(3));
   for (const t of times) {
-    await page.eval(`window.__seek(${t}); new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`);
+    await page.eval(`Promise.resolve(window.__seek(${t})).then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`);
     const f = join(thumbs, `t_${t.toFixed(2).padStart(7, '0')}.png`);
     writeFileSync(f, await page.screenshot());
     files.push(f);
