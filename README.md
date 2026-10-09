@@ -1,22 +1,25 @@
 # paper-intro-video
 
-A skill for [Claude Code](https://claude.com/claude-code) that makes narrated, animated intro videos
-for research papers and projects — and the harness it uses.
+A skill that makes a narrated intro video for a paper or project. The film is a web page, rendered frame by frame and timed to its voice.
+[`examples/template-demo.mp4`](examples/template-demo.mp4) is 30 seconds of it.
 
-A film is a web page: a 1920×1080 stage whose every frame is a function of time. A headless browser
-renders it frame by frame, a voice is laid over it, and captions and pictures are timed to the words
-of that voice, so the voice can be swapped or re-paced and everything follows.
-[`examples/template-demo.mp4`](examples/template-demo.mp4) shows 30 seconds of it.
+## Quick start
 
-Ask an agent: "Research and use this skill: https://github.com/0xclaw-ai/paper-intro-video"
+Copy this to an agent:
 
-## Install
+```text
+Research and use this skill: https://github.com/0xclaw-ai/paper-intro-video
+```
+
+The agent reads this repository and follows the skill. You do not install anything first.
+
+## Install it yourself
 
 ```bash
 npx skills add 0xclaw-ai/paper-intro-video
 ```
 
-installs it for any agent the [skills CLI](https://github.com/vercel-labs/skills) supports; it was
+This works with any agent the [skills CLI](https://github.com/vercel-labs/skills) supports. It was
 built and tested with Claude Code, where it also installs as a plugin:
 
 ```bash

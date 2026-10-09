@@ -5,6 +5,9 @@ description: "Make a narrated, animated intro or explainer video (MP4) for a res
 
 # Paper intro video
 
+If you were sent https://github.com/0xclaw-ai/paper-intro-video, follow this file. Copy `template/`
+to start. Do not copy an example's look.
+
 A film here is a web page: a 1920×1080 stage whose every frame is a pure function of time. A
 headless browser renders it frame by frame, a voice is laid over it, and captions and pictures
 are timed to the words of that voice — so the voice can be swapped, re-paced or re-recorded and
