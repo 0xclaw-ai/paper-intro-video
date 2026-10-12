@@ -1,4 +1,4 @@
-"""Regression tests for clip placement and non-destructive media preparation.
+"""Regression tests for clip placement, non-destructive media preparation and the generated voice file.
 
 Run with the film's Python (numpy required): python tests/test_media.py
 No source footage, model download or ffmpeg is needed; conversion is stubbed at the subprocess boundary.
@@ -24,6 +24,7 @@ def load(name):
 
 clip = load('clip_audio')
 prep = load('prep_media')
+narration = load('narration')
 
 
 class ClipAudioTests(unittest.TestCase):
@@ -108,6 +109,19 @@ class MediaPrepTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, 'symlink'):
             self.invoke(['--replace'], lambda _: self.fail('must not convert'))
         self.assertEqual((other / 'keep.txt').read_text(), 'original')
+
+
+class VoiceFileTests(unittest.TestCase):
+    def test_a_quoted_word_keeps_the_file_valid(self):
+        data = {'cut': 'full', 'name': 'af_heart', 'cues': {
+            's-a/one': {'say': 'We call it "s-shaped".', 'len': 1.2, 'w': [0.1, 0.3, 0.5, 0.7]},
+            's-b/two': {'say': 'Then it stops.', 'len': 0.9, 'w': [0.1, 0.4, 0.6]}}}
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'voice.js'
+            narration.js_file(str(path), 'OXVOICE', 'test', data)
+            body = path.read_text(encoding='utf-8').split('const V = ', 1)[1].split(';\n  if (typeof module', 1)[0]
+        self.assertEqual(json.loads(body), data)
+
 
 
 if __name__ == '__main__':
