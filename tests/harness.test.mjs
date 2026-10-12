@@ -169,3 +169,15 @@ test('the CHAT example carries the template harness unchanged', () => {
   }
 });
 
+test('scene youtube: titles reach timing.json, where the chapters come from', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'youtube-test-'));
+  try {
+    cpSync(template, dir, { recursive: true });
+    const script = join(dir, 'js/script.js');
+    writeFileSync(script, readFileSync(script, 'utf8').replace(/title: ('[^']+')/g, 'title: $1, youtube: $1'));
+    const r = spawnSync(process.execPath, [join(dir, 'tools/export_script.mjs'), '--quiet'], { encoding: 'utf8', timeout: 10000 });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    const { scenes } = JSON.parse(readFileSync(join(dir, 'build/full/timing.json'), 'utf8'));
+    assert.deepEqual(scenes.map((s) => s.youtube), scenes.map((s) => s.title));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

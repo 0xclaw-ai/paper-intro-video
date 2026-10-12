@@ -8,7 +8,7 @@
  *             from then on the line lasts as long as it is really spoken
  *   gap       pause before the next cue (default 0.4)
  *   en        the caption text (and any other caption language listed in `captions`, e.g. zh)
- *   say       how a voice should say it, where that differs: "Zero X Claw", "ninety-three percent"
+ *   say       how a voice should say it, where that differs: "M V P", "ninety-three percent"
  *   caps:'each'  one caption per sentence/item (default: split long lines by length)
  *   breath    the pause this line needs between its sentences, in seconds, when each sentence brings a new
  *             picture that has to be seen (tools/narration.py lengthens shorter pauses of the voice)
@@ -50,11 +50,11 @@
   }
   const CAPTION = {
     en: (t) => splitCaption(t, 92, /(?<=[.?!:])\s+|(?<=\s—)\s+/, /,\s+/),
-    zh: (t) => splitCaption(t, 36, /(?<=[。？！；：])|(?<=——)/, /(?<=，)/).map((x) => x.replace(/[；，]$/, '')),
+    zh: (t) => splitCaption(t, 36, /(?<=[\u3002\uff1f\uff01\uff1b\uff1a])|(?<=——)/, /(?<=\uff0c)/).map((x) => x.replace(/[\uff1b\uff0c]$/, '')),
   };
   const EACH = {
     en: (t) => t.split(/(?<=[.?!])\s+/).filter(Boolean),
-    zh: (t) => t.split(/(?<=[、。？])/).map((x) => x.replace(/[、。]$/, '')).filter(Boolean),
+    zh: (t) => t.split(/(?<=[\u3001\u3002\uff1f])/).map((x) => x.replace(/[\u3001\u3002]$/, '')).filter(Boolean),
   };
 
   /* Two clocks.
@@ -79,7 +79,7 @@
     return ys[lo] + ((x - xs[lo]) * (ys[hi] - ys[lo])) / (xs[hi] - xs[lo]);
   }
   /** When each word of the caption text starts, given when each spoken word starts. The two texts differ
-   *  only where a word is spelled out for the voice ("0xClaw" / "Zero X Claw", "93%" / "ninety-three percent"). */
+   *  only where a word is spelled out for the voice ("MVP" / "M V P", "93%" / "ninety-three percent"). */
   function alignWords(en, say, times) {
     const A = en.split(/\s+/).filter(Boolean), B = say.split(/\s+/).filter(Boolean);
     if (!times || B.length !== times.length) return null;
@@ -115,7 +115,7 @@
     for (const src of SCENES) {
       const sv = src[cut] && typeof src[cut] === 'object' ? Object.assign({}, src, src[cut]) : src;        // a cut may override fields: full: { tail: 5.2 }
       // c, d, w and plan.dur are on the plan's clock (what js/scenes.js is written against); start, dur and cues[].at are film time
-      const sc = { id: sv.id, title: sv.title || sv.id, chapter: sv.chapter, start: r1(t), cues: [], c: {}, d: {}, w: {}, plan: {}, map: { p: [0], a: [0] } };
+      const sc = { id: sv.id, title: sv.title || sv.id, chapter: sv.chapter, youtube: sv.youtube, start: r1(t), cues: [], c: {}, d: {}, w: {}, plan: {}, map: { p: [0], a: [0] } };
       const knot = (p, a) => {                                // keep the map strictly increasing, and deaf to glitches in the word times
         const P = sc.map.p, A = sc.map.a, dp = p - P[P.length - 1], da = a - A[A.length - 1];
         if (dp > 0.04 && da > 0.04 && da / dp > 0.2 && da / dp < 5) { P.push(r1(p)); A.push(r1(a)); return true; }

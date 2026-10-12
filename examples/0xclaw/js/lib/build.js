@@ -50,11 +50,11 @@
   }
   const CAPTION = {
     en: (t) => splitCaption(t, 92, /(?<=[.?!:])\s+|(?<=\s—)\s+/, /,\s+/),
-    zh: (t) => splitCaption(t, 36, /(?<=[。？！；：])|(?<=——)/, /(?<=，)/).map((x) => x.replace(/[；，]$/, '')),
+    zh: (t) => splitCaption(t, 36, /(?<=[\u3002\uff1f\uff01\uff1b\uff1a])|(?<=——)/, /(?<=\uff0c)/).map((x) => x.replace(/[\uff1b\uff0c]$/, '')),
   };
   const EACH = {
     en: (t) => t.split(/(?<=[.?!])\s+/).filter(Boolean),
-    zh: (t) => t.split(/(?<=[、。？])/).map((x) => x.replace(/[、。]$/, '')).filter(Boolean),
+    zh: (t) => t.split(/(?<=[\u3001\u3002\uff1f])/).map((x) => x.replace(/[\u3001\u3002]$/, '')).filter(Boolean),
   };
 
   /* Two clocks.

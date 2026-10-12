@@ -57,10 +57,12 @@
       if (curtain._v !== v) { curtain.style.opacity = v; curtain._v = v; }
     });
     tl.seek(parseFloat(q.get('t') || '0'));
-    const has = (f) => document.fonts.check(f);
+    // a family counts as loaded once one of its faces has arrived (document.fonts.check() is true for a missing font too)
+    const family = (face) => face.replace(/^.*?\d+px\s+/, '').replace(/["']/g, '');
+    const loaded = (name) => [...document.fonts].some((f) => f.family.replace(/["']/g, '') === name && f.status === 'loaded');
     return {
       cut: SCRIPT.cut, duration: tl.duration, fps: SCRIPT.fps,
-      fonts: { serif: has('500 40px Newsreader'), sans: has('500 20px "DM Sans"'), mono: has('500 20px "JetBrains Mono"'), hand: has('700 40px Caveat') },
+      fonts: Object.fromEntries([...new Set(FACES.map(family))].map((name) => [name, loaded(name)])),
       scenes: SCRIPT.scenes.map((s) => ({ id: s.id, start: s.start, dur: s.dur })),
     };
   })();

@@ -16,6 +16,7 @@
     inCubic: (p) => p * p * p,
     outCubic: (p) => 1 - Math.pow(1 - p, 3),
     inOutCubic: (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2),
+    inQuart: (p) => p * p * p * p,
     outQuart: (p) => 1 - Math.pow(1 - p, 4),
     inOutQuart: (p) => (p < 0.5 ? 8 * p * p * p * p : 1 - Math.pow(-2 * p + 2, 4) / 2),
     outQuint: (p) => 1 - Math.pow(1 - p, 5),
@@ -29,6 +30,12 @@
       if (p <= 0) return 0; if (p >= 1) return 1;
       return Math.pow(2, -9 * p) * Math.sin(((p * 8 - 0.75) * (2 * Math.PI)) / 3) + 1;
     },
+  };
+  /** an ease by name (or a function); a name that is not in EASE is a typo, and a typo should not move the film */
+  const easing = (e) => {
+    if (typeof e === 'function') return e;
+    if (!EASE[e]) throw new Error('unknown ease: ' + e);
+    return EASE[e];
   };
 
   const DEFAULTS = { opacity: 1, x: 0, y: 0, z: 0, scale: 1, scaleX: 1, scaleY: 1, rotate: 0, rotateX: 0, rotateY: 0, blur: 0 };
@@ -96,7 +103,7 @@
       if (!props) { props = new Map(); this.items.set(el, props); }
       let list = props.get(prop);
       if (!list) { list = []; props.set(prop, list); }
-      list.push({ t0, t1: t0 + dur, from, to, ease: typeof ease === 'function' ? ease : (EASE[ease] || EASE.outCubic), fromAuto: from === undefined });
+      list.push({ t0, t1: t0 + dur, from, to, ease: easing(ease), fromAuto: from === undefined });
       this._sorted = false;
     }
     fromTo(target, from, to, opts = {}) {
@@ -111,7 +118,7 @@
     set(target, props, opts = {}) { return this.fromTo(target, null, props, { ...opts, dur: 0 }); }
     call(fn, opts = {}) {
       const { at = 0, dur = 0, ease = 'linear', scene = null } = opts;
-      this.calls.push({ fn, t0: at, t1: at + dur, ease: EASE[ease] || EASE.linear, scene });
+      this.calls.push({ fn, t0: at, t1: at + dur, ease: easing(ease), scene });
       return this;
     }
     ambient(fn) { this.ambients.push(fn); return this; }
@@ -271,5 +278,5 @@
     return out;
   }
 
-  window.OX = { Timeline, EASE, split, clamp01 };
+  window.OX = { Timeline, EASE, easing, split, clamp01 };
 })();

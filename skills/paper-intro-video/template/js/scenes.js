@@ -66,7 +66,7 @@
       chapter(S, lay.chrome.querySelector('.sec-head'), { hold: 0.8 });           // the headline opens centred, then settles top-left
       camera(S, lay, [
         { at: 0, k: 'steps', x: 960, y: 540, s: 1.0 },
-        { at: c.follow - 0.5, k: 'steps', x: 960, y: 590, s: 1.04, dur: 1.1 },    // lean toward the two tracks (a key must never push a figure into the headline or off the frame: check with tools/sheet.mjs)
+        { at: c.follow - 0.5, k: 'steps', x: 960, y: 590, s: 1.04, dur: 1.1 },    // lean towards the two tracks (a key must never push a figure into the headline or off the frame: check with tools/sheet.mjs)
         { at: c.rule - 0.55, k: 'rule', x: 960, y: 540, s: 1.0 },                 // travel to the next station
         { at: S.w('rule', '12', 2.2) - 0.4, k: 'rule', x: 700, y: 540, s: 1.12, dur: 1.0 },   // close on the number
       ]);

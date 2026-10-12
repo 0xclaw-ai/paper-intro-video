@@ -20,7 +20,7 @@
   'use strict';
 
   window.OXSTAGE = function (o = {}) {
-    const { Timeline, clamp01, EASE } = window.OX;
+    const { Timeline, clamp01, EASE, easing } = window.OX;
     const SCRIPT = window.OXSCRIPT, MK = window.OXMARK, WARP = window.OXWARP;
     const W = 1920, H = 1080, GAP = o.gap || 2400;                  // stage size; distance between stations
     const TURN = o.turn === undefined ? 0.5 : o.turn;               // half a page turn, on each side of a cut
@@ -125,7 +125,7 @@
       const push = o.push === undefined ? 0.0045 : o.push;
       const ks = keys.map((k) => ({
         at: k.at, dur: k.dur === undefined ? 0.9 : k.dur, st: typeof k.k === 'string' ? lay.k[k.k] : (k.k || 0),
-        y: k.y === undefined ? 540 : k.y, s: k.s || 1, ease: EASE[k.ease || 'inOutCubic'], push: k.push === undefined ? push : k.push, lx: k.x === undefined ? 960 : k.x,
+        y: k.y === undefined ? 540 : k.y, s: k.s || 1, ease: easing(k.ease || 'inOutCubic'), push: k.push === undefined ? push : k.push, lx: k.x === undefined ? 960 : k.x,
       })).sort((a, b) => a.at - b.at);
       ks.forEach((k, i) => { k.x = k.st * GAP + k.lx; if (i && ks[i - 1].st !== k.st) S.sfx('whoosh', k.at, { dur: k.dur, g: 0.4 }); });
       ks.forEach((k) => { const a = S.map(k.at); k.dur = S.map(k.at + k.dur) - a; k.at = a; });   // from here on the keys are in film time
