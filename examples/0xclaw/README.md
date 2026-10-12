@@ -4,7 +4,9 @@ A complete five-minute film on this harness — the intro video for *0xClaw: Aut
 Agents with Phase-aware Budget Allocation and Temporal Pressure* (EMNLP 2026). It went through
 five review rounds with its authors; `../../skills/paper-intro-video/SKILL.md` and the
 `references/` beside it are what those rounds taught. Frame for frame and sample for sample it rebuilds the delivered film (checked when
-this example was made).
+this example was made). Its `tools/` and `js/lib/` are the harness as it was then, kept so that rebuild
+stays exact; start a new film from [`template/`](../../skills/paper-intro-video/template/), which has
+the current tools and checks.
 
 ```bash
 node tools/make.mjs --no-render        # voice laid in again, cue sheet, sound bed (2 minutes)

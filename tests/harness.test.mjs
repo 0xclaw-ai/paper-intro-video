@@ -1,13 +1,17 @@
+// Checks of the harness that need no footage and no speech model:  node --test tests/harness.test.mjs
+// (tests/test_media.py covers the Python tools). Tests that drive a browser skip themselves where no Chromium is found.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, rmSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import vm from 'node:vm';
 
-const template = join(dirname(fileURLToPath(import.meta.url)), '../skills/paper-intro-video/template');
+const here = dirname(fileURLToPath(import.meta.url));
+const template = join(here, '../skills/paper-intro-video/template');
+const chat = join(here, '../examples/chat');
 const mediaSource = readFileSync(join(template, 'js/media.js'), 'utf8');
 function media(manifest = {}) {
   const context = { window: { OXMEDIA_MANIFEST: manifest }, console: { warn() {} } };
@@ -126,3 +130,16 @@ test('invalid audit step fails rather than hanging', () => {
   assert.equal(r.status, 1);
   assert.match(r.stderr, /positive number/);
 });
+
+// the CHAT example runs on the current harness; 0xClaw keeps the harness it was delivered with
+test('the CHAT example carries the template harness unchanged', () => {
+  const files = (root, dir) => readdirSync(join(root, dir)).filter((n) => !n.startsWith('.') && statSync(join(root, dir, n)).isFile()).sort();
+  const own = { tools: ['make_logos.py', 'piano.py'], 'js/lib': [], 'vendor/roughjs': [] };   // the example's own tools
+  for (const [dir, extra] of Object.entries(own)) {
+    assert.deepEqual(files(chat, dir), [...files(template, dir), ...extra].sort(), `examples/chat/${dir} has other files than the template`);
+  }
+  for (const file of ['js/media.js', ...Object.keys(own).flatMap((dir) => files(template, dir).map((n) => `${dir}/${n}`))]) {
+    assert.ok(readFileSync(join(chat, file)).equals(readFileSync(join(template, file))), `examples/chat/${file} differs from the template`);
+  }
+});
+
