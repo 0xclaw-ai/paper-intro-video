@@ -87,6 +87,9 @@ bottom 170 px of every station free of content that matters.
 - A camera key must never cut a headline or a figure at the frame edge, and must never push a
   figure into the headline that stays put. Scales between 1.0 and 1.15 are almost always enough;
   2× only for a deliberate macro shot of one detail.
+- Scenes bleed 3 px in their own ground, which hides fractional-pixel seams in page turns; check the
+  encoded frames, not only the browser preview. The underline's stroke in the ground colour clears
+  descenders: match it to the ground when a marked word sits on a coloured panel.
 
 ## Clean marks for a different identity
 
@@ -94,7 +97,3 @@ For a crisp, technical look, set `window.OXCLEAN = true` before `js/lib/annotate
 underlines, flat highlights, ellipses and chevron arrows; the stage helper suppresses their pen sound.
 `window.OXROUGH` scales roughness when clean mode is off. The template stays hand-drawn by default.
 Choose deliberately; CHAT uses clean marks rather than imposing the annotated-paper look on its brand.
-
-The underline's text-coloured ground stroke in `base.css` clears descenders. Match it to the actual ground
-if a marked word sits on a custom-coloured panel. Scenes bleed 3 px in their own ground to hide fractional
-pixel seams during page turns. Check the encoded frames, not just the browser preview.

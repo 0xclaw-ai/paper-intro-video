@@ -11,7 +11,7 @@ Copy this to an agent:
 Research and use this skill: https://github.com/0xclaw-ai/paper-intro-video
 ```
 
-The agent reads this repository and follows the skill. You do not install anything first.
+The agent reads this repository, follows the skill, checks your machine and asks before it downloads anything.
 
 ## Install it yourself
 
@@ -39,7 +39,8 @@ node tools/doctor.mjs     # what this machine has; installs nothing
 node tools/make.mjs       # voice → timing → sound → render → checks  →  out/
 ```
 
-Needs Node 22+, Chrome/Chromium/Edge, and Python with `av numpy pillow scipy`. A natural voice
+Needs Node 22+, Chrome/Chromium/Edge, and Python with `av numpy pillow scipy` (the doctor prints the
+command for a `.venv` inside `my-film`). A natural voice
 (Kokoro-82M, about 400 MB) is an optional one-time download; a built-in Windows voice or your own
 recording work too.
 
@@ -50,7 +51,7 @@ recording work too.
 | `skills/paper-intro-video/` | the skill, its references (including publishing) and `template/` |
 | `examples/0xclaw/` | a complete five-minute EMNLP 2026 film |
 | `examples/chat/` | an ECCV 2026 teaching adaptation: narration and placeholders, no demo footage |
-| `tests/` | checks for clip timing, chapters and the scene contract |
+| `tests/` | the harness's own checks: `node --test tests/harness.test.mjs`, `python tests/test_media.py` |
 | `.claude-plugin/` | Claude Code plugin manifest |
 
 ## Licence
@@ -60,10 +61,5 @@ Bundled libraries, fonts, names and example images keep their own terms: [NOTICE
 
 ## CHAT (ECCV 2026)
 
-[Watch the 3:47 CHAT film](https://youtu.be/9C436tP0OEA) · [Source example](examples/chat/)
-· [Paper](https://arxiv.org/abs/2607.02799) · [Project](https://junhaosong.com/chat/)
-
-The second example shows a different visual identity: clean geometric marks, word-timed method diagrams,
-clip playback and a synthesised piano bed. The source package includes narration and labelled plates in
-place of demo footage. It is a teaching adaptation, not a frame-identical rebuild of the published film.
-Its README records provenance and the known limitation of the published opening caption.
+[Watch the 3:47 CHAT film](https://youtu.be/9C436tP0OEA), made with this skill. [Its source](examples/chat/)
+is a teaching adaptation, with labelled plates in place of the demo footage.

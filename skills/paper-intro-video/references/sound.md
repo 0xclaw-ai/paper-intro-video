@@ -6,10 +6,9 @@ Nothing is sampled: there is nothing to license.
 
 ## The bed: 40 Hz binaural beats
 
-The user asked for copyright-free 40 Hz binaural beats instead of a composed score. A 200 Hz sine
-in the left ear, 240 Hz in the right; the 40 Hz difference only exists once the brain puts the two
-ears together. Underneath, a quieter pair at 80 / 120 Hz and a little decorrelated air that lifts
-at each scene change.
+The default bed is copyright-free 40 Hz binaural beats: a 200 Hz sine in the left ear, 240 Hz in
+the right; the 40 Hz difference only exists once the brain puts the two ears together. Underneath,
+a quieter pair at 80 / 120 Hz and a little decorrelated air that lifts at each scene change.
 
 - **Headphones only.** On loudspeakers the tones mix in the air into an ordinary 40 Hz flutter.
   Say this to the user every time the bed is delivered.

@@ -11,14 +11,14 @@ replace the content.
 
 ```bash
 node tools/doctor.mjs                    # what this machine has; installs nothing
-node tools/make.mjs                      # the demo, end to end → out/demo.mp4, out/demo_captions_en.mp4
+node tools/make.mjs                      # the demo, end to end → out/demo.mp4, out/demo_captions_en.mp4, their 720p copies
 ```
 
 Open `index.html` in a browser for a live preview (space = play, arrows = ±1 s, `,` `.` = ±1 frame).
 
-Needs Node 22+, a Chromium (Playwright's, Chrome or Edge), and Python with `av numpy pillow` and
-`numpy scipy` (they may be different interpreters; `tools/env.mjs` finds them). A natural voice
-needs Kokoro once (about 400 MB; see `tools/voice_kokoro.py` — it is a download, decide first).
+Needs Node 22+, a Chromium (Playwright's, Chrome or Edge) and Python with `av numpy pillow scipy`:
+`node tools/doctor.mjs` prints the command for a `.venv` in this folder, which the tools then use. A
+natural voice needs Kokoro once (about 400 MB; see `tools/voice_kokoro.py` — it is a download, decide first).
 
 ## Make it yours
 
@@ -58,7 +58,7 @@ Another voice later: `node tools/make.mjs --voice kokoro:bm_george` — the film
 | `render.mjs` (+ `encode.py`, `mux.py`, `cdp.mjs`) | frames → MP4, without and with captions, voice over the bed at −16 LUFS |
 | `verify.py` | the encoded film against the page |
 | `still.mjs`, `sheet.mjs`, `when.mjs`, `stillness.mjs`, `compare.py`, `measure_lockup.py` | looking at it |
-| `poster.mjs`, `transcode.py`, `probe.py`, `audio_report.py`, `build_icons.mjs` | cover frames, small web copies, stream facts, a spectrogram, the icon bundle |
+| `poster.mjs`, `transcode.py`, `probe.py`, `audio_report.py`, `build_icons.mjs` | cover frames, 720p copies, stream facts, a spectrogram, the icon bundle |
 
 `js/lib/` is the machinery (timeline, stagecraft, the builder that turns script and voice into
 timing); `css/base.css` the shared look. Each file's header says what it does.

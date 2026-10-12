@@ -6,11 +6,10 @@ folder — in your assistant's memory or a private file — not in the skill.
 
 ## Environment
 
-- **Three Pythons may be needed, and they need not be the same one**: one with `av numpy pillow`
-  (encode, mux, verify), one with `numpy scipy` (narration, sound bed), one with `kokoro-onnx`
-  (the voice). `tools/env.mjs` finds them: the variables `OX_PYTHON`, `OX_PYTHON_SCI`,
-  `OX_PYTHON_TTS` first, then the PATH, then the user's conda environments. Do not install into
-  the user's existing environments; a venv inside the project or the TTS folder is fine once they agree.
+- **One Python environment covers every job but the voice**: `av numpy pillow scipy` in a `.venv`
+  inside the film folder, which the tools use by themselves (`node tools/doctor.mjs` prints the
+  command). A Python elsewhere works too: point `OX_PYTHON` (and `OX_PYTHON_SCI`) at it. Kokoro has
+  its own (`OX_PYTHON_TTS`). Leave the user's existing environments as they are.
 - **`python` on Windows may be the Store stub**: it exists, prints nothing and does nothing. If a
   Python step "succeeds" silently with no output, call the interpreter by its full path.
 - **Normal rendering needs no ffmpeg executable** (PyAV carries the libraries). Optional
@@ -18,13 +17,10 @@ folder — in your assistant's memory or a private file — not in the skill.
 - **A `package.json` with `"type": "module"` anywhere above the film** makes Node read `js/*.js`
   as ES modules and the builder fails with "js/script.js has to define the film". The film's own
   `package.json` (`"type": "commonjs"`) prevents it — keep that file when copying the template.
-- **Downloads need a yes**: Python packages, the Kokoro model (about 400 MB), a browser, an icon
-  SVG. Say what, from where, how large; install inside the project; report afterwards what was
-  fetched. A Kokoro install elsewhere on the machine can be reused with `OX_TTS=<folder>`.
 - **Fonts come from Google Fonts** at render time. Offline, the page falls back to local fonts and
   marks are measured against those; `doctor.mjs` and the first line of every render say whether
-  the four faces loaded. A plain HTTP check from Node can fail behind a proxy while the browser
-  works — trust the browser's answer.
+  each face loaded. A plain HTTP check from Node can fail behind a proxy while the browser works —
+  trust the browser's answer.
 
 ## Shell and files
 
@@ -37,52 +33,19 @@ folder — in your assistant's memory or a private file — not in the skill.
   and work on something else until the completion notice.
 - **Links in the reply** resolve from the folder the session was opened in. A link relative to
   the film's own folder opens as "file not found".
+- **A film folder that iCloud syncs** collects conflict copies named "… 2"; `doctor.mjs` says when
+  it is one. Work outside a synced `~/Documents` or `~/Desktop`.
 
 ## The page
 
-- **Nothing may animate by itself** (CSS transitions, timers): frames are rendered in parallel and
-  in any order. If two renders of the same time differ, something is stateful.
-- **Measure after layout and fonts**: marks, arrows and `boxIn` need every scene laid out
-  (`player.js` does that while building) and the real fonts. DOM added after `MK.prepare` has no marks.
-- **`<svg class="ink">` must be a direct child of its station**, or arrow coordinates are off.
-- **A word that is not in the line makes `S.w` throw** — by design. Check the spelling against the
-  `en` text (punctuation is ignored, case is ignored).
-- **A callback that watches the clock** must compare `S.now(t)` with plan times, not `t` itself.
-- **Camera keys can cut things**: after every change to keys or layout, look at a contact sheet.
+- **Two renders of the same moment differ**: something animates by itself (a CSS transition, a
+  timer) or keeps state between frames. Everything goes through the timeline (`engine.md`).
+- **`S.w` throws**: the word is not in the line. Check it against the `en` text (punctuation and
+  case are ignored).
 
-## Voice and sound
+## Voice
 
 - **`System.Speech` reports word positions as if the audio were 16 kHz**; `narration.py` detects
   and corrects that (it checks the times against the pauses it hears).
 - **espeak mispronounces some ordinary words** ("hackathon" with a swallowed last syllable).
   Read `phonemes.txt`; fix in the `SAY` table of `tools/voice_kokoro.py`.
-- **The bed must match the timing.** After any change of voice or script: cue sheet, then bed,
-  then render (`make.mjs` does it in that order; `render.mjs` refuses a bed of the wrong length).
-- **Do not touch `build/full/narration.wav`, `js/voice.js` or `audio/` while a render runs** — the
-  mux at the end reads them.
-
-## Process
-
-- **Archive before a revision**: copy source, audio and outputs to `versions/vN/`. Users compare.
-- **Say where a limit comes from.** A length you chose is not a venue rule.
-- **Do not fix what was not reported without saying so**, and say when you extended a fix to
-  similar places (the logo lockup was aligned in three places although only one was mentioned).
-- **Facts**: dates, prizes, "first" — only from the sources, or flagged as the user's claim.
-
-## Lessons from the CHAT film
-
-- **Cloud-synced build directories:** iCloud can leave conflict copies with names ending in ` 2`, even
-  inside `.git`. Prefer a non-synced workspace for frame extraction and rendering. Compare before
-  removing apparent duplicates; an old-looking file may contain newer work.
-- **A loaded font can still miss a glyph.** An arrow, multiplication sign or subscript can fall back to
-  a system font although all font faces loaded. Run `audit_fonts.mjs`; use a bundled SVG icon or a
-  supported glyph, then inspect the frame. A global allowlist is not a fix for unexplained fallback.
-- **Line boxes are not ink boxes.** A large numeral near a label can trigger overlap checks even when
-  the glyphs do not touch. Inspect the reported span at full size; the audit trims line boxes as a
-  heuristic, not proof of typographic clearance.
-- **AAC can overshoot.** Measure decoded audio, including a 4× oversampled true-peak estimate. The mux
-  leaves extra headroom, but a gain or source change still needs `check_audio.py` again.
-- **A transient is not always a click.** A short piano hammer attack may legitimately appear in an
-  onset report. Inspect stems and ask for listening feedback instead of flattening every transient.
-- **YouTube Error 153:** a player can fail when the embed sends no HTTP Referer. Test on the real HTTPS
-  site with `strict-origin-when-cross-origin`, not a local file or `no-referrer`; see `publishing.md`.

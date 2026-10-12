@@ -23,16 +23,8 @@ replacement uploads.
 3:26 Summary and links
 ```
 
-These timestamps belong to the published film. For a rebuilt or re-voiced example, generate timestamps
-from its own timing instead:
-
-```bash
-node tools/export_script.mjs
-node tools/chapters.mjs
-```
-
-Selected scenes in `js/script.js` carry `youtube:` titles. The tool checks zero start, chapter count,
-minimum duration and speech boundaries. Inspect any merged or shifted chapter before using it.
+These timestamps belong to the published film. A rebuilt or re-voiced example gets its own from the
+scenes' `youtube:` titles: `node tools/make.mjs` writes `build/full/chapters.txt`.
 
 ## Disclosure and claims
 
@@ -40,9 +32,8 @@ Narration is synthetic (Kokoro-82M). The release footage in the published film w
 public CHAT code using identities from HDTF; that footage is not included in this repository. The
 paper's reported results and the release implementation are separate evidence sources.
 
-The film's opening caption has a documented limitation: the displayed prompt does not establish every
-source identity's provenance. See [CLAIMS.md](CLAIMS.md). It is omitted from this teaching copy and must
-not be used as a cover claim.
+The published opening caption has a documented limitation ([CLAIMS.md](CLAIMS.md)); this teaching copy
+omits it, and no cover uses it.
 
 For upload approval, disclosures, captions, honest covers, website embeds and README links, use the
 [publication checklist](../../skills/paper-intro-video/references/publishing.md).

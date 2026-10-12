@@ -38,8 +38,8 @@ node tools/make.mjs
 ```
 
 `make.mjs` restores the voice track from included clips, then builds the placeholder film with the
-standard sound bed. It writes `out/chat_intro.mp4`, a burned-caption copy, SRT/VTT, posters, checks and
-`build/full/chapters.txt`. Typeface files load from Google Fonts; check font results on your machine.
+standard sound bed. It writes `out/chat_intro.mp4`, a burned-caption copy, 720p copies of both, SRT/VTT,
+posters, checks and `build/full/chapters.txt`. Typeface files load from Google Fonts; check font results on your machine.
 
 For the example's piano rather than the standard bed, run this sequence instead (`python` must be the
 interpreter selected above):
@@ -48,7 +48,7 @@ interpreter selected above):
 node tools/make.mjs --no-render
 python tools/piano.py
 node tools/render.mjs --audio audio/full/bed.wav,-1 --audio build/full/narration.wav,0 --lufs -16
-python tools/check_audio.py out/chat_intro.mp4
+python tools/check_audio.py out/chat_intro.mp4 --strict
 ```
 
 There is no demo-audio layer in this package. The piano tool skips missing demo sound windows. To study
@@ -78,9 +78,7 @@ measurements of the public implementation. ECCV logo paths derive from the confe
 conference organisers retain rights to their marks. `tools/make_logos.py --source <official.svg>` is an
 optional regeneration tool, not part of the build; the input SVG is obtained separately.
 
-Rough.js and Phosphor notices are bundled with their assets. Simple Icons uses CC0. Typeface families
-are Archivo and IBM Plex Mono, loaded from Google Fonts under their respective SIL Open Font Licences.
-Narration was synthesised with Kokoro-82M; no model weights are included. The piano is synthesised by
-code rather than sampled from a recording. These credits do not grant rights to third-party footage,
-people's identities or conference branding. Check the repository's licence and the relevant owners'
+Third-party terms are in the repository's [NOTICE](../../NOTICE.md). The narration was synthesised with
+Kokoro-82M and the piano by code. None of this grants rights to third-party footage, people's identities
+or conference branding. Check the repository's licence and the relevant owners'
 terms before reusing assets elsewhere.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""A soft piano over the skill's 40 Hz bed, synthesized here without external music samples.
+"""A soft piano over the skill's 40 Hz bed, synthesised here without external music samples.
 
     python tools/music.py --cut full        # first: the 40 Hz binaural bed and the cues -> audio/full/soundtrack.wav
     python tools/piano.py --cut full        # then:  audio/full/piano.wav and audio/full/bed.wav (piano + bed + cues)

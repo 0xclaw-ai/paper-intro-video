@@ -8,11 +8,11 @@ commands. Report results as numbers, and say plainly what no tool can tell you.
 
 | step | tool | what it proves |
 | --- | --- | --- |
-| clips | `check_clips.py` | when a voice is laid in or restored: every line matches the current words; rate within ±20% of the median; no internal pause over 1 s; no clipping |
+| clips | `check_clips.py` | when a voice is laid in or restored: a clip that is missing, made for other words, clipped or empty fails; a rate more than ±20 % off the median or a pause over 1 s inside a line is listed |
 | contract | `preflight.mjs` | scene ids agree, no self-running animation or `<video>`, a strong claim has `CLAIMS.md` |
-| glyphs | `audit_fonts.mjs` | no unexplained system-font glyph; the build fails if one is found |
+| glyphs | `audit_fonts.mjs` | no unexplained system-font glyph (the build fails on one); said numbers that never count up are listed |
 | voice | `narration.py` (its report) | each line has room before the next; word times from the engine agree with heard pauses (expect ≥ 90 % of sentence starts) |
-| picture | `verify.py` | stream facts (duration, 1920×1080, 30 fps, frame count, audio present) and two frames per scene compared with the page: mean difference about 1 on a 0–255 scale is encoder noise; above 4 it flags a mismatch |
+| picture | `verify.py` | both films exist, with sound, the film's length and frame rate; two frames per scene compared with the page (mean difference about 1 on a 0–255 scale is encoder noise). Anything else fails, a difference above 4 included |
 | sound | `check_audio.py --strict` | −16 LUFS (±1.5), sample peak and estimated true peak under −1 dB; missing scipy fails rather than passing as unchecked |
 
 The build then runs `audit_video.py --fail seams`. A seam fails the build. Flat frames and jumps are
@@ -45,18 +45,22 @@ above the bed is printed, not enforced: read it, and say when it is outside 12�
 
 ## Before a long render
 
-A five-minute film takes about ten minutes to render. Before starting one: contact sheet looked
-at, cue sheet exported, bed made for the current timing (the renderer refuses a bed of the wrong
-length), no page-console errors from `tools/still.mjs`. Render in the background and use the time
-(documentation, samples); do not edit `js/`, `css/`, `index.html`, `build/full/narration.wav` or
-`audio/` until it has finished.
+A full `make.mjs` takes about three times the film's length on an Apple M1, half of it the render,
+and longer on a slower or busy machine. So check each change with stills, contact sheets and
+`make.mjs --range a-b` (those seconds, silent), and build the whole film once per review round.
+Before a full build:
+contact sheet looked at, cue sheet exported, bed made for the current timing (the renderer refuses a
+bed of the wrong length), no page-console errors from `tools/still.mjs`. Render in the background
+and use the time (documentation, samples); do not edit `js/`, `css/`, `index.html`,
+`build/full/narration.wav` or `audio/` until it has finished.
 
 ## The handover
 
 Say, in the user's language:
 
-- **What is in `out/`**, with links that resolve from the folder the session was opened in, the
-  length, and that nothing was cut if the length changed.
+- **What is in `out/`**, with links that resolve from the folder the session was opened in: the
+  1080p films to upload (YouTube, the venue) and their 720p copies to send. Give the length, and say
+  that nothing was cut if the length changed.
 - **What you verified and how**, in numbers: "20 frames compared with the page (mean difference
   1.1); −16.0 LUFS, peak −1.0 dBFS; voice 15 dB above the bed; word times agree with pauses at
   48 of 50 sentence starts; 6 % of the film is still, longest hold 2.0 s."
@@ -82,7 +86,9 @@ python tools/audit_video.py out/<slug>.mp4 --json build/audit/video.json
   accepts named families only when intentional; the 0.25 s default samples time, not every frame.
 - **Page:** text clipping, masked descenders, text overlap, text under images, missing images. Outputs
   `frames.json` and `spans.json`. Add `data-block` to an opaque panel that should occlude text; use
-  `--blocks` to override the selector. The tool reports findings, not a pass/fail design verdict.
+  `--blocks` to override the selector. The tool reports findings, not a pass/fail design verdict. Line
+  boxes are not ink boxes: a large numeral beside a label can count as an overlap although the glyphs
+  do not touch, so look at the span at full size.
 - **Encode:** one-pixel seams, flat frames and sudden jumps. Exits nonzero for seams or flat frames
   unless `--no-fail`. Intended page turns and final fades can trigger it; inspect their timestamps.
 

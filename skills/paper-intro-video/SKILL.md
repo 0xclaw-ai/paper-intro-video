@@ -1,6 +1,6 @@
 ---
 name: paper-intro-video
-description: "Make a narrated, animated intro or explainer video (MP4) for a research paper, project or product from its PDF, code and website. The film is an HTML page rendered frame by frame; a synthesised or recorded voice-over drives captions and pictures word by word; the sound bed is synthesised; every step has a check. Use this skill whenever the user wants an intro video, explainer video, paper video, conference presentation video (ACL, EMNLP, NeurIPS, CVPR and the like), video abstract, project trailer or launch video, or wants to revise one made this way (another voice, new wording, pacing, look, captions), even if they only say 'make a video for our paper' or send a PDF and a repo link and ask for 'something to show at the conference'."
+description: "Make or revise a narrated, animated intro video (MP4) for a research paper or project from its PDF, code and website. Use when someone wants a paper, conference, explainer or launch video, even if they only say 'make a video for our paper' or send a PDF and a repo link, or wants to change one made this way: voice, wording, pacing, look, captions."
 ---
 
 # Paper intro video
@@ -10,35 +10,36 @@ If you were sent https://github.com/0xclaw-ai/paper-intro-video, follow this fil
 A film here is a web page: a 1920×1080 stage whose every frame is a pure function of time. A
 headless browser renders it frame by frame, a voice is laid over it, and captions and pictures
 are timed to the words of that voice — so the voice can be swapped, re-paced or re-recorded and
-everything follows. No video editor, no timeline dragged by hand, nothing that cannot be rebuilt
-from text.
+everything follows.
 
 The skill has two parts, and worked examples in its repository:
 
 | | |
 | --- | --- |
-| `template/` | The harness. Copy it to start a film: engine, stagecraft, tools, and a 30-second demo film that explains itself. |
+| `template/` | The harness. Copy it to start a film: engine, stagecraft, tools, and a 30-second demo film that explains itself ([rendered](https://github.com/0xclaw-ai/paper-intro-video/blob/main/examples/template-demo.mp4)). |
 | `references/` | How to do each part well. Read the one you need when you get there (list at the end). |
-| `examples/0xclaw/` | A complete five-minute film on the same harness (an EMNLP 2026 paper). It is not installed with the skill: it is `examples/0xclaw/` in the skill's repository — https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples/0xclaw, or `../../examples/0xclaw/` from this file when the whole repository is on disk. Read it for patterns at full scale: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The reference files call it "the example". The template's demo, rendered, is in the same repository: `examples/template-demo.mp4` (https://github.com/0xclaw-ai/paper-intro-video/blob/main/examples/template-demo.mp4). |
-| `examples/chat/` | A 3:47 ECCV 2026 film: clean geometric marks, word-timed diagrams, frame-sequence clips, and a claims ledger. [Watch the published film](https://youtu.be/9C436tP0OEA). The source example uses labelled placeholders instead of redistributing the demo footage; see its README for the differences. |
+| `examples/0xclaw/` | A complete five-minute EMNLP 2026 film on an earlier version of the harness: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The references call it "the example". |
+| `examples/chat/` | A 3:47 ECCV 2026 film ([published](https://youtu.be/9C436tP0OEA)): clean geometric marks, word-timed diagrams, frame-sequence clips and a claims ledger, with labelled placeholders for the demo footage. |
 
-Copy `template/` to start. Do not copy an example over it, and do not borrow one project's colours,
-type or marks for another. The template is the default finished look. Examples show structure and
-scale. A completed build means its mechanical gates passed; it does not judge voice, claims or taste.
-Fix a failing gate. Do not switch the gate off to make the command exit cleanly.
+The examples are not installed with the skill: read them at
+https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples, or at `../../examples/` from this file
+when the whole repository is on disk. Every film starts from a copy of `template/`, the default finished
+look; examples show structure and scale, and each project keeps its own colours, type and marks. A
+failing gate is fixed, never switched off.
 
 ## The shape of the work
 
 The order matters, and the first three steps are where films are won or lost. Resist starting
 with visuals.
 
-1. **Look at the machine.** Copy the contents of `template/` into the project folder — that folder
-   is now the film, and every command below runs in it — and run `node tools/doctor.mjs`.
-   It must exit 0. Node, Chromium, the two Python jobs and the page's typefaces are required.
-   Kokoro is optional: the bundled demo already has narration clips.
-   `node tools/make.mjs` then builds the bundled 30-second demo as it is (a few minutes; its
-   narration clips are included, so it needs no speech model) — a quick proof that the pipeline
-   works on this machine before any of it is replaced.
+1. **Look at the machine.** Copy `template/` into a new, empty folder (for example `video/` beside
+   the paper's files): that folder is now the film, and every command below runs in it. No copy of
+   the skill on disk? Fetch the repository first (a download; about 50 MB on disk):
+   `git clone --depth 1 https://github.com/0xclaw-ai/paper-intro-video`. Run `node tools/doctor.mjs`;
+   it must exit 0. Node 22+, a Chromium, Python with `av numpy pillow scipy` (the doctor prints one
+   command for a `.venv` in the film folder) and the page's typefaces are required; Kokoro is
+   optional. Then `node tools/make.mjs` builds the bundled 30-second demo as it is, with its own
+   narration clips: proof that the pipeline works on this machine before any of it is replaced.
    Anything that needs a download — a Python package, a speech model, a browser — is the user's
    decision: say exactly what, from where and how large, and wait for a yes. Use project-local
    environments and explicit interpreter paths; leave existing environments, global skills and caches alone.
@@ -58,10 +59,11 @@ with visuals.
    pictures against guessed durations and adding a voice later is how films end up with dead air
    or pictures that trail the words. → `references/voice.md`
 5. **Decide the look, then build the scenes.** One idea per screen, a dozen words at most, the
-   point of each screen visibly marked (hand-drawn or clean geometry); every narrated phrase acted out on its words; a camera
-   that never parks. `index.html` (markup), `css/film.css` (where things sit), `js/scenes.js`
-   (what happens). Look at stills and contact sheets constantly — you cannot watch the film, but
-   you can read frames. → `references/design.md`, `references/motion.md`, `references/engine.md`
+   point of each screen visibly marked (hand-drawn or clean geometry); every narrated phrase acted
+   out on its words; a camera that never parks. `index.html` (markup), `css/film.css` (where things
+   sit), `js/scenes.js` (what happens). Look at stills and contact sheets constantly — you cannot
+   watch the film, but you can read frames.
+   → `references/design.md`, `references/motion.md`, `references/engine.md`
 6. **Sound, render, check.** `node tools/make.mjs` stops on a broken scene contract, a missing
    typeface, a glyph drawn by a system font, a one-pixel seam, clipped audio, or loudness away
    from −16 LUFS. It also lists flat frames and jumps. Read every one: a fade can be flat, a blank
@@ -72,9 +74,9 @@ with visuals.
    headphones), and the decisions that are theirs. For YouTube, site embeds or README cards, read
    `references/publishing.md`. Publishing and pushing need separate approval; a rendered file is not an upload.
 8. **Iterate in rounds.** Users review with screenshots. Before a revision, copy the current state
-   to `versions/vN/`. Apply the round, re-render, report what changed. If the film is frozen,
-   edit only the requested cover or metadata; do not overwrite the approved MP4 or narration. Keep the durable feedback
-   (see below) — it applies to the next film too.
+   to `versions/vN/`. Apply the round, re-render, report what changed. Once the film is frozen, edit
+   only the requested cover or metadata and keep the approved MP4 and narration. Keep the durable
+   feedback (see below): it applies to the next film too.
 
 ## What the feedback taught
 
@@ -104,9 +106,9 @@ taste of this skill; a user's explicit wish overrides them.
   large enough to read; no footnote marks (asterisks, daggers) when there is nowhere to explain them
   — the audience is not only academics.
 - **The last card says what the work is in one sentence**, then where to find it. Not "thank you".
-- **Align by eye, not by box.** A logo lockup centred on bounding boxes looked crooked because the
-  mascot's crown lifted its box; aligning on the visual centre fixed it. When someone says a thing
-  looks off and the geometry says it is fine, measure the visual centres before answering.
+- **Align by eye, not by box.** When someone says a thing looks off and the geometry says it is
+  fine, measure the visual centres (`tools/measure_lockup.py`) before answering: a mascot's crown
+  once lifted a lockup's box.
 - **Do not drop content to hit a length you chose.** Say whether a limit is the venue's or yours,
   and keep the complete version.
 - **Offer few variants.** One cut, with and without burned-in captions, is what was wanted in the end.
@@ -120,7 +122,7 @@ node tools/make.mjs --voice kokoro:af_heart --as-plan --no-render   # first voic
 node tools/still.mjs --t 12,21.5                         # full-size frames  -> build/stills/
 node tools/sheet.mjs --step 2.5                          # contact sheets    -> build/sheets/
 node tools/when.mjs s-how/steps                          # when each word of a line is said (film time)
-node tools/make.mjs                                      # sound, render, verify, posters -> out/
+node tools/make.mjs                                      # sound, render, verify, posters, 720p copies -> out/
 node tools/make.mjs --voice kokoro:bm_george             # another voice: the film follows
 node tools/make.mjs --voice kokoro:af_heart --only 4,17  # two lines changed: redo only those
 node tools/make.mjs --samples af_bella,am_michael        # audition files for the user to choose a voice
@@ -131,8 +133,10 @@ python tools/audit_video.py out/<slug>.mp4                # encoded seams, flat 
 node tools/chapters.mjs                                  # scene youtube: fields -> chapters.txt
 ```
 
-`make.mjs` only runs the ordinary tools in `tools/` in the right order with the right Python;
-each of them can be run alone (their headers say how).
+`make.mjs` only runs the ordinary tools in `tools/` in the right order with the right Python
+(`node tools/make.mjs --help` lists its options); each tool can be run alone, as its header says.
+`python` above is the film's Python: `.venv/bin/python` (Windows `.venv\Scripts\python`), or the
+one `node tools/doctor.mjs` names.
 
 ## Reference files
 

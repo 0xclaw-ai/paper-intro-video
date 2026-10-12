@@ -5,7 +5,7 @@
     {
       "id": 1,
       "prompt": "We have an ACL 2027 paper (PDF at ./paper.pdf, code in ./repo, site https://example.org/proj). Make an intro video of about three minutes for the conference and the site. English narration and English captions, plus a copy without captions. The project name is pronounced \"Lumen\". Check this machine first, and ask before any download.",
-      "expected_output": "Runs tools/doctor.mjs and asks before any download; collects numbers into js/data.js with their tables; writes a script with a promise, a slogan, a fence, a question, a surprise and a closing sentence; lays in a voice with --as-plan before timing scenes; delivers out/<slug>.mp4 and out/<slug>_captions_en.mp4 with narration; reports verification in numbers and says what could not be verified (hearing).",
+      "expected_output": "Runs tools/doctor.mjs and asks before any download; collects numbers into js/data.js with their tables; writes a script with a promise, a slogan, a fence, a question, a surprise and a closing sentence; lays in a voice with --as-plan before timing scenes; counts every number the narration says up on its word; delivers out/<slug>.mp4 and out/<slug>_captions_en.mp4 with narration, and their 720p copies; reports verification in numbers and says what could not be verified (hearing).",
       "files": []
     },
     {
@@ -22,12 +22,6 @@
     },
     {
       "id": 4,
-      "prompt": "Add the existing ECCV film as an example in this skill, but do not publish the original footage of people, and do not change the uploaded MP4. Check the video entry on the site and in the README.",
-      "expected_output": "Adds an explicitly labelled teaching adaptation with placeholders and ownership notes; preserves the frozen film; distinguishes paper claims, public-release output and source identities; checks covers independently; uses a click-to-load website player and an image link in README; asks before publishing.",
-      "files": []
-    },
-    {
-      "id": 5,
       "prompt": "The build finished, but some transitions have thin lines, the arrow looks wrong, and YouTube does not show chapters. Diagnose without global installs.",
       "expected_output": "Runs the page, encoded-pixel and glyph-font audits; inspects flagged timestamps rather than hiding them; validates 0:00, at least three chapters and minimum 10 seconds; reports decoded AAC true peak or explicitly says it was not measured; uses existing or approved project-local tools.",
       "files": []

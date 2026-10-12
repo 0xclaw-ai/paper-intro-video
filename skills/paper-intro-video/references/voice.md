@@ -68,13 +68,8 @@ Then re-synthesise only the changed lines: `node tools/make.mjs --voice kokoro:a
 
 ## What can be checked without ears
 
-`tools/narration.py` and the sanity checks in `references/qa.md` cover: every line present and
-made for the current words; speaking rate per line within ±20 % of the median (an outlier is
-usually a mispronounced or garbled line); no clipping; no pause over a second inside a line; word
-times agreeing with heard pauses; voice level even across lines (−20 dBFS RMS while speaking).
-
-What cannot: whether the voice is pleasant, whether a name sounds right, whether the mix is
-comfortable. Say so, and ask the user to listen once with headphones.
+`references/qa.md` lists what the tools check. Whether the voice is pleasant, a name sounds right or
+the mix is comfortable, only the user can tell: ask them to listen once with headphones.
 
 ## Changing things later
 

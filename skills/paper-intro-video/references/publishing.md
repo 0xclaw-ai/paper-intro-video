@@ -2,14 +2,14 @@
 
 Treat the approved MP4, its captions and the recorded narration as frozen once the user closes the film.
 A cover or link update is not permission to rebuild it. Prepare files locally; obtain approval before an
-upload, push or public post. An example in a skill repository is a separate publication boundary.
+upload, push or public post.
 
 ## YouTube
 
 - YouTube cannot replace a video's file while retaining its URL. A revised film needs a new upload;
   metadata and thumbnails can be edited on the existing video. Keep the old upload until the owner
   decides its visibility. Do not delete it as part of updating links.
-- Deliver the caption-free MP4 plus timed SRT/VTT. Ask the owner to verify the uploaded caption track,
+- Deliver the caption-free 1080p MP4 plus timed SRT/VTT. Ask the owner to verify the uploaded caption track,
   especially names and numbers, and review the platform's altered/synthetic-content disclosure. A
   note about synthetic narration does not replace a required disclosure for realistic generated people.
 - Update links deliberately: project page, README, venue portal and any existing posts. Confirm each
@@ -57,6 +57,9 @@ not `file://`; check that site headers and iframe attributes do not impose `no-r
 `strict-origin-when-cross-origin` policy sends only the site's origin cross-origin, not its full path.
 If using the IFrame API, also configure its `origin` parameter. [YouTube player errors](https://developers.google.com/youtube/iframe_api_reference#onError).
 
+A site that serves the file itself uses a 720p copy (`out/<slug>_720p.mp4`, or the captioned one where
+sound may be off).
+
 ## GitHub README: linked image, not an iframe
 
 GitHub README rendering does not provide a YouTube iframe player. Use a local cover linked to the watch page:
@@ -68,14 +71,13 @@ GitHub README rendering does not provide a YouTube iframe player. Use a local co
 Use the actual duration. Verify the image path on the intended branch, link destination, mobile crop,
 keyboard access, console/network failures on the website, and playback on the live origin.
 
-## Covers and examples must tell the truth
+## Covers and shared sources tell the truth
 
 A cover is a new claim surface, not an exempt crop of the film. Use high-quality images with clear
 provenance; keep generated behaviour separate from real source identities, and paper results separate
 from released-code results. A pleasing picture is not evidence for a caption. Leave a known misleading
 frame out of covers even if the approved film still contains it.
 
-When sharing source examples, inventory assets and rights before copying. Preserve third-party notices;
-link to the published film rather than redistributing footage whose rights are unclear. Label missing
-footage as placeholders and document how the teaching copy differs from the film. Never present a
-placeholder render as a reproduction of the paper's results.
+Before sharing a film's source, check the rights of every asset and keep third-party notices. Replace
+footage that cannot be shared with labelled placeholders, link to the published film, and present a
+placeholder render as a preview, never as the paper's results.

@@ -34,7 +34,7 @@ const FILM = {
   posters: [{ name: 'poster_title', scene: 's-title', station: 0, at: -0.9 }],
   scenes: [
     { id: 's-title', title: 'Title card', chapter: null, lead: 0.6, tail: 0.7,
-      cues: [ { id: 'name', dur: 7.4, en: 'This is 0xClaw. …', say: 'This is Zero X Claw. …' } ] },
+      cues: [ { id: 'name', dur: 7.4, en: 'This is <Name>. …', say: 'This is <how it is said>. …' } ] },
     { id: 's-problem', title: '01 · The problem', chapter: 0, lead: 0.6, tail: 0.9, cues: [ … ] },
   ],
 };
@@ -49,7 +49,7 @@ More caption languages: `captions: ['en', 'zh']` and a `zh:` text per cue.
 ## The timeline
 
 Every frame is a pure function of time: `seek(t)` recomputes all animated state from scratch.
-That is what lets eight browser tabs render frames in any order — and it is why **nothing may
+That is what lets several browser tabs render frames in any order — and it is why **nothing may
 animate by itself**: no CSS transitions or animations, no timers, no state kept between frames.
 
 Inside `window.OXBUILD`, `const S = scene('s-how')` gives the scene's builder. Times are seconds
@@ -61,7 +61,7 @@ S.to(target, { scale: 1.07 }, { at: 3.0, dur: 0.25 });         // from wherever 
 S.set(target, { opacity: 0 }, { at: 5 });
 S.rise(target, { at, dist: 34, dur: 0.7 });   S.fadeIn(target, { at });   S.fadeOut(target, { at });
 S.type(el, 'research https://…', { at, dur: 1.5 });            // typewriter into textContent
-S.count(el, 0, 50669, { at, dur: 1.7, sep: true, suffix: '' });
+S.count(el, 0, 50669, { at, dur: 1.7, sep: true });       // also decimals, prefix, suffix, ease
 S.call((p, lt, t) => { /* p: eased progress 0..1; t: film time */ }, { at, dur, ease });
 S.sfx('pop', at, { g: 0.5, n: 2, pan: -0.3 });                 // a sound, declared next to its picture
 S.$(sel) / S.$$(sel)                                            // inside this scene
@@ -74,8 +74,8 @@ S.$(sel) / S.$$(sel)                                            // inside this s
   unit (`width: '320px'`) or a colour (`'#191713'`, `'rgba(…)'`).
 - The timeline owns `transform` of what it animates (translate → rotate → scale, in that order).
   Do not give such an element a CSS transform; wrap it.
-- Eases: `linear`, `in/out/inOut` + `Quad`, `Cubic`, `Quart`; `outQuint`, `outExpo`, `inExpo`,
-  `inOutSine`, `outBack` (overshoot), `outBackSoft`, `inBack`, `outElastic`.
+- Eases (an unknown name throws): `linear`, `in/out/inOut` + `Quad`, `Cubic`, `Quart`; `outQuint`,
+  `outExpo`, `inExpo`, `inOutSine`, `outBack` (overshoot), `outBackSoft`, `inBack`, `outElastic`.
 - Several tweens on the same element and property play in start order; before the first one the
   element shows that tween's `from`. So an element that enters later needs no "hidden" CSS.
 - A callback that watches the clock itself compares `S.now(t)` (plan time) with plan times.
@@ -194,13 +194,10 @@ Open `index.html` in a browser for a live preview (space, arrows, `,` `.` for fr
    node tools/export_sfx.mjs
    python tools/clip_audio.py
    node tools/render.mjs --audio audio/full/soundtrack.wav,-1 --audio build/full/narration.wav,0 \
-     --audio audio/full/clips.wav,-1 --duck build/full/duck.json,-8
+     --audio audio/full/clips.wav,-1 --duck build/full/duck.json,-8 --lufs -16
+   python tools/check_audio.py out/<slug>.mp4 --strict
    ```
 
 An absent manifest entry becomes a labelled plate and console warning, useful for examples without
 redistributable footage. A present entry whose JPEG cannot decode stops capture. Placeholder renders
 are previews, never evidence of model output or a finished deliverable.
-
-For YouTube chapters, add `youtube: 'Title'` to selected scenes in `js/script.js`. This is separate from
-`chapter`, which controls the on-screen progress bar. `export_script.mjs` retains those titles, and
-`chapters.mjs` derives and validates timestamps. Read `publishing.md` before upload.

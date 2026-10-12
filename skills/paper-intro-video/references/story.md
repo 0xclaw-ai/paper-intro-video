@@ -5,8 +5,7 @@ The film is a talk with pictures, not a paper with motion. Write the narration f
 
 ## Structure — Patrick Winston's "How to Speak", applied
 
-The user who commissioned the first film pointed at Winston's MIT talk; the structure has held up
-through every review round. Decide these before writing a line:
+The structure has held up through every review round. Decide these before writing a line:
 
 | Winston | in the film | in the 0xClaw example |
 | --- | --- | --- |
@@ -37,9 +36,7 @@ only named the two components. "A budget for every phase. A deadline it can feel
 | 6 · Showcase | 25 | what it produces: real outputs, quickly |
 | Use it · contributions · end card | 30 | how to run it, the three contributions, one sentence, links |
 
-About 600 words of narration make five minutes. If the venue has a length rule, that is the
-limit; if the limit is yours, say so, and do not cut content to meet it without being asked —
-a "tighter four-minute version" was built once and then dropped in favour of the complete one.
+About 600 words of narration make five minutes. A venue's length rule is the only hard limit.
 
 ## Writing lines for a voice
 
