@@ -4,16 +4,20 @@
 //   node tools/render.mjs --variants en           one variant only (clean | en | any other caption language of the script)
 //   node tools/render.mjs --from 75 --to 110      a time range, for quick checks (no sound)
 //   node tools/render.mjs --dpr 2                 3840×2160 master
+//   node tools/render.mjs --png                   lossless frame capture (slower)
+//   node tools/render.mjs --workers 4             browser tabs (default: a third of the CPU cores, at least 2)
 //   node tools/render.mjs --audio audio/full/soundtrack.wav,-3 --audio build/full/narration.wav,0 --duck build/full/voice.json,-8 --lufs -16
 //
 // Sound: with a narration (tools/narration.py has written js/voice.js and build/<cut>/narration.wav) the
-// default mix is the voice over the bed, the bed lowered while somebody speaks, at -16 LUFS; without one it
-// is the bed alone. Either way the bed has to be made for the current timing first (tools/music.py).
+// default mix is the voice over the bed, the bed lowered while somebody speaks; without one it is the bed alone.
+// Either way it is brought to -16 LUFS, and the bed has to be made for the current timing first (tools/music.py).
 //
 // How it works: several headless-Chromium tabs load index.html?capture=1 and render frames in
 // parallel (every frame is a pure function of time, see js/lib/engine.js). Frames are captured once,
 // without captions, and streamed in order to one encoder per variant; the caption variants
 // composite pre-rendered caption overlays, so three videos cost one capture pass. Audio is muxed last.
+// Frames are captured as JPEG at quality 95: the browser makes them faster than PNG, and after the H.264 encode
+// the difference is below what the eye can see.
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -29,6 +33,7 @@ const args = (name) => argv.flatMap((a, i) => (a === '--' + name ? [argv[i + 1]]
 const cut = arg('cut', 'full');
 const variants = arg('variants', 'clean,en').split(',');
 const workers = Number(arg('workers', Math.max(2, Math.min(8, Math.floor(cpus().length / 3)))));
+const shot = argv.includes('--png') ? {} : { format: 'jpeg', quality: 95 };
 const dpr = Number(arg('dpr', '1'));
 const crf = arg('crf', '15');
 const preset = arg('preset', 'slow');
@@ -48,7 +53,7 @@ const spoken = Boolean(timing.voice);
 if (spoken && !(existsSync(narration) && Math.abs(wavSeconds(narration) - timing.duration) < 0.05)) throw new Error('build/' + cut + '/narration.wav does not belong to js/voice.js: run tools/narration.py again');
 const audio = args('audio').length ? args('audio') : !existsSync(defaultAudio) ? [] : spoken ? [defaultAudio + ',-3', narration + ',0'] : [defaultAudio + ',0'];
 const duck = arg('duck', spoken && !args('audio').length ? join(bdir, 'voice.json') + ',-8' : null);
-const loud = arg('lufs', spoken && !args('audio').length ? '-16' : null);
+const loud = arg('lufs', !args('audio').length ? '-16' : null);
 if (!args('audio').length && existsSync(defaultAudio) && Math.abs(wavSeconds(defaultAudio) - timing.duration) > 0.2) {
   throw new Error(`audio/${cut}/soundtrack.wav is ${wavSeconds(defaultAudio).toFixed(1)}s long but the film is ${timing.duration}s: run  node tools/export_sfx.mjs && python tools/music.py  first`);
 }
@@ -139,7 +144,7 @@ try {
       if (i >= last) return;
       while (ready.size > workers * 6) await new Promise((r) => setTimeout(r, 15));   // back-pressure
       await p.eval(`Promise.resolve(window.__seek(${i / fps})).then(() => new Promise(r => requestAnimationFrame(() => r(1))))`);
-      ready.set(i, await p.screenshot());
+      ready.set(i, await p.screenshot(shot));
       flush();
     }
   }));

@@ -1,15 +1,20 @@
-"""Regression tests for clip placement, non-destructive media preparation and the generated voice file.
+"""Regression tests for the Python tools: clip placement, non-destructive media preparation, the generated
+voice file and the encoded-frame audit.
 
-Run with the film's Python (numpy required): python tests/test_media.py
-No source footage, model download or ffmpeg is needed; conversion is stubbed at the subprocess boundary.
+Run with the film's Python (numpy and av required): python tests/test_media.py
+No source footage, model download or ffmpeg is needed; conversion is stubbed at the subprocess boundary,
+and the test videos are a few synthetic frames.
 """
+import contextlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
+import av
 import numpy as np
 
 TOOLS = Path(__file__).resolve().parents[1] / 'skills/paper-intro-video/template/tools'
@@ -25,6 +30,34 @@ def load(name):
 clip = load('clip_audio')
 prep = load('prep_media')
 narration = load('narration')
+audit = load('audit_video')
+
+
+def write_video(path, frames, lossless=False):
+    """grey frames (H x W uint8 arrays) -> an H.264 MP4 at 30 fps"""
+    box = av.open(str(path), 'w')
+    stream = box.add_stream('libx264', rate=30)
+    stream.height, stream.width = frames[0].shape
+    stream.pix_fmt = 'yuv420p'
+    if lossless:
+        stream.options = {'qp': '0'}
+    for a in frames:
+        for packet in stream.encode(av.VideoFrame.from_ndarray(np.repeat(a[..., None], 3, axis=2), format='rgb24')):
+            box.mux(packet)
+    for packet in stream.encode(None):
+        box.mux(packet)
+    box.close()
+
+
+def run_main(module, argv):
+    """a tool's main() with these arguments: (exit code, stdout)"""
+    out, code = io.StringIO(), 0
+    with patch('sys.argv', argv), contextlib.redirect_stdout(out):
+        try:
+            module.main()
+        except SystemExit as e:
+            code = e.code or 0
+    return code, out.getvalue()
 
 
 class ClipAudioTests(unittest.TestCase):
@@ -121,6 +154,23 @@ class VoiceFileTests(unittest.TestCase):
             narration.js_file(str(path), 'OXVOICE', 'test', data)
             body = path.read_text(encoding='utf-8').split('const V = ', 1)[1].split(';\n  if (typeof module', 1)[0]
         self.assertEqual(json.loads(body), data)
+
+
+class AuditVideoTests(unittest.TestCase):
+    def test_finds_a_one_pixel_seam_and_a_blank_frame(self):
+        ramp = np.repeat(np.linspace(30, 220, 180).astype(np.uint8)[:, None], 320, axis=1)
+        seam = ramp.copy()
+        seam[:, 100] = np.clip(seam[:, 100].astype(int) + 24, 0, 255)
+        with tempfile.TemporaryDirectory() as d:
+            video, report = Path(d) / 'film.mp4', Path(d) / 'audit.json'
+            write_video(video, [seam, np.full((180, 320), 128, np.uint8), ramp], lossless=True)
+            code, _ = run_main(audit, ['audit_video.py', str(video), '--json', str(report)])
+            found = json.loads(report.read_text())['found']
+        self.assertEqual(code, 1)
+        seams = [f for f in found if f['kind'] == 'seam']
+        self.assertEqual([(f['frame'], f['where']) for f in seams], [(0, 'vertical')])
+        self.assertIn(100, [x for x, _ in seams[0]['lines']])
+        self.assertEqual([f['frame'] for f in found if f['kind'] == 'flat'], [1])
 
 
 

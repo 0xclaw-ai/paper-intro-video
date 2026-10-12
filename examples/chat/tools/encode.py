@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Frame encoder used by tools/render.mjs.
 
-Reads PNG frames from stdin as [4-byte big-endian length][PNG bytes] records (length 0 ends
+Reads frames from stdin as [4-byte big-endian length][PNG or JPEG bytes] records (length 0 ends
 the stream), optionally composites pre-rendered caption overlays, and writes an H.264
 video-only MP4 (BT.709, yuv420p). Needs: av (PyAV), numpy, pillow.
 """
@@ -11,7 +11,7 @@ import numpy as np
 from PIL import Image
 from av.video.reformatter import Colorspace, ColorRange
 
-FADE = 0.16  # seconds, must match the caption fade in js/scenes.js
+FADE = 0.16  # seconds, must match the caption fade in js/lib/stage.js
 
 
 def read_exact(f, n):

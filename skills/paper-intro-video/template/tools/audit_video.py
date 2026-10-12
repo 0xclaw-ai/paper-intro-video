@@ -15,14 +15,15 @@ Prints the frames to look at. By default it exits 1 for a seam or a flat frame. 
 for seams, which is what tools/make.mjs uses: an intentional fade is flat too, so that list still has to
 be read. `--no-fail` never changes the exit code.
 """
-import argparse, json, sys
+import argparse, json, os, sys
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor
 import av
 import numpy as np
 
 
 def luma(frame):
-    rgb = frame.to_ndarray(format='rgb24').astype(np.float32)
-    return rgb[..., 0] * 0.2126 + rgb[..., 1] * 0.7152 + rgb[..., 2] * 0.0722
+    return frame.to_ndarray(format='gray').astype(np.float32)   # 0–255, straight from the Y plane (no RGB pass)
 
 
 def seams(y, axis):
@@ -46,20 +47,32 @@ def main():
     vs = box.streams.video[0]
     vs.thread_type = 'AUTO'
     fps = float(vs.average_rate)
+    def look(y):
+        return [(kind, s) for axis, kind in ((1, 'vertical'), (0, 'horizontal')) for s in [seams(y, axis)] if s], float(y.std()), y[::4, ::4]
+
     found, diffs, prev, n = [], [], None, 0
-    for frame in box.decode(vs):
-        y = luma(frame)
+    workers = max(1, (os.cpu_count() or 2) - 1)                   # numpy releases the GIL: frames are measured in parallel
+    pool, pending = ThreadPoolExecutor(max_workers=workers), deque()
+
+    def take():                                                    # the oldest frame's result, in order
+        nonlocal prev, n
+        lines, std, small = pending.popleft().result()
         t = n / fps
-        for axis, kind in ((1, 'vertical'), (0, 'horizontal')):
-            s = seams(y, axis)
-            if s:
-                found.append({'frame': n, 't': round(t, 3), 'kind': 'seam', 'where': kind, 'lines': s[:6]})
-        if y.std() < 2.0:
-            found.append({'frame': n, 't': round(t, 3), 'kind': 'flat', 'std': round(float(y.std()), 2)})
-        small = y[::4, ::4]
+        for kind, s in lines:
+            found.append({'frame': n, 't': round(t, 3), 'kind': 'seam', 'where': kind, 'lines': s[:6]})
+        if std < 2.0:
+            found.append({'frame': n, 't': round(t, 3), 'kind': 'flat', 'std': round(std, 2)})
         diffs.append(float(np.abs(small - prev).mean()) if prev is not None else 0.0)
         prev = small
         n += 1
+
+    for frame in box.decode(vs):
+        pending.append(pool.submit(look, luma(frame)))
+        if len(pending) > 2 * workers:
+            take()
+    while pending:
+        take()
+    pool.shutdown()
     d = np.array(diffs)
     # a jump: far above the motion in the half second around it (median), and visible in absolute terms
     k = int(fps // 2)
