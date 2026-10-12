@@ -13,8 +13,9 @@ sheet (node tools/export_sfx.mjs) carries the marks in film time and media/manif
 seconds each clip shows, so picture and sound stay in sync whatever voice paces the film. Then render with
 the clip sound under the narration and the music ducked under both:
 
-    node tools/render.mjs --audio audio/<cut>/bed.wav,-1 --audio build/<cut>/narration.wav,0 \\
-        --audio audio/<cut>/clips.wav,-1 --duck build/<cut>/duck.json,-8
+    node tools/render.mjs --audio audio/<cut>/soundtrack.wav,-1 --audio build/<cut>/narration.wav,0 \\
+        --audio audio/<cut>/clips.wav,-1 --duck build/<cut>/duck.json,-8 --lufs -16
+    python tools/check_audio.py out/<slug>.mp4 --strict
 """
 import argparse, json, os, re, wave
 import numpy as np

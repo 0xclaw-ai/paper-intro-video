@@ -1,8 +1,7 @@
 # Narration with a voice that is already installed in Windows (System.Speech / SAPI 5).
 # No download, works offline - but the stock voices sound synthetic. It writes one clip per
 # narration line plus the moment every word starts, which is what keeps captions and pictures
-# on the voice (see tools/narration.py). The film was timed against this voice at rate 0:
-# voice/full/zira is the pacing stored in js/pacing.js.
+# on the voice (see tools/narration.py).
 #
 #   powershell -ExecutionPolicy Bypass -File tools/voice_sapi.ps1                      # Zira, full cut
 #   powershell -ExecutionPolicy Bypass -File tools/voice_sapi.ps1 -Voice "Microsoft David Desktop" -Name david
@@ -65,4 +64,4 @@ foreach ($c in $cues) {
 }
 $s.Dispose()
 [System.IO.File]::WriteAllText((Join-Path $out "voice.json"), "{`"engine`": `"sapi`", `"voice`": `"$Voice`", `"rate`": $Rate, `"licence`": `"ships with Windows`"}", $utf8)
-"synthesized $($i - 1) lines with $Voice (rate $Rate) -> $out"
+"synthesised $($i - 1) lines with $Voice (rate $Rate) -> $out"

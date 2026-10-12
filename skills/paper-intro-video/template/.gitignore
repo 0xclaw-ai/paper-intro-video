@@ -1,0 +1,12 @@
+# made by the tools: rebuilt from the sources in this folder
+build/
+out/
+audio/
+script/
+versions/
+media.backup-*/
+__pycache__/
+
+# local environments: the Python packages and the speech model (a one-time download each)
+.venv/
+.tts/

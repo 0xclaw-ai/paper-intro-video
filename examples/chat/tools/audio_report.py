@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Sanity report for a WAV file when you cannot listen to it: band balance, loudness over time
-and a log-frequency spectrogram written as a PNG.   python tools/audio_report.py audio/soundtrack.wav"""
+and a log-frequency spectrogram written as a PNG.   python tools/audio_report.py audio/full/soundtrack.wav"""
 import sys, os, wave, json
 import numpy as np
 from PIL import Image, ImageDraw

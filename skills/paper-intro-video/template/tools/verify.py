@@ -2,9 +2,10 @@
 """Check rendered MP4s against the page: stream facts, audio level, and frames compared with stills.
 
     python tools/verify.py     (expects stills from: node tools/still.mjs --lang off --out build/verify/full --t 3,20,40,...)
+Exits 1 when a film is missing, has no sound, has the wrong length or frame rate, or a frame differs from the page.
 Needs: av, numpy, pillow.
 """
-import argparse, glob, json, os, re
+import argparse, glob, json, os, re, sys
 import av
 import numpy as np
 from PIL import Image
@@ -20,10 +21,11 @@ def main():
     stills = sorted(glob.glob(os.path.join(ROOT, 'build', 'verify', args.cut, 't_*.png')))
     timing = json.load(open(os.path.join(ROOT, 'build', args.cut, 'timing.json'), encoding='utf-8'))
     name = timing.get('slug', 'film') + (f'_{args.cut}' if len(timing.get('cuts', [args.cut])) > 1 else '')
+    problems = [] if stills else [f'no reference stills in build/verify/{args.cut}: node tools/make.mjs writes them']
     for suffix in ('', '_captions_en'):
         path = os.path.join(args.out, f'{name}{suffix}.mp4')
         if not os.path.exists(path):
-            print('missing', path)
+            problems.append(f'missing {path}')
             continue
         c = av.open(path)
         v, a = c.streams.video[0], (c.streams.audio[0] if c.streams.audio else None)
@@ -31,6 +33,10 @@ def main():
         print(f'{os.path.basename(path)}: {os.path.getsize(path) / 1e6:.1f} MB · {dur:.2f}s · {v.codec_context.width}x{v.codec_context.height} '
               f'{float(v.average_rate):.0f} fps · {v.frames} frames · video {float(v.duration * v.time_base):.2f}s'
               + (f' · audio {a.codec_context.name} {a.codec_context.sample_rate} Hz {float(a.duration * a.time_base):.2f}s' if a else ' · NO AUDIO'))
+        if a is None:
+            problems.append(f'{os.path.basename(path)} has no sound')
+        if abs(dur - timing['duration']) > 0.1 or round(float(v.average_rate)) != timing['fps']:
+            problems.append(f'{os.path.basename(path)} is {dur:.2f}s at {float(v.average_rate):g} fps; the film is {timing["duration"]}s at {timing["fps"]} fps')
         if a is not None:
             chunks = [f.to_ndarray() for f in c.decode(a)]
             x = np.concatenate(chunks, axis=1).astype(np.float64)
@@ -50,8 +56,15 @@ def main():
                         d = np.abs(got - ref)
                         ok = d.mean() < 4.0
                         print(f'   frame @ {t:6.1f}s (decoded {frame.time:.3f}s): mean |diff| {d.mean():.2f}, 99th pct {np.percentile(d, 99):.0f}  {"OK" if ok else "MISMATCH"}')
+                        if not ok:
+                            problems.append(f'the frame at {t}s differs from the page')
                         break
+                else:
+                    problems.append(f'no frame at {t}s')
         c.close()
+    for p in problems:
+        print('  !!', p)
+    sys.exit(1 if problems else 0)
 
 
 if __name__ == '__main__':

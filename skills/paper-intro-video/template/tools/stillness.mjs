@@ -1,11 +1,10 @@
 // Stillness check: is something moving all the time?
 //
-//   node tools/stillness.mjs [--step 0.5] [--gap 0.5] [--min 0.001] [--from 0 --to END]
+//   node tools/stillness.mjs [--step 0.5] [--min 0.001] [--from 0 --to END]
 //
-// Captures small caption-free frames `gap` seconds apart, every `step` seconds, and reports every
-// stretch where the picture does not change (mean |difference| below `min`, on a 0..1 scale).
-// A performed explainer should have none, apart from the short commas you put there on purpose.
-// (The rule and the threshold follow the styled-explainer QA of lanshu-create-ai-presenter-video.)
+// Captures small caption-free frames every `step` seconds and reports every stretch where the picture does not
+// change (mean |difference| below `min`, on a 0..1 scale). Aim for about 6 % still; a stretch of 2 s or more
+// exits 1.
 import { launch } from './cdp.mjs';
 import { findPython } from './env.mjs';
 import { spawnSync } from 'node:child_process';

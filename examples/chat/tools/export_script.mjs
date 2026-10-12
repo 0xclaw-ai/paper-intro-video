@@ -63,5 +63,5 @@ for (const cut of want === 'all' ? CUTS : [want]) {
     console.log(`${cut.padEnd(5)} ${mmss(S.duration)} · ${S.cues.length} narration lines · ${words} words · ${langs.map((l) => `${S.captions[l].length} ${l.toUpperCase()}`).join(' / ')} captions`
       + (S.voice ? ` · voice "${S.voice.name}": ${S.voice.lines}/${S.cues.length} lines` : ' · no voice (js/voice.js is empty or missing)'));
   }
-  if (S.voice && S.voice.stale.length) console.log(`  !! spoken with different words (even pacing used instead): ${S.voice.stale.join(', ')} — synthesize or record again, then run tools/narration.py`);
+  if (S.voice && S.voice.stale.length) console.log(`  !! spoken with different words (even pacing used instead): ${S.voice.stale.join(', ')} — synthesise or record again, then run tools/narration.py`);
 }

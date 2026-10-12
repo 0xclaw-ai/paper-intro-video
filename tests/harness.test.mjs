@@ -127,6 +127,18 @@ test('template preflight passes and a broken scene contract fails', () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('preflight stops on a local file the page names but does not have', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'preflight-missing-'));
+  try {
+    cpSync(template, dir, { recursive: true });
+    const html = join(dir, 'index.html');
+    writeFileSync(html, readFileSync(html, 'utf8').replace('</body>', '<img src="assets/nowhere.png"></body>'));
+    const r = spawnSync(process.execPath, [join(dir, 'tools/preflight.mjs')], { encoding: 'utf8', timeout: 5000 });
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /assets\/nowhere\.png/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('closing a browser that has already gone returns instead of hanging', { skip: !hasBrowser() && 'no Chromium on this machine' }, () => {
   const probe = `const { launch } = await import(${JSON.stringify(pathToFileURL(join(template, 'tools/cdp.mjs')).href)});
     const b = await launch({ width: 320, height: 240 });

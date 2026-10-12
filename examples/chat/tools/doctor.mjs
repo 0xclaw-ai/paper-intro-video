@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { findBrowser, launch } from './cdp.mjs';
-import { NEEDS, findPython, root, ttsDir } from './env.mjs';
+import { NEEDS, VENV, findPython, root, ttsDir } from './env.mjs';
 
 const ok = (b) => (b ? 'ok     ' : 'MISSING');
 let missing = 0;
@@ -17,10 +17,12 @@ const major = Number(process.versions.node.split('.')[0]);
 line(major >= 22, 'Node.js 22 or newer', `found ${process.versions.node}` + (major >= 22 ? '' : ' — the tools use the built-in WebSocket of Node 22'));
 let browser = null;
 try { browser = findBrowser(); } catch (e) { /* none */ }
-line(Boolean(browser), 'a Chromium to render with', browser || 'none — install Chrome/Edge, or `npx playwright install chromium`, or set CHROME_PATH');
+line(Boolean(browser), 'a Chromium to render with', browser || 'none — install Chrome or Edge, or set CHROME_PATH to a Chromium (a download: ask first)');
+let noPython = false;
 for (const kind of ['av', 'sci', 'pil']) {
   const py = findPython(kind, { must: false });
-  line(Boolean(py), `Python: ${NEEDS[kind].what.split(' (')[0]}`, py ? py : `none — ${NEEDS[kind].fix}, or set ${NEEDS[kind].env}`);
+  if (!py) noPython = true;
+  line(Boolean(py), `Python: ${NEEDS[kind].what.split(' (')[0]}`, py ? py : `none — or set ${NEEDS[kind].env} to a Python that has them`);
 }
 const tts = ttsDir();
 const ttsPy = findPython('tts', { must: false });
@@ -60,5 +62,6 @@ if (process.platform === 'darwin') {
   if (synced) console.log('\nnote: iCloud Drive syncs this folder. Sync conflicts leave copies named "… 2" (media/, build/, .git);'
     + ' a folder outside ~/Documents and ~/Desktop avoids them.');
 }
+if (noPython) console.log(`\nPython packages, a download (ask first), in this folder:  ${VENV}`);
 console.log(missing ? `\n${missing} required thing(s) missing. Nothing was installed.` : '\nEverything required is here.');
 process.exit(missing ? 1 : 0);

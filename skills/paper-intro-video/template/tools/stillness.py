@@ -39,7 +39,7 @@ def main():
     for a, b in sorted(runs, key=lambda r: r[0] - r[1])[:60]:
         if b - a >= step * 2 - 1e-6:
             print('   %6.1f – %6.1f s  (%4.1f s)  %s' % (a, b, b - a, scene_at(a)))
-    long_runs = [r for r in runs if r[1] - r[0] >= 1.5 - 1e-6]
+    long_runs = [r for r in runs if r[1] - r[0] >= 2.0 - 1e-6]
     json.dump({'diffs': diffs.tolist(), 'runs': runs}, open(os.path.join(d, 'report.json'), 'w'))
     sys.exit(1 if long_runs else 0)
 

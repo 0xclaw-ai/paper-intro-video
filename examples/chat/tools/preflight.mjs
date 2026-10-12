@@ -48,6 +48,10 @@ if (film) {
   for (const url of html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) {
     if (!/fonts\.(googleapis|gstatic)\.com/.test(url[1])) fail(`unexpected remote URL in index.html: ${url[1]}`);
   }
+  // a local file the page names has to be there: a missing picture renders as a broken image, a missing script as no film
+  for (const [, ref] of html.matchAll(/(?:src|href)="([^"#?]+)/g)) {
+    if (!/^(?:[a-z]+:|\/\/)/i.test(ref) && ref !== 'media/manifest.js' && !existsSync(join(root, decodeURI(ref)))) fail(`index.html names ${ref}, which does not exist.`);
+  }
   const claim = /\b(?:state of the art|state-of-the-art|sota|seamless|novel|the first|first to|best|outperforms)\b/i;
   const claimed = [];
   for (const scene of film.scenes || []) for (const cue of scene.cues || []) {
@@ -80,6 +84,9 @@ for (const path of ['js/script.js', 'js/scenes.js', 'js/data.js']) {
   }
 }
 for (const path of ['css/base.css', 'css/film.css']) {
+  for (const [, ref] of code(read(path)).matchAll(/url\(\s*['"]?([^'")]+)/g)) {
+    if (!/^(?:[a-z]+:|#)/i.test(ref) && !existsSync(join(root, 'css', decodeURI(ref)))) fail(`${path} names ${ref}, which does not exist.`);
+  }
   const css = code(read(path)).replace(/\b(?:animation|transition)\s*:\s*none\b/g, '');
   if (/@keyframes|\banimation\s*:|\btransition\s*:/.test(css)) {
     fail(`${path} has CSS animation or transition. A frame must depend only on the seek time.`);

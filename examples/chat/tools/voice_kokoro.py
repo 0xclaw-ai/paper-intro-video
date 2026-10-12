@@ -7,19 +7,18 @@
 Setup, once (about 400 MB; nothing else on the machine changes). The folder can live in the project (.tts/)
 or anywhere else and be shared by every film: point OX_TTS at it.
 
-    python -m venv .tts/venv
-    .tts/venv/Scripts/python -m pip install kokoro-onnx
+    python3 -m venv .tts/venv                      (Windows: py -m venv .tts/venv)
+    .tts/venv/bin/python -m pip install kokoro-onnx  (Windows: .tts/venv/Scripts/python)
     curl -L -o .tts/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/kokoro-v1.0.onnx
     curl -L -o .tts/voices-v1.0.bin  https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/voices-v1.0.bin
 
 (The v1.1 model files report how long every phoneme lasts; that is where the word times come from.)
-Then:
+Then `node tools/make.mjs --voice kokoro:af_heart` finds it and does the rest. By hand (Windows: venv/Scripts/python):
 
-    .tts/venv/Scripts/python tools/voice_kokoro.py                       # every line, voice af_heart
-    .tts/venv/Scripts/python tools/voice_kokoro.py --voice bm_george --speed 0.95
-    .tts/venv/Scripts/python tools/voice_kokoro.py --only 4,17           # redo two lines after changing their words
-    .tts/venv/Scripts/python tools/voice_kokoro.py --sample 4,21 --voice am_michael   # one short file to compare voices
-    python tools/narration.py --clips voice/full/af_heart --pause 0.8    # lay it on the film; captions and pictures follow
+    .tts/venv/bin/python tools/voice_kokoro.py                       # every line, voice af_heart
+    .tts/venv/bin/python tools/voice_kokoro.py --voice bm_george --speed 0.95
+    .tts/venv/bin/python tools/voice_kokoro.py --only 4,17           # redo two lines after changing their words
+    .tts/venv/bin/python tools/voice_kokoro.py --sample 4,21 --voice am_michael   # one short file to compare voices
 
 It writes voice/<cut>/<name>/NN.wav (24 kHz) and NN.json per narration line: the words that were said,
 when each of them starts (from the model's own phoneme durations), and the phonemes — so names and

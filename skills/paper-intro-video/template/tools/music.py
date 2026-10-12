@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""The sound bed of a film: 40 Hz binaural beats and a few soft cues, synthesized from scratch.
+"""The sound bed of a film: 40 Hz binaural beats and a few soft cues, synthesised from scratch.
 
 Nothing is sampled, so there is nothing to license. Nothing is timed by hand either:
 

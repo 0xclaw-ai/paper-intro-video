@@ -6,7 +6,9 @@
 For every clip: how fast it is spoken (phonemes per second where the engine wrote them, else
 letters per second) against the median of all lines — an outlier is usually a garbled or
 mispronounced line; the longest pause inside it; clipping; and whether it was made for the words
-the script has now. Needs: numpy (scipy optional) — the same Python as tools/narration.py.
+the script has now. Exits 1 when a clip is missing, made for other words, clipped or empty: the film would
+lose or garble that line. A rate or pause outlier is listed for a look. Needs: numpy (scipy optional) — the same
+Python as tools/narration.py.
 """
 import glob, json, os, re, sys
 import numpy as np
@@ -23,8 +25,10 @@ def main():
     cut = sys.argv[sys.argv.index('--cut') + 1] if '--cut' in sys.argv else 'full'
     cues = json.load(open(os.path.join(ROOT, 'build', cut, 'timing.json'), encoding='utf-8'))['cues']
     files = sorted(glob.glob(os.path.join(folder, '[0-9]*.wav')))
+    fatal = 0
     if len(files) != len(cues):
         print(f'{len(files)} clips, but the script has {len(cues)} lines')
+        fatal += 1
     rows = []
     for f, c in zip(files, cues):
         x, _ = N.read_wav(f)
@@ -43,18 +47,22 @@ def main():
         flags = []
         if r['stale']:
             flags.append('made for other words')
+            fatal += 1
         if abs(r['rate'] / med - 1) > 0.2:
             flags.append(f'rate {100 * (r["rate"] / med - 1):+.0f}% off the median')
         if r['pause'] > 1.0:
             flags.append(f'a pause of {r["pause"]:.2f}s')
         if r['peak'] > 0.98:
             flags.append('clipped')
+            fatal += 1
         if r['len'] < 0.3:
             flags.append('almost empty')
+            fatal += 1
         if flags:
             bad += 1
             print(f'  {r["n"]}  {r["len"]:5.2f}s  {", ".join(flags)}  | {r["say"][:70]}')
-    print('nothing stands out' if not bad else f'{bad} line(s) to look at: read their phonemes, synthesize them again, or listen')
+    print('nothing stands out' if not bad else f'{bad} line(s) to look at: read their phonemes, synthesise them again, or listen')
+    sys.exit(1 if fatal else 0)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 // Where things are on this machine: a Python for each job, the speech model. Nothing is installed from here —
 // `node tools/doctor.mjs` prints what was found and what is missing.
 //
-//   OX_PYTHON       a Python with av (PyAV), numpy, pillow      — encoding, muxing, verifying
+//   OX_PYTHON       a Python with av (PyAV), numpy, pillow, scipy — encoding, muxing, the checks
 //                   a .venv inside the film folder is used when the variable is unset
 //   OX_PYTHON_SCI   a Python with numpy, scipy                  — narration, sound bed (defaults to OX_PYTHON)
 //   OX_PYTHON_TTS   a Python with kokoro-onnx                   — the Kokoro voice (defaults to <tts>/venv)
@@ -17,10 +17,15 @@ import { fileURLToPath } from 'node:url';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
+/** one environment inside the film folder covers every job but the voice; the tools use .venv/ when they find it */
+export const VENV = process.platform === 'win32'
+  ? 'py -m venv .venv, then .venv\\Scripts\\pip install av numpy pillow scipy'
+  : 'python3 -m venv .venv && .venv/bin/pip install av numpy pillow scipy';
+
 export const NEEDS = {
-  av: { test: 'import av, numpy, PIL', what: 'encoding and muxing (av, numpy, pillow)', fix: 'pip install av numpy pillow', env: 'OX_PYTHON' },
-  sci: { test: 'import numpy, scipy', what: 'narration and the sound bed (numpy, scipy)', fix: 'pip install numpy scipy', env: 'OX_PYTHON_SCI' },
-  pil: { test: 'import numpy, PIL', what: 'contact sheets and the stillness report (numpy, pillow)', fix: 'pip install numpy pillow', env: 'OX_PYTHON' },
+  av: { test: 'import av, numpy, PIL, scipy', what: 'encoding, muxing and checks (av, numpy, pillow, scipy)', fix: VENV, env: 'OX_PYTHON' },
+  sci: { test: 'import numpy, scipy', what: 'narration and the sound bed (numpy, scipy)', fix: VENV, env: 'OX_PYTHON_SCI' },
+  pil: { test: 'import numpy, PIL', what: 'contact sheets and the stillness report (numpy, pillow)', fix: VENV, env: 'OX_PYTHON' },
   tts: { test: 'import kokoro_onnx', what: 'the Kokoro voice (kokoro-onnx)', fix: 'see the setup at the top of tools/voice_kokoro.py', env: 'OX_PYTHON_TTS' },
 };
 
