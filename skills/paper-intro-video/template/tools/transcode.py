@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-"""Make a smaller copy of a rendered MP4 for self-hosting (website, README upload limits).
+"""A smaller copy of a rendered MP4, for chats, email, slides and sites that host the file themselves.
 
-    python tools/transcode.py out/<film>_captions_en.mp4 [--crf 24] [--height 1080] [--audio-kbps 128]
-        -> out/web/<film>_captions_en_web.mp4
-The video is re-encoded with x264 (slow preset); audio is re-encoded to AAC at a lower bitrate.
+    python tools/transcode.py out/<film>_captions_en.mp4 [--height 720] [--crf 23] [--audio-kbps 128]
+        -> out/<film>_captions_en_720p.mp4
+The video is scaled and re-encoded with x264 (slow preset), the audio re-encoded to AAC at a lower bitrate:
+a quarter of the 1080p master's size or less. tools/make.mjs writes one per rendered film.
 Needs: av (PyAV).
 """
 import argparse, os
@@ -14,23 +15,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('src')
     ap.add_argument('--out')
-    ap.add_argument('--crf', default='24')
-    ap.add_argument('--height', type=int, default=1080)
+    ap.add_argument('--crf', default='23')
+    ap.add_argument('--height', type=int, default=720)
     ap.add_argument('--audio-kbps', type=int, default=128)
     ap.add_argument('--preset', default='slow')
     args = ap.parse_args()
-    out = args.out or os.path.join(os.path.dirname(os.path.abspath(args.src)), 'web', os.path.splitext(os.path.basename(args.src))[0] + '_web.mp4')
-    os.makedirs(os.path.dirname(out), exist_ok=True)
 
     src = av.open(args.src)
     vin = src.streams.video[0]
     ain = src.streams.audio[0] if src.streams.audio else None
+    h = min(args.height, vin.codec_context.height)
+    w = int(round(vin.codec_context.width * h / vin.codec_context.height / 2)) * 2
+    out = args.out or os.path.join(os.path.dirname(os.path.abspath(args.src)), f'{os.path.splitext(os.path.basename(args.src))[0]}_{h}p.mp4')
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     dst = av.open(out, 'w', options={'movflags': '+faststart'})
     for k, v in src.metadata.items():
         dst.metadata[k] = v
     vout = dst.add_stream('libx264', rate=vin.average_rate)
-    h = min(args.height, vin.codec_context.height)
-    w = int(round(vin.codec_context.width * h / vin.codec_context.height / 2)) * 2
     vout.width, vout.height, vout.pix_fmt = w, h, 'yuv420p'
     vout.options = {'crf': str(args.crf), 'preset': args.preset, 'profile': 'high', 'x264-params': 'aq-mode=3'}
     cc = vout.codec_context

@@ -1,5 +1,5 @@
 """Regression tests for the Python tools: clip placement, non-destructive media preparation, the generated
-voice file and the encoded-frame audit.
+voice file, the encoded-frame audit and the 720p copy.
 
 Run with the film's Python (numpy and av required): python tests/test_media.py
 No source footage, model download or ffmpeg is needed; conversion is stubbed at the subprocess boundary,
@@ -31,6 +31,7 @@ clip = load('clip_audio')
 prep = load('prep_media')
 narration = load('narration')
 audit = load('audit_video')
+transcode = load('transcode')
 
 
 def write_video(path, frames, lossless=False):
@@ -172,6 +173,18 @@ class AuditVideoTests(unittest.TestCase):
         self.assertIn(100, [x for x, _ in seams[0]['lines']])
         self.assertEqual([f['frame'] for f in found if f['kind'] == 'flat'], [1])
 
+
+class TranscodeTests(unittest.TestCase):
+    def test_default_copy_is_720p_beside_the_master(self):
+        frame = np.repeat(np.linspace(0, 255, 1920).astype(np.uint8)[None, :], 1080, axis=0)
+        with tempfile.TemporaryDirectory() as d:
+            src = Path(d) / 'film.mp4'
+            write_video(src, [frame, frame])
+            code, _ = run_main(transcode, ['transcode.py', str(src)])
+            self.assertEqual(code, 0)
+            with av.open(str(Path(d) / 'film_720p.mp4')) as box:
+                cc = box.streams.video[0].codec_context
+                self.assertEqual((cc.width, cc.height), (1280, 720))
 
 
 if __name__ == '__main__':

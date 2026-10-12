@@ -1,18 +1,19 @@
 // The whole pipeline in one command: voice → timing → sound → picture → checks.
 //
 //   node tools/make.mjs                              render with the voice that is already laid in (or without one)
-//   node tools/make.mjs --voice kokoro:af_heart      synthesize with Kokoro, lay it in, render
-//   node tools/make.mjs --voice sapi:zira            a voice that ships with Windows (synthetic)
+//   node tools/make.mjs --voice kokoro:af_heart      synthesise with Kokoro, lay it in, render
+//   node tools/make.mjs --voice sapi:zira            a voice that ships with Windows (synthetic): zira, david, …
 //   node tools/make.mjs --voice clips:voice/full/me  clips that already exist (a recording, or an earlier synthesis)
 //   node tools/make.mjs --voice none                 take the voice out again
 //
 //   --pause 0.8      pauses between sentences at least this long (default 0.8 with --voice; 0 = leave the clips alone)
 //   --max-pause 1.2  … and at most this long
-//   --speed 1.0      speaking rate for Kokoro           --only 4,17   re-synthesize just these lines (Kokoro)
+//   --speed 1.0      speaking rate for Kokoro           --only 4,17   re-synthesise just these lines (Kokoro)
 //   --as-plan        make this voice's pacing the plan the scenes are timed to (do it once, for the first voice,
-//                    before timing the scenes to its words — see the README, "Two clocks")
+//                    before timing the scenes to its words — see "Two clocks" in js/lib/build.js)
 //   --no-render      stop after the sound (to look at stills and contact sheets first)
-//   --range 75-110   render only these seconds, without sound  --web   also write the small copies to out/web/
+//   --range 75-110   render only these seconds, without sound  --no-720p   skip the 720p copies
+//   --allow-font-fallback   render although a web font did not load (offline); the glyph audit then only reports
 //
 //   node tools/make.mjs --samples af_bella,am_michael,bm_george [--lines 4,21,29]
 //                    only write a short audition file per Kokoro voice to out/extras/voice_samples/ (you cannot
@@ -28,6 +29,19 @@ import { findPython, root, ttsDir } from './env.mjs';
 const argv = process.argv.slice(2);
 const arg = (n, d) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 1] : d; };
 const flag = (n) => argv.includes('--' + n);
+// a mistyped option must not start a long build that ignores it
+const VALUES = ['cut', 'voice', 'pause', 'max-pause', 'speed', 'only', 'range', 'samples', 'lines', 'font-step'];
+const FLAGS = ['as-plan', 'no-render', 'no-720p', 'allow-font-fallback'];
+if (flag('help') || argv.includes('-h')) {
+  const self = readFileSync(new URL(import.meta.url), 'utf8');
+  console.log(self.slice(0, self.indexOf('\nimport ')).replace(/^\/\/ ?/gm, ''));
+  process.exit(0);
+}
+for (let i = 0; i < argv.length; i++) {
+  const name = argv[i].replace(/^--/, '');
+  if (VALUES.includes(name)) i++;
+  else if (!FLAGS.includes(name)) { console.error(`unknown option ${argv[i]}  (node tools/make.mjs --help lists them)`); process.exit(1); }
+}
 const cut = arg('cut', 'full');
 const tool = (f) => join(root, 'tools', f);
 function run(what, cmd, args) {
@@ -60,8 +74,10 @@ if (voice) {
     run(`voice: Kokoro ${name || 'af_heart'}`, findPython('tts'), a);
     clips = join('voice', cut, name || 'af_heart');
   } else if (kind === 'sapi') {
-    run(`voice: Windows ${name || 'zira'}`, 'powershell', ['-ExecutionPolicy', 'Bypass', '-File', tool('voice_sapi.ps1'), '-Cut', cut, '-Name', name || 'zira']);
-    clips = join('voice', cut, name || 'zira');
+    const who = name || 'zira';                                  // sapi:david -> "Microsoft David Desktop"
+    run(`voice: Windows ${who}`, 'powershell', ['-ExecutionPolicy', 'Bypass', '-File', tool('voice_sapi.ps1'), '-Cut', cut, '-Name', who,
+      '-Voice', `Microsoft ${who[0].toUpperCase()}${who.slice(1)} Desktop`]);
+    clips = join('voice', cut, who);
   } else if (kind === 'clips') clips = name;
   else { console.error('--voice kokoro:<voice> | sapi:<name> | clips:<folder> | none'); process.exit(1); }
   if (clips) {
@@ -77,7 +93,7 @@ if (!voice && timing().voice && !existsSync(join(root, 'build', cut, 'narration.
   // a fresh copy: the clips and js/voice.js are there, the voice track (build/) is not — lay it in again, as it was
   const V = createRequire(import.meta.url)(join(root, 'js', 'voice.js'));
   const clips = resolve(root, V.clips || join('voice', cut, V.name));
-  if (!existsSync(clips)) { console.error(`js/voice.js names the voice "${V.name}", but its clips (${clips}) are missing: synthesize it again (--voice …) or remove it (--voice none).`); process.exit(1); }
+  if (!existsSync(clips)) { console.error(`js/voice.js names the voice "${V.name}", but its clips (${clips}) are missing: synthesise it again (--voice …) or remove it (--voice none).`); process.exit(1); }
   const a = [tool('narration.py'), '--cut', cut, '--clips', clips, '--pause', String(V.pause || 0)];
   if (V.max_pause) a.push('--max-pause', String(V.max_pause));
   run('lay the voice on the film again', findPython('sci'), a);
@@ -101,15 +117,16 @@ if (existsSync(vdir)) for (const f of readdirSync(vdir)) if (f.endsWith('.png'))
 mkdirSync(vdir, { recursive: true });
 const times = t.scenes.flatMap((s) => [s.start + s.dur * 0.35, s.start + s.dur * 0.8]).map((x) => (Math.round(x * 10) / 10).toFixed(1));   // on the frame grid
 node('reference stills', 'still.mjs', '--cut', cut, '--lang', 'off', '--out', vdir, '--t', times.join(','));
-node('glyph fonts', 'audit_fonts.mjs', '--cut', cut, '--step', arg('font-step', '0.25'));
+node('glyph fonts', 'audit_fonts.mjs', '--cut', cut, '--step', arg('font-step', '0.25'), ...(flag('allow-font-fallback') ? ['--no-fail'] : []));
 node('render', 'render.mjs', '--cut', cut, ...(flag('allow-font-fallback') ? ['--allow-font-fallback'] : []));
 run('verify', findPython('av'), [tool('verify.py'), '--cut', cut]);
 run('sound check', findPython('av'), [tool('check_audio.py'), '--cut', cut, '--strict']);
 run('encoded frames', findPython('av'), [tool('audit_video.py'), join(root, 'out', t.slug + (t.cuts.length > 1 ? `_${cut}` : '') + '.mp4'), '--fail', 'seams']);
 if (timing().scenes.some((s) => s.youtube)) node('YouTube chapters', 'chapters.mjs', '--cut', cut);
 node('poster frames', 'poster.mjs', '--cut', cut);
-if (flag('web')) {
+if (!flag('no-720p')) {
+  // the copies to send; the 1080p films are the ones to upload
   const name = t.slug + (t.cuts.length > 1 ? `_${cut}` : '');
-  for (const suffix of ['', '_captions_en']) run(`web copy${suffix}`, findPython('av'), [tool('transcode.py'), join(root, 'out', `${name}${suffix}.mp4`)]);
+  for (const suffix of ['', '_captions_en']) run(`720p copy${suffix}`, findPython('av'), [tool('transcode.py'), join(root, 'out', `${name}${suffix}.mp4`)]);
 }
 console.log('\nDone → out/');
