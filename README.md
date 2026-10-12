@@ -30,6 +30,25 @@ claude plugin install paper-intro-video@0xclaw
 Then ask for a video: *"Make an intro video for our paper. PDF: …, repo: …, site: …"*.
 More prompts: [`prompts.md`](skills/paper-intro-video/references/prompts.md).
 
+## Update
+
+| installed with | update with |
+| --- | --- |
+| `npx skills add` | `npx skills update paper-intro-video` (`-p` for project scope, `-g` for global) |
+| the Claude Code plugin | `claude plugin update paper-intro-video@0xclaw`, or `/plugin` → Installed → Update now; then `/reload-plugins` or start a new session |
+| `git clone` | `git pull --ff-only` in that clone; keep local edits backed up |
+| a manual copy | back up the installed folder, then replace it with the current `skills/paper-intro-video/`; CLI updates need an installation recorded by that CLI |
+| the Quick start prompt | ask the agent to fetch the current repository again; refresh any local clone or installed copy as above |
+
+The third-party plugin marketplace has automatic updates off by default. Enable them at `/plugin` →
+Marketplaces → 0xclaw → Enable auto-update. Commands: [skills CLI](https://github.com/vercel-labs/skills#skills-update),
+[Claude Code plugins](https://code.claude.com/docs/en/plugins/install#keep-plugins-updated).
+
+**Updating the skill does not migrate an existing film.** For an unfinished film, make a backup first,
+then compare `template/tools/`, `template/js/lib/` and `template/js/media.js` with the film's copies.
+Merge the changes, preserving custom tools, script, scenes, data and styles; run `doctor.mjs` and
+`make.mjs` before accepting the migration. Do not rebuild or overwrite frozen deliverables.
+
 ## Without an assistant
 
 ```bash

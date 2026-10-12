@@ -16,8 +16,9 @@ commands. Report results as numbers, and say plainly what no tool can tell you.
 | sound | `check_audio.py --strict` | −16 LUFS (±1.5), sample peak and estimated true peak under −1 dB; missing scipy fails rather than passing as unchecked |
 
 The build then runs `audit_video.py --fail seams`. A seam fails the build. Flat frames and jumps are
-printed and must be inspected; a fade can be flat, a blank frame in the middle cannot. Voice level
-above the bed is printed, not enforced: read it, and say when it is outside 12–18 dB.
+printed and must be inspected; a fade can be flat, a blank frame in the middle cannot. The render
+prints the source-stem voice-to-bed ratio during speech, after gain and ducking but before mastering;
+it is not enforced: read it, and say when it is outside 12–18 dB.
 
 ## What you run yourself, every time
 
@@ -65,8 +66,8 @@ Say, in the user's language:
   1.1); −16.0 LUFS, peak −1.0 dBFS; voice 15 dB above the bed; word times agree with pauses at
   48 of 50 sentence starts; 6 % of the film is still, longest hold 2.0 s."
 - **What you could not verify**: how the voice sounds, whether names are pronounced the way the
-  authors say them, whether the mix is comfortable, whether the binaural bed works for them
-  (headphones). Ask them to listen once, and give voice samples if a choice is open.
+  authors say them, whether the mix is comfortable. Ask them to listen once, and give voice samples
+  if a choice is open.
 - **What is theirs to decide**: any claim beyond the sources, the voice, venue rules you could not
   find (length, format, logo use), anything you changed that they did not ask for.
 - **What you downloaded or installed**, where, and how large — if anything.

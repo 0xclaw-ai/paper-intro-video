@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""The sound bed of a film: 40 Hz binaural beats and a few soft cues, synthesised from scratch.
+"""The sound bed of a film: a soft piano and a few soft cues, synthesised from scratch.
 
 Nothing is sampled, so there is nothing to license. Nothing is timed by hand either:
 
@@ -8,18 +8,20 @@ Nothing is sampled, so there is nothing to license. Nothing is timed by hand eit
 
 so the sound follows the edit, and the voice.
 
-    python tools/music.py [--cut full] [--no-sfx] [--no-bed] [--lufs -20]
+    python tools/music.py [--cut full] [--bed piano|binaural] [--no-sfx] [--no-bed] [--lufs -20]
 
-The bed: a 200 Hz sine in the left ear and a 240 Hz sine in the right. The 40 Hz difference only exists
-once the brain puts the two ears together, so it needs headphones (on loudspeakers the tones mix in the
-air into an ordinary 40 Hz flutter). The pair is kept dry and hard-panned on purpose — reverb, stereo
-widening or any cross-feed would mix the ears. Underneath: a quieter pair at 80 / 120 Hz (also 40 Hz
-apart) and a little decorrelated air that lifts at every scene change. The cues (pop, bell, pen, type,
-whoosh, low) are tuned to the same 40 Hz series. Made at -20 LUFS: pure tones read louder than music,
-and tools/render.mjs mixes it under the voice.
+The piano (the default): I, vi, IV, V on a 160 Hz root, one chord every four beats of the film's grid,
+arpeggiated softly; single notes under the first scene, and the last sentence lands on I and rings out.
+Every note is a ratio of the 40 Hz harmonic series (just intonation), like the cues (pop, bell, pen, type,
+whoosh, low). Unlike the binaural option, it does not need headphones.
 
---no-bed writes the cues alone (to put under your own music); audio/<cut>/stem_music.wav and
-stem_sfx.wav are always written next to soundtrack.wav.
+--bed binaural: 40 Hz binaural beats instead, a 200 Hz sine in the left ear and 240 Hz in the right, with a
+quieter 80 / 120 Hz pair and a little air that lifts at every scene change. The beat exists only once the
+brain puts the two ears together, so it needs headphones; on loudspeakers it is an ordinary 40 Hz flutter.
+
+Made at -20 LUFS; tools/render.mjs mixes it under the voice. --no-bed writes the cues alone (to put under
+your own music). audio/<cut>/stem_music.wav and stem_sfx.wav are written next to soundtrack.wav, and
+soundtrack.json says which bed it has.
 Needs: numpy, scipy.
 """
 import argparse, json, os, wave
@@ -192,7 +194,101 @@ def place_events(mx, events):
             raise SystemExit('unknown sound cue: %r (known: whoosh, pen, pop, bell, low, type)' % kind)
 
 
-def build(timing, cues, sfx_on=True, bed_on=True):
+# ───────────────────────── the piano: the default bed ─────────────────────────
+# root, chord tones (voiced one octave up), a melody tone: all ratios of 40 Hz
+CHORDS = {
+    'I':  (160.0, [320.0, 400.0, 480.0], 640.0),
+    'vi': (400.0 / 3, [800.0 / 3, 320.0, 400.0], 1600.0 / 3),
+    'IV': (320.0 / 3, [640.0 / 3, 800.0 / 3, 320.0], 1600.0 / 3),
+    'V':  (120.0, [480.0, 600.0, 720.0], 960.0),
+}
+PROGRESSION = ['I', 'vi', 'IV', 'V']
+OPEN_NOTES = [480.0, 400.0, 640.0, 533.0 + 1 / 3, 480.0, 400.0]   # the first scene: single notes, I-pentatonic
+
+
+def piano_note(f, vel, g):
+    """A struck string: partials that run slightly sharp, two strings 1.4 cents apart, a two-stage decay, a soft hammer."""
+    dur = 4.6 if f < 300 else 3.4
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    y = np.zeros(n)
+    for k in range(1, 15):
+        fk = k * f * np.sqrt(1 + 0.00025 * k * k)
+        if fk > 9000:
+            break
+        amp = (vel ** (0.6 + 0.12 * k)) / k ** 1.25                  # softer notes are darker
+        env = 0.62 * np.exp(-(1.2 + 0.55 * k + f / 500) * t) + 0.38 * np.exp(-(0.22 + 0.05 * k + f / 2400) * t)
+        for cents in (-0.7, 0.7):
+            y += 0.5 * amp * env * np.sin(2 * np.pi * fk * 2 ** (cents / 1200) * t + g.uniform(0, 2 * np.pi))
+    y *= np.minimum(1.0, t / 0.003)
+    y += lp(g.standard_normal(n).astype(np.float32), 2800) * np.exp(-t / 0.010) * 0.025 * vel
+    y *= np.clip((dur - t) / 0.5, 0, 1)
+    return (y * vel ** 1.6).astype(np.float32)
+
+
+def piano(timing):
+    D = timing['duration']
+    n = int(D * SR)
+    beat = timing.get('beat', 0.6)
+    bar = 4 * beat
+    g = np.random.default_rng(2026)
+    out = np.zeros((n + 6 * SR, 2), np.float32)
+    notes = {}                                                    # a repeated note is synthesised once
+
+    def put(f, t, vel):
+        if t < 0 or t >= D - 0.2:
+            return
+        if (f, vel) not in notes:
+            notes[f, vel] = piano_note(f, vel, g)
+        x = notes[f, vel]
+        pan = float(np.clip(np.log2(f / 300.0) * 0.22, -0.35, 0.35))   # low strings left, high strings right
+        i = int(round(t * SR))
+        m = min(len(x), len(out) - i)
+        out[i:i + m, 0] += x[:m] * np.cos((pan + 1) * np.pi / 4)
+        out[i:i + m, 1] += x[:m] * np.sin((pan + 1) * np.pi / 4)
+
+    scenes = timing['scenes']
+    last = [c for c in timing['cues'] if c['scene'] == scenes[-1]['id']]
+    t_final = max(0.0, round((last[-1]['end'] if last else D - 3.0) / beat) * beat)     # the final chord lands on the last sentence
+    open_end = scenes[0]['dur']
+    t = 1.2
+    for f in OPEN_NOTES:                                          # the first scene: single notes, one a bar
+        if t > open_end - bar * 2:
+            break
+        put(f, t, 0.30)
+        t += bar
+    k, t = 0, max(0.0, round((open_end - bar * 2) / beat) * beat)
+    while t < t_final - bar * 2 - 1e-6:                           # then I vi IV V, arpeggiated
+        root, tones, mel = CHORDS[PROGRESSION[k % 4]]
+        accent = 1.12 if any(abs(t - s['start']) < bar / 2 for s in scenes) else 1.0
+        put(root, t, 0.42 * accent)
+        put(tones[2], t, 0.26 * accent)
+        put(tones[0], t + beat * 0.5, 0.22)
+        put(tones[1], t + beat, 0.22)
+        if k % 2 == 1:
+            put(mel, t + beat * 2, 0.27)
+        put(tones[1], t + beat * 3, 0.19)
+        k += 1
+        t += bar
+    for name, tt in (('IV', t_final - bar * 2), ('V', t_final - bar)):   # the close: IV, V, then I, held
+        root, tones, _ = CHORDS[name]
+        put(root, tt, 0.40)
+        put(tones[0], tt + beat * 0.5, 0.22)
+        put(tones[1], tt + beat, 0.22)
+        put(tones[2], tt + beat * 2, 0.22)
+    root, tones, mel = CHORDS['I']
+    for f, v in ((root, 0.46), (tones[0], 0.30), (tones[1], 0.28), (tones[2], 0.28), (mel, 0.24)):
+        put(f, t_final, v)
+    out = out[:n]
+    ir = reverb_ir(2.4)
+    wet = np.stack([signal.fftconvolve(out[:, c], ir)[:n] for c in (0, 1)], axis=1)
+    x = (out + wet * db(-6)) * np.clip((D - np.arange(n) / SR) / 3.0, 0, 1)[:, None]
+    rms = np.maximum(np.sqrt((x ** 2).mean(axis=0)), 1e-12)
+    x = x * (rms.mean() / rms)                                    # low strings sit left, high ones right: equal energy in both ears
+    return (x * db(-21.0 - k_weighted_lufs(x))).astype(np.float32)   # as loud as the binaural bed, under the same cues
+
+
+def binaural(timing):
     D = timing['duration']
     n = int(D * SR)
     t = np.arange(n) / SR
@@ -210,7 +306,14 @@ def build(timing, cues, sfx_on=True, bed_on=True):
         swell += 0.8 * np.exp(-((t - sc['start']) / 1.6) ** 2)
     air_n *= (swell * fade)[:, None]
 
-    music = (tones * db(-21.0) + air_n * db(-33.0)).astype(np.float32) * (1.0 if bed_on else 0.0)
+    return (tones * db(-21.0) + air_n * db(-33.0)).astype(np.float32)
+
+
+def build(timing, cues, sfx_on=True, bed='piano'):
+    """the bed (piano | binaural | None) and the cues, as two stereo stems"""
+    D = timing['duration']
+    n = int(D * SR)
+    music = piano(timing) if bed == 'piano' else binaural(timing) if bed == 'binaural' else np.zeros((n, 2), np.float32)
     mx = Mix(D + 3.0)
     if sfx_on:
         place_events(mx, cues['events'])
@@ -228,13 +331,13 @@ def master(x, target_lufs, peak_db=-1.0):
     x -= x.mean(axis=0)
     g = db(target_lufs - k_weighted_lufs(x))
     x = np.tanh(x * g * 0.9) / 0.9 if np.abs(x * g).max() > 0.9 else x * g     # soft-clip only if we would hit the ceiling
-    r = np.sqrt((x ** 2).mean(axis=0))                            # centre the image: equal energy left and right
+    r = np.maximum(np.sqrt((x ** 2).mean(axis=0)), 1e-12)          # centre the image: equal energy left and right
     if abs(20 * np.log10(r[0] / r[1])) < 2.0:
         x *= r.mean() / r
     pk = np.abs(x).max()
     if pk > db(peak_db):
         x *= db(peak_db) / pk
-    tail = int(0.12 * SR)                                         # never end on a cut-off note
+    tail = min(len(x), int(0.12 * SR))                            # never end on a cut-off note
     x[-tail:] *= np.linspace(1.0, 0.0, tail)[:, None] ** 2
     return x.astype(np.float32)
 
@@ -242,6 +345,7 @@ def master(x, target_lufs, peak_db=-1.0):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--cut', default='full')
+    ap.add_argument('--bed', choices=['piano', 'binaural'], default='piano', help='piano (the default) or 40 Hz binaural beats (headphones)')
     ap.add_argument('--no-sfx', action='store_true', help='the bed alone')
     ap.add_argument('--no-bed', action='store_true', help='the cues alone, e.g. to go under your own music')
     ap.add_argument('--lufs', type=float, default=-20.0, help='loudness of the mix (LUFS)')
@@ -253,14 +357,17 @@ def main():
         raise SystemExit('build/%s/sfx.json is for another timing: run  node tools/export_sfx.mjs  first' % args.cut)
     out = os.path.join(ROOT, 'audio', args.cut)
     os.makedirs(out, exist_ok=True)
-    music, sfx = build(timing, cues, sfx_on=not args.no_sfx, bed_on=not args.no_bed)
+    bed = None if args.no_bed else args.bed
+    music, sfx = build(timing, cues, sfx_on=not args.no_sfx, bed=bed)
     mix = master(music + sfx, args.lufs)
     write_wav(os.path.join(out, 'soundtrack.wav'), mix)
     write_wav(os.path.join(out, 'stem_music.wav'), master(music, args.lufs - 0.5) if not args.no_bed else music)
     if not args.no_sfx:
         write_wav(os.path.join(out, 'stem_sfx.wav'), np.clip(sfx * db(args.lufs - k_weighted_lufs(music + sfx)), -1, 1))
-    print('%s: %.2fs · %d sound cues · loudness %.1f LUFS · peak %.1f dBFS · rms L/R %.1f/%.1f dB' % (
-        args.cut, len(mix) / SR, len(cues['events']), k_weighted_lufs(mix), 20 * np.log10(np.abs(mix).max() + 1e-12),
+    with open(os.path.join(out, 'soundtrack.json'), 'w', encoding='utf-8') as f:
+        json.dump({'bed': bed or 'none', 'lufs': args.lufs}, f)
+    print('%s: %s bed, %.2fs · %d sound cues · loudness %.1f LUFS · peak %.1f dBFS · rms L/R %.1f/%.1f dB' % (
+        args.cut, bed or 'no', len(mix) / SR, len(cues['events']), k_weighted_lufs(mix), 20 * np.log10(np.abs(mix).max() + 1e-12),
         20 * np.log10(np.sqrt((mix[:, 0] ** 2).mean()) + 1e-12), 20 * np.log10(np.sqrt((mix[:, 1] ** 2).mean()) + 1e-12)))
 
 

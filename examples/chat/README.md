@@ -15,7 +15,7 @@ A **teaching adaptation**, not a frame-identical copy of the uploaded film:
 - The 13 scenes, script, paper-reported numbers, word timings and 34 Kokoro `af_heart` narration clips.
 - CHAT typography and colours; clean geometric marks (`OXCLEAN`); the shared-timeline diagram,
   listening behaviour, ablation and dataset scenes; title and end cards. The icon folder keeps only the five icons this film draws.
-- A synthesised piano score (`tools/piano.py`), built from the harness's sound bed.
+- A synthesised piano score (`tools/piano.py`) over the 40 Hz binaural bed, as in the published film.
 - [CLAIMS.md](CLAIMS.md), including the published opening caption's known limitation, and
   [YOUTUBE.md](YOUTUBE.md), with the published film link and chapter workflow.
 
@@ -38,14 +38,14 @@ node tools/make.mjs
 ```
 
 `make.mjs` restores the voice track from included clips, then builds the placeholder film with the
-standard sound bed. It writes `out/chat_intro.mp4`, a burned-caption copy, 720p copies of both, SRT/VTT,
+standard synthesised piano bed. It writes `out/chat_intro.mp4`, a burned-caption copy, 720p copies of both, SRT/VTT,
 posters, checks and `build/full/chapters.txt`. Typeface files load from Google Fonts; check font results on your machine.
 
-For the example's piano rather than the standard bed, run this sequence instead (`python` must be the
-interpreter selected above):
+For the published film's piano-over-binaural recipe instead of the standard piano-only bed, use this
+sequence (`python` must be the interpreter selected above):
 
 ```bash
-node tools/make.mjs --no-render
+node tools/make.mjs --bed binaural --no-render
 python tools/piano.py
 node tools/render.mjs --audio audio/full/bed.wav,-1 --audio build/full/narration.wav,0 --lufs -16
 python tools/check_audio.py out/chat_intro.mp4 --strict

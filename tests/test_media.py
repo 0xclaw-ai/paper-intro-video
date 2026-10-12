@@ -1,7 +1,7 @@
 """Regression tests for the Python tools: clip placement, non-destructive media preparation, the generated
-voice file, the encoded-frame audit and the 720p copy.
+voice file, the encoded-frame audit, the 720p copy and the sound bed.
 
-Run with the film's Python (numpy and av required): python tests/test_media.py
+Run with the film's Python (av, numpy, pillow and scipy): python tests/test_media.py
 No source footage, model download or ffmpeg is needed; conversion is stubbed at the subprocess boundary,
 and the test videos are a few synthetic frames.
 """
@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
+import wave
 import av
 import numpy as np
 
@@ -32,6 +33,8 @@ prep = load('prep_media')
 narration = load('narration')
 audit = load('audit_video')
 transcode = load('transcode')
+music = load('music')
+mux = load('mux')
 
 
 def write_video(path, frames, lossless=False):
@@ -185,6 +188,66 @@ class TranscodeTests(unittest.TestCase):
             with av.open(str(Path(d) / 'film_720p.mp4')) as box:
                 cc = box.streams.video[0].codec_context
                 self.assertEqual((cc.width, cc.height), (1280, 720))
+
+
+class MuxTests(unittest.TestCase):
+    def test_reports_how_far_the_voice_sits_above_the_bed(self):
+        sr = mux.SR
+        t = np.arange(3 * sr) / sr
+
+        def wav(path, x):
+            pcm = (np.repeat(x[:, None], 2, axis=1) * 32767).astype('<i2')
+            with wave.open(str(path), 'wb') as w:
+                w.setnchannels(2); w.setsampwidth(2); w.setframerate(sr); w.writeframes(pcm.tobytes())
+
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            write_video(d / 'film.mp4', [np.full((64, 64), 128, np.uint8)] * 90)
+            wav(d / 'bed.wav', 10 ** (-27 / 20) * np.sin(2 * np.pi * 220 * t))                         # -30 dBFS rms
+            wav(d / 'voice.wav', np.where((t > 0.5) & (t < 2.5), 10 ** (-17 / 20) * np.sin(2 * np.pi * 440 * t), 0))   # -20 dBFS rms
+            (d / 'voice.json').write_text(json.dumps({'cues': [{'start': 0.5, 'end': 2.5}]}))
+            code, out = run_main(mux, ['mux.py', '--video', str(d / 'film.mp4'), '--out', str(d / 'out.mp4'),
+                                       '--audio', f'{d / "bed.wav"},-3', '--audio', f'{d / "voice.wav"},0', '--duck', f'{d / "voice.json"},-8'])
+        self.assertEqual(code, 0)
+        gap = float(out.split('voice ')[1].split(' dB above the bed')[0])
+        self.assertAlmostEqual(gap, -20 - (-30 - 3 - 8), delta=1.5)                       # the voice -20, the bed -30 - 3 - 8
+
+
+class SoundBedTests(unittest.TestCase):
+    timing = {'duration': 12.0, 'beat': 0.6, 'scenes': [{'id': 's-a', 'start': 0.0, 'dur': 6.0}, {'id': 's-b', 'start': 6.0, 'dur': 6.0}],
+              'cues': [{'scene': 's-a', 'end': 4.0}, {'scene': 's-b', 'end': 10.8}]}
+
+    def ears(self, bed, hz):
+        """the level at hz in the left and the right ear, from 2 s to 10 s"""
+        x = bed[2 * music.SR:10 * music.SR]
+        spectrum = np.abs(np.fft.rfft(x * np.hanning(len(x))[:, None], axis=0))
+        band = np.abs(np.fft.rfftfreq(len(x), 1 / music.SR) - hz) < 3
+        return [20 * np.log10(spectrum[band, ear].max() + 1e-12) for ear in (0, 1)]
+
+    def test_the_default_bed_is_a_piano_for_both_ears(self):
+        bed, _ = music.build(self.timing, {'events': []}, sfx_on=False)
+        np.testing.assert_array_equal(bed, music.build(self.timing, {'events': []}, sfx_on=False)[0])
+        self.assertGreater(np.abs(bed).max(), 0.01)
+        left, right = self.ears(bed, 200)
+        self.assertLess(abs(left - right), 20)
+        rms = np.sqrt((bed ** 2).mean(axis=0))
+        self.assertLess(abs(20 * np.log10(rms[0] / rms[1])), 0.5)        # as loud on the left as on the right
+
+    def test_a_short_film_without_speech_has_no_invalid_samples(self):
+        for duration in (0.1, 1.0):
+            with self.subTest(duration=duration), np.errstate(invalid='raise', divide='raise'):
+                timing = {'duration': duration, 'beat': 0.6,
+                          'scenes': [{'id': 'brief', 'start': 0, 'dur': duration}], 'cues': []}
+                bed = music.piano(timing)
+                self.assertEqual(bed.shape, (int(duration * music.SR), 2))
+                self.assertTrue(np.isfinite(music.master(bed, -20)).all())
+                if duration >= 1.0:
+                    self.assertGreater(np.abs(bed).max(), 0.01)
+
+    def test_the_binaural_bed_keeps_200_hz_in_the_left_ear(self):
+        bed, _ = music.build(self.timing, {'events': []}, sfx_on=False, bed='binaural')
+        left, right = self.ears(bed, 200)
+        self.assertGreater(left - right, 30)
 
 
 if __name__ == '__main__':

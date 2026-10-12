@@ -21,10 +21,10 @@ The skill has two parts, and worked examples in its repository:
 | `examples/0xclaw/` | A complete five-minute EMNLP 2026 film on an earlier version of the harness: a typed prompt, a baton passed along a pipeline, counting numbers, bars that race, a project wall, an end card. The references call it "the example". |
 | `examples/chat/` | A 3:47 ECCV 2026 film ([published](https://youtu.be/9C436tP0OEA)): clean geometric marks, word-timed diagrams, frame-sequence clips and a claims ledger, with labelled placeholders for the demo footage. |
 
-The examples are not installed with the skill: read them at
-https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples, or at `../../examples/` from this file
-when the whole repository is on disk. Every film starts from a copy of `template/`, the default finished
-look; examples show structure and scale, and each project keeps its own colours, type and marks. A
+The skills CLI installs only the skill folder, without examples; the Claude Code plugin includes the
+repository. Read examples at https://github.com/0xclaw-ai/paper-intro-video/tree/main/examples, or at
+`../../examples/` from this file when the whole repository is on disk. Every film starts from a copy of
+`template/`, the default finished look; examples show structure and scale, and each project keeps its own colours, type and marks. A
 failing gate is fixed, never switched off.
 
 ## The shape of the work
@@ -70,8 +70,8 @@ with visuals.
    frame in the middle cannot. These gates are generic. They do not prove that a sentence is true
    or that the voice sounds right. → `references/sound.md`, `references/qa.md`
 7. **Hand over honestly.** The files, what was verified and how, what could not be (you cannot
-   hear the voice or the mix — give the user voice samples and ask them to listen with
-   headphones), and the decisions that are theirs. For YouTube, site embeds or README cards, read
+   hear the voice or the mix — give the user voice samples and ask them to listen once), and the
+   decisions that are theirs. For YouTube, site embeds or README cards, read
    `references/publishing.md`. Publishing and pushing need separate approval; a rendered file is not an upload.
 8. **Iterate in rounds.** Users review with screenshots. Before a revision, copy the current state
    to `versions/vN/`. Apply the round, re-render, report what changed. Once the film is frozen, edit

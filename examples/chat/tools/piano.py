@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """A soft piano over the skill's 40 Hz bed, synthesised here without external music samples.
 
-    python tools/music.py --cut full        # first: the 40 Hz binaural bed and the cues -> audio/full/soundtrack.wav
-    python tools/piano.py --cut full        # then:  audio/full/piano.wav and audio/full/bed.wav (piano + bed + cues)
+    python tools/music.py --cut full --bed binaural   # first: the 40 Hz binaural bed and the cues -> audio/full/soundtrack.wav
+    python tools/piano.py --cut full                  # then:  audio/full/piano.wav and audio/full/bed.wav (piano + bed + cues)
 
 Tuning. Every note is a ratio of the 40 Hz harmonic series (just intonation), so the piano is consonant with the
 bed's 200 Hz / 240 Hz pair (harmonics 5 and 6 of 40 Hz) and with the cues, which tools/music.py tunes the same

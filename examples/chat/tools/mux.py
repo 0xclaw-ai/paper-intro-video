@@ -11,7 +11,8 @@ the video. Swapping the music or adding a voice-over therefore never needs a re-
 
     --audio PATH[,GAIN_DB[,OFFSET_SECONDS]]   repeatable; the first one is the music bed
     --duck  JSON[,DEPTH_DB]                   lower the bed while somebody speaks ({"cues": [{start, end}, ...]},
-                                              build/<cut>/voice.json); it stays down across pauses shorter than 1.4 s
+                                              build/<cut>/voice.json); it stays down across pauses shorter than 1.4 s,
+                                              and the report compares the voice (the second track) with it before mastering
     --lufs  TARGET                            bring the finished mix to this loudness (BS.1770), peaks kept below -1 dBFS
 Needs: av (PyAV), numpy.
 """
@@ -77,17 +78,23 @@ def main():
     duration = float(vin.duration * vin.time_base) if vin.duration else float(src.duration) / av.time_base
     n = int(round(duration * SR))
     mix = np.zeros((n, 2), np.float32)
+    speak, energy = np.zeros(n, bool), {}                         # while somebody speaks: the bed's and the voice's energy
+    if args.duck:
+        db = args.duck.split(',')
+        depth = float(db[1]) if len(db) > 1 else -7.0
+        with open(db[0], encoding='utf-8') as f:
+            data = json.load(f)
+        cues = sorted(data['cues'] if isinstance(data, dict) else data, key=lambda c: c['start'])
+        for c in cues:
+            speak[max(0, int(c['start'] * SR)):max(0, int(c['end'] * SR))] = True
     for k, spec in enumerate(args.audio):
         bits = spec.split(',')
         x = read_wav(bits[0]) * (10 ** ((float(bits[1]) if len(bits) > 1 else 0.0) / 20))
         offset = float(bits[2]) if len(bits) > 2 else 0.0
         if k == 0 and args.duck:
-            db = args.duck.split(',')
-            depth = float(db[1]) if len(db) > 1 else -7.0
-            data = json.load(open(db[0], encoding='utf-8'))
             env = np.zeros(len(x), np.float32)
             spans = []
-            for c in sorted((data['cues'] if isinstance(data, dict) else data), key=lambda c: c['start']):
+            for c in cues:
                 if spans and c['start'] - spans[-1][1] < 1.4:    # the bed does not come up for a breath between two lines
                     spans[-1][1] = max(spans[-1][1], c['end'])
                 else:
@@ -105,6 +112,8 @@ def main():
         m = min(len(x), n - i)
         if m > 0:
             mix[i:i + m] += x[:m]
+            if k < 2:
+                energy[k] = float((x[:m][speak[i:i + m]] ** 2).sum())
     loud = None
     if args.lufs is not None and args.audio:
         mix *= 10 ** ((args.lufs - lufs(mix)) / 20)
@@ -159,8 +168,10 @@ def main():
             out.mux(pkt)
     out.close()
     src.close()
+    gap = 10 * np.log10(energy[1] / energy[0]) if energy.get(0) and energy.get(1) else None
     print(f'{args.out}: {duration:.2f}s · {len(args.audio)} audio track(s) mixed · mix peak {20 * np.log10(peak + 1e-9):.1f} dBFS'
-          + (f' · {loud:.1f} LUFS' if loud is not None else ''))
+          + (f' · {loud:.1f} LUFS' if loud is not None else '')
+          + (f' · voice {gap:.1f} dB above the bed while speaking (pre-master)' + ('' if 12 <= gap <= 18 else '  <-- usually 12-18 dB') if gap is not None else ''))
 
 
 if __name__ == '__main__':

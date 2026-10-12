@@ -35,6 +35,10 @@ folder — in your assistant's memory or a private file — not in the skill.
   the film's own folder opens as "file not found".
 - **A film folder that iCloud syncs** collects conflict copies named "… 2"; `doctor.mjs` says when
   it is one. Work outside a synced `~/Documents` or `~/Desktop`.
+- **Updating the skill does not migrate an existing film.** For an unfinished film, back up first,
+  then compare and merge `template/tools/`, `template/js/lib/` and `template/js/media.js`. Preserve
+  custom tools, script, scenes, data and styles; run `doctor.mjs` and `make.mjs` before accepting
+  the migration. Do not rebuild or overwrite frozen deliverables.
 
 ## The page
 

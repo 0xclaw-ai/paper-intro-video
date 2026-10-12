@@ -4,17 +4,18 @@ Everything is synthesised by `tools/music.py` from two files that are exported f
 (`build/full/timing.json`, `build/full/sfx.json`), so the sound follows the edit and the voice.
 Nothing is sampled: there is nothing to license.
 
-## The bed: 40 Hz binaural beats
+## The bed: a piano
 
-The default bed is copyright-free 40 Hz binaural beats: a 200 Hz sine in the left ear, 240 Hz in
-the right; the 40 Hz difference only exists once the brain puts the two ears together. Underneath,
-a quieter pair at 80 / 120 Hz and a little decorrelated air that lifts at each scene change.
+The default bed is a soft synthesised piano: I, vi, IV, V on a 160 Hz root, one chord every four
+beats of the film's grid, arpeggiated; single notes under the first scene, and the last sentence
+lands on I and rings out. The notes and cues share a just-intonation tuning based on 40 Hz.
+The piano works on headphones or loudspeakers, without relying on separated tones at each ear.
+The soundtrack is made at −20 LUFS.
 
-- **Headphones only.** On loudspeakers the tones mix in the air into an ordinary 40 Hz flutter.
-  Say this to the user every time the bed is delivered.
-- Keep the pair dry and hard-panned: no reverb, no stereo widening, no mono fold-down. The voice
-  sits in the middle and does not disturb it.
-- Made at −20 LUFS (pure tones read louder than music).
+`--bed binaural` (on `make.mjs` or `music.py`) puts 40 Hz binaural beats there instead: 200 Hz in
+the left ear, 240 Hz in the right. The beat exists only on headphones; on loudspeakers it is an
+ordinary 40 Hz flutter, so say so whenever such a film is delivered, and keep the pair dry and
+hard-panned (no reverb, widening or mono fold-down).
 
 ## The cues
 
@@ -25,7 +26,7 @@ same 40 Hz series; under a voice they are support, not effects. If a scene sound
 
 `node tools/export_sfx.mjs` writes the cue sheet (it prints how many cues there are);
 `python tools/music.py` writes `audio/full/soundtrack.wav` plus `stem_music.wav` and `stem_sfx.wav`.
-`--no-bed` gives the cues alone, `--no-sfx` the bed alone.
+`--no-bed` gives the cues alone, `--no-sfx` the bed alone; `soundtrack.json` records which bed it is.
 
 ## The mix
 
@@ -36,8 +37,9 @@ same 40 Hz series; under a voice they are support, not effects. If a scene sound
   than 1.4 s (no pumping between lines);
 - the result brought to **−16 LUFS** with peaks under −1 dBFS.
 
-Measured on the example: the voice sits about 15 dB above the bed while speaking. To change the
-mix without rendering the picture again:
+Aim for the voice to sit 12–18 dB above the bed while speaking. The mux report measures the source
+stems after gain and ducking, before mastering and AAC encoding; listen once to judge the mix.
+To change the mix without rendering the picture again:
 
 ```bash
 python tools/mux.py --video build/full/video_en.mp4 --out out/myfilm_captions_en.mp4 \
@@ -53,5 +55,6 @@ with them.
 
 `python tools/audio_report.py audio/full/soundtrack.wav build/full/spectrogram.png` prints band
 balance and level over time and draws a spectrogram with the scene starts. After a render,
-`references/qa.md` lists what to confirm in the encoded file: loudness, peak, voice-to-bed
-distance, and that the left ear still carries 200 Hz and the right 240 Hz after AAC encoding.
+`references/qa.md` lists the checks. Confirm loudness and true peak in the encoded file, and read
+the pre-master voice-to-bed ratio in the mux report. With the binaural bed, also check that the left
+ear still carries 200 Hz and the right 240 Hz after AAC encoding.

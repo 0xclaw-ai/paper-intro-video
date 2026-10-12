@@ -67,7 +67,7 @@ timing); `css/base.css` the shared look. Each file's header says what it does.
 
 Rough.js (MIT) in `vendor/`; Phosphor Icons (MIT) and Simple Icons (CC0) in `assets/icons/`; the
 typefaces are loaded from Google Fonts (SIL OFL). The demo's narration clips were synthesised with
-Kokoro-82M (Apache-2.0). The sound bed is synthesised here from sine waves and noise.
+Kokoro-82M (Apache-2.0). The sound bed, a piano by default, is synthesised here; nothing is sampled.
 
 ## Optional clips and final audits
 

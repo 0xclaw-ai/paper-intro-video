@@ -140,7 +140,7 @@ test('preflight stops on a local file the page names but does not have', () => {
 });
 
 test('make.mjs refuses an option it does not know, before doing anything', () => {
-  for (const [argv, said] of [[['voice', 'kokoro:af_heart'], /unknown option voice/], [['--voice'], /--voice needs a value/], [['--web'], /unknown option --web/], [['--range', '2'], /--range needs two times/], [['--range', '9-3'], /--range needs two times/]]) {
+  for (const [argv, said] of [[['voice', 'kokoro:af_heart'], /unknown option voice/], [['--voice'], /--voice needs a value/], [['--web'], /unknown option --web/], [['--range', '2'], /--range needs two times/], [['--range', '9-3'], /--range needs two times/], [['--bed', 'pianno'], /--bed must be piano or binaural/]]) {
     const r = spawnSync(process.execPath, [join(template, 'tools/make.mjs'), ...argv], { encoding: 'utf8', timeout: 5000 });
     assert.equal(r.status, 1, argv.join(' '));
     assert.match(r.stderr, said);

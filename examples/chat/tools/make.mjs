@@ -13,6 +13,7 @@
 //                    before timing the scenes to its words — see "Two clocks" in js/lib/build.js)
 //   --no-render      stop after the sound (to look at stills and contact sheets first)
 //   --range 75-110   render only these seconds, without sound  --no-720p   skip the 720p copies
+//   --bed binaural   40 Hz binaural beats under the film instead of the piano (headphones only)
 //   --allow-font-fallback   render although a web font did not load (offline); the glyph audit then only reports
 //
 //   node tools/make.mjs --samples af_bella,am_michael,bm_george [--lines 4,21,29]
@@ -30,7 +31,7 @@ const argv = process.argv.slice(2);
 const arg = (n, d) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 1] : d; };
 const flag = (n) => argv.includes('--' + n);
 // a mistyped option must not start a long build that ignores it
-const VALUES = ['cut', 'voice', 'pause', 'max-pause', 'speed', 'only', 'range', 'samples', 'lines', 'font-step'];
+const VALUES = ['cut', 'voice', 'pause', 'max-pause', 'speed', 'only', 'range', 'samples', 'lines', 'font-step', 'bed'];
 const FLAGS = ['as-plan', 'no-render', 'no-720p', 'allow-font-fallback'];
 if (flag('help') || argv.includes('-h')) {
   const self = readFileSync(new URL(import.meta.url), 'utf8');
@@ -45,6 +46,8 @@ for (let i = 0; i < argv.length; i++) {
 }
 const span = arg('range', null)?.match(/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/);
 if (arg('range', null) && !(span && Number(span[1]) < Number(span[2]))) refuse('--range needs two times, start before end: --range 75-110');
+const bed = arg('bed', 'piano');
+if (!['piano', 'binaural'].includes(bed)) refuse('--bed must be piano or binaural');
 const cut = arg('cut', 'full');
 const tool = (f) => join(root, 'tools', f);
 function run(what, cmd, args) {
@@ -104,7 +107,7 @@ if (!voice && timing().voice && !existsSync(join(root, 'build', cut, 'narration.
 }
 
 node('cue sheet', 'export_sfx.mjs', '--cut', cut);
-run('sound bed', findPython('sci'), [tool('music.py'), '--cut', cut]);
+run('sound bed', findPython('sci'), [tool('music.py'), '--cut', cut, '--bed', bed]);
 if (flag('no-render')) { console.log('\nStopped before the render (--no-render). Look at it:  node tools/sheet.mjs --step 3'); process.exit(0); }
 
 const range = arg('range', null);

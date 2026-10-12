@@ -4,11 +4,11 @@
     python tools/check_audio.py [out/<film>.mp4] [--cut full]
 
 Decodes the AAC track of the MP4 and reports: loudness (target -16 LUFS), peak (below -1 dBFS) and true peak
-(below -1 dBTP);
-the level while somebody speaks and between lines; how far the voice sits above the bed (the voice
-is centred, so the side signal while speaking is the bed alone); and whether the binaural pair
-survived the encode — 200 Hz in the left ear only, 240 Hz in the right only — measured in the
-longest stretch without speech. Needs: av (PyAV), numpy — the same Python as tools/mux.py.
+(below -1 dBTP); and the level while somebody speaks and between lines. For the wide binaural bed,
+it also estimates the voice-to-bed gap from mid/side levels (assuming centred speech), and checks
+whether the pair survived the encode: 200 Hz in the left ear, 240 Hz in the right. For any bed,
+tools/mux.py reports the source-stem energy ratio during speech, after gain and ducking but before
+mastering and AAC encoding. Needs: av (PyAV), numpy; scipy for the strict true-peak check.
 """
 import argparse, json, os, sys
 import av
@@ -67,11 +67,13 @@ def main():
         quiet = ~speak
         quiet[:sr] = False
         quiet[-sr:] = False
-        mid, side = (x[:, 0] + x[:, 1]) / 2, (x[:, 0] - x[:, 1]) / 2
-        gap = rms(mid[speak]) - rms(side[speak])
         print(f'  while speaking {rms(x[speak]):.1f} dBFS rms · between lines {rms(x[quiet]):.1f} dBFS rms · speech covers {100 * speak.mean():.0f}% of the film')
-        print(f'  voice about {gap:.0f} dB above the bed while speaking' + ('' if 10 <= gap <= 20 else '  <-- usually 12-18 dB: check the mix'))
-    # the binaural pair, in the longest stretch without speech
+    # the binaural pair, in the longest stretch without speech (tools/music.py says which bed the film has)
+    sound = os.path.join(ROOT, 'audio', args.cut, 'soundtrack.json')
+    binaural = False
+    if os.path.exists(sound):
+        with open(sound, encoding='utf-8') as f:
+            binaural = json.load(f).get('bed') == 'binaural'
     gaps, prev = [], 0.0
     for q in cues + [{'start': n / sr - 0.8, 'end': n / sr}]:
         gaps.append((q['start'] - prev, prev))
@@ -79,7 +81,7 @@ def main():
     length, g0 = max(gaps)
     N = 1 << int(np.floor(np.log2(max(4096.0, (length - 0.6) * sr))))
     seg = x[int((g0 + 0.3) * sr):int((g0 + 0.3) * sr) + N]
-    if len(seg) >= 4096:
+    if binaural and len(seg) >= 4096:
         win = np.hanning(len(seg))
         fr = np.fft.rfftfreq(len(seg), 1 / sr)
         level = {}
@@ -87,6 +89,10 @@ def main():
             S = 20 * np.log10(np.abs(np.fft.rfft(seg[:, ch] * win)) / (win.sum() / 2) + 1e-12)
             level[name] = {hz: float(S[(fr > hz - 6) & (fr < hz + 6)].max()) for hz in (200, 240)}
         ok = level['left'][200] - level['left'][240] > 30 and level['right'][240] - level['right'][200] > 30
+        if cues:                                                  # the voice is centred, so while it speaks the side signal is this wide bed alone
+            mid, side = (x[:, 0] + x[:, 1]) / 2, (x[:, 0] - x[:, 1]) / 2
+            gap = rms(mid[speak]) - rms(side[speak])
+            print(f'  voice about {gap:.0f} dB above the binaural bed while speaking' + ('' if 10 <= gap <= 20 else '  <-- usually 12-18 dB: check the mix'))
         print(f"  binaural pair ({length:.1f}s without speech at {g0:.1f}s): left 200 Hz {level['left'][200]:.1f} dB / 240 Hz {level['left'][240]:.1f} dB · "
               f"right 200 Hz {level['right'][200]:.1f} dB / 240 Hz {level['right'][240]:.1f} dB" + ('  — separate' if ok else '  <-- the two ears are not separate (another bed, or a mono fold-down?)'))
     if args.strict and problems:
