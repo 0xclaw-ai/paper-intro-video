@@ -7,7 +7,7 @@ import { tmpdir, homedir } from 'node:os';
 import { join } from 'node:path';
 
 /** Locate a headless-capable Chromium: CHROME_PATH, then Playwright's download, then an installed Chrome / Chromium / Edge. */
-export function findBrowser({ needPdfViewer = false } = {}) {
+export function findBrowser() {
   if (process.env.CHROME_PATH && existsSync(process.env.CHROME_PATH)) return process.env.CHROME_PATH;
   const candidates = [];
   const home = homedir(), env = process.env;
@@ -16,10 +16,8 @@ export function findBrowser({ needPdfViewer = false } = {}) {
     join(home, '.cache', 'ms-playwright'), join(home, 'Library', 'Caches', 'ms-playwright')]) {
     if (!pw || !existsSync(pw)) continue;
     const dirs = readdirSync(pw).sort().reverse();
-    if (!needPdfViewer) {
-      for (const d of dirs.filter((x) => x.startsWith('chromium_headless_shell-'))) {
-        for (const sub of readdirSync(join(pw, d))) candidates.push(join(pw, d, sub, 'chrome-headless-shell.exe'), join(pw, d, sub, 'chrome-headless-shell'));
-      }
+    for (const d of dirs.filter((x) => x.startsWith('chromium_headless_shell-'))) {
+      for (const sub of readdirSync(join(pw, d))) candidates.push(join(pw, d, sub, 'chrome-headless-shell.exe'), join(pw, d, sub, 'chrome-headless-shell'));
     }
     for (const d of dirs.filter((x) => /^chromium-\d+$/.test(x))) {
       for (const sub of readdirSync(join(pw, d))) {
@@ -39,12 +37,12 @@ export function findBrowser({ needPdfViewer = false } = {}) {
     if (dir) for (const name of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser', 'microsoft-edge']) candidates.push(join(dir, name));
   }
   const hit = candidates.find((p) => existsSync(p));
-  if (!hit) throw new Error('No Chromium found. Install Chrome, Chromium or Edge (or `npx playwright install chromium`), or set CHROME_PATH to the executable.');
+  if (!hit) throw new Error('No Chromium found. Install Chrome or Edge, or set CHROME_PATH to a Chromium executable (a download: ask the user first).');
   return hit;
 }
 
-export async function launch({ width = 1920, height = 1080, extraArgs = [], needPdfViewer = false } = {}) {
-  const exe = findBrowser({ needPdfViewer });
+export async function launch({ width = 1920, height = 1080 } = {}) {
+  const exe = findBrowser();
   const profile = mkdtempSync(join(tmpdir(), 'intro-video-'));
   const args = [
     '--remote-debugging-port=0',
@@ -59,7 +57,6 @@ export async function launch({ width = 1920, height = 1080, extraArgs = [], need
     '--autoplay-policy=no-user-gesture-required',
     '--force-color-profile=srgb',
     `--window-size=${width},${height}`,
-    ...extraArgs,
   ];
   if (!/headless-shell/.test(exe)) args.unshift('--headless=new');
   args.push('about:blank');
@@ -90,7 +87,14 @@ export async function launch({ width = 1920, height = 1080, extraArgs = [], need
       for (const fn of listeners) fn(msg);
     }
   };
+  // a browser that exits never answers what is still pending: those calls fail instead of waiting forever
+  const gone = (method) => new Error(`${method}: the browser closed the connection`);
+  ws.onclose = () => {
+    for (const { reject, method } of pending.values()) reject(gone(method));
+    pending.clear();
+  };
   const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
+    if (ws.readyState !== WebSocket.OPEN) return reject(gone(method));
     const id = nextId++;
     pending.set(id, { resolve, reject, method });
     ws.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
@@ -150,7 +154,8 @@ export async function launch({ width = 1920, height = 1080, extraArgs = [], need
   }
 
   async function close() {
-    try { await send('Browser.close'); } catch { /* already gone */ }
+    // Chromium may exit before it answers; then the call fails (above), or at worst this stops waiting
+    try { await Promise.race([send('Browser.close'), new Promise((r) => setTimeout(r, 5000).unref())]); } catch { /* already gone */ }
     try { ws.close(); } catch { /* ignore */ }
     await new Promise((r) => setTimeout(r, 300));
     if (proc.exitCode === null) proc.kill();

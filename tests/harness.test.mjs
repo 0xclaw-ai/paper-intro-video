@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, cpSync, rmSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import vm from 'node:vm';
 import { findBrowser } from '../skills/paper-intro-video/template/tools/cdp.mjs';
@@ -125,6 +125,18 @@ test('template preflight passes and a broken scene contract fails', () => {
     assert.equal(bad.status, 1);
     assert.match(bad.stderr, /s-end/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('closing a browser that has already gone returns instead of hanging', { skip: !hasBrowser() && 'no Chromium on this machine' }, () => {
+  const probe = `const { launch } = await import(${JSON.stringify(pathToFileURL(join(template, 'tools/cdp.mjs')).href)});
+    const b = await launch({ width: 320, height: 240 });
+    b.send('Browser.crash').catch(() => {});
+    await new Promise((r) => setTimeout(r, 1000));
+    await b.close();
+    console.log('closed');`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', probe], { encoding: 'utf8', timeout: 30000 });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /closed/);
 });
 
 test('the font audit lists a said number that never counts up', { skip: !hasBrowser() && 'no Chromium on this machine' }, () => {
