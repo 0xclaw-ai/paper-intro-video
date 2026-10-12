@@ -36,7 +36,7 @@ Change line 17 to: "<new sentence>". Re-synthesise only that line.
 ## Fix a pronunciation
 
 ```text
-"0xClaw" is pronounced "Ox Claw", not "Zero X Claw". Change it everywhere.
+"<Name>" is pronounced "<…>", not "<…>". Change it everywhere.
 ```
 
 ## Use a recording
@@ -57,6 +57,6 @@ Mark any claim the paper does not make.
 
 Ask only for what the sources cannot tell you: audience, length and who set it, pronunciation, and venue rules you cannot find. State every other assumption and continue.
 
-A screenshot note names a rule, not only a pixel. "This looks generated" means the whole art direction. "Too many words" means one idea per screen. "Not enough animation" means act out each line. "This seam must not appear" means check every camera position. "Write the venue in full" means the name, then the abbreviation in brackets. "This is not slides" means remove slide labels. "The narration is required" means captions follow the voice. "It looks crooked" means measure the visual centre before answering.
+A screenshot note names a rule, not only a pixel. "This looks generated" means the whole art direction. "Too many words" means one idea per screen. "Not enough animation" means act out each line. "The numbers are static" means count each one up on its word. "This seam must not appear" means check every camera position. "Write the venue in full" means the name, then the abbreviation in brackets. "This is not slides" means remove slide labels. "The narration is required" means captions follow the voice. "It looks crooked" means measure the visual centre before answering.
 
 When a note says the rest is fine, change only what was asked. If a fix is extended, say so. Answer a question without starting an edit. Keep a rule that applies to the next film; do not keep a one-off wording change.

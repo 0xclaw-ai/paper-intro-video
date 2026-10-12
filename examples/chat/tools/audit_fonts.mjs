@@ -1,10 +1,12 @@
 // Which fonts actually drew the film's text: a glyph the film's own fonts lack (×, →, ₀, a CJK name, an
 // arrow in a caption) is drawn by a system font, looks wrong on the frame and differs between machines.
-//   node tools/audit_fonts.mjs [--cut full] [--step 0.25] [--allow "Segoe UI,Apple Color Emoji"]
+//   node tools/audit_fonts.mjs [--cut full] [--step 0.25] [--allow "Segoe UI,Apple Color Emoji"] [--no-fail]
 //
 // Steps through the film; every element with text is asked once per distinct text which fonts Chromium used
 // (CSS.getPlatformFontsForNode). Any glyph drawn with a font that is not a web font the page loads is listed,
 // unless --allow names it. Output: build/audit/fonts.json and a summary; exits 1 if anything is listed.
+// On the same walk it lists numbers the narration says whose text never changes on screen: they should count up
+// on their word (S.count). That list is for reading; it does not change the exit code.
 import { launch } from './cdp.mjs';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -34,8 +36,12 @@ const LIST = `JSON.stringify([...document.querySelectorAll('[data-fa]')].map((el
   return [el.dataset.fa, own, on, sc ? sc.id : (el.closest('#hud') ? 'hud' : 'captions')];
 }))`;
 
+const NUMBER = /^[−–+-]?\d[\d,.]*\s?(%|×|x|k|K|M|B)?$/;            // a number alone, with an optional unit
+const value = (s) => Math.abs(Number(s.replace(/[\s,]/g, '').match(/\d*\.?\d+/)[0]));
+const SAID = 'JSON.stringify(window.OXSCRIPT.cues.map((c) => [c.scene, c.en || ""]))';
+
 const browser = await launch({ width: 1920, height: 1080 });
-const seen = new Map(), used = new Map(), flagged = [];
+const seen = new Map(), used = new Map(), flagged = [], shown = new Map();
 try {
   const page = await browser.newPage('about:blank', { dpr: 1 });
   await page.goto(pathToFileURL(join(root, 'index.html')).href + `?capture=1&lang=en&cut=${arg('cut', 'full')}`);
@@ -46,6 +52,10 @@ try {
     await page.eval(TAG);
     const { root: doc } = await page.send('DOM.getDocument', { depth: 0 });
     for (const [id, text, on, where] of JSON.parse(await page.eval(LIST))) {
+      if (on && NUMBER.test(text) && !/^(19|20)\d\d$/.test(text)) {   // a year is a label, not a result
+        if (!shown.has(id)) shown.set(id, { texts: new Set(), t: +t.toFixed(2), where });
+        shown.get(id).texts.add(text);
+      }
       if (!on || !text || seen.has(id + '|' + text)) continue;
       const { nodeId } = await page.send('DOM.querySelector', { nodeId: doc.nodeId, selector: `[data-fa="${id}"]` });
       if (!nodeId) continue;
@@ -57,14 +67,21 @@ try {
       if (bad.length) flagged.push({ ...rec, system: bad.map((f) => `${f.family}: ${f.glyphs} glyph(s)`) });
     }
   }
+  const said = new Map();
+  for (const [scene, en] of JSON.parse(await page.eval(SAID))) {
+    for (const m of en.matchAll(/\d[\d,]*(?:\.\d+)?/g)) said.set(scene, (said.get(scene) || new Set()).add(value(m[0])));
+  }
+  const still = [...shown.values()].filter((n) => n.texts.size === 1 && said.get(n.where)?.has(value([...n.texts][0])));
   writeFileSync(join(out, 'fonts.json'), JSON.stringify({ used: Object.fromEntries(used), flagged, texts: [...seen.values()] }, null, 1));
   console.log(`${seen.size} pieces of text · fonts (glyphs): ${[...used].map(([f, n]) => `${f} ${n}`).join(', ')}`);
   console.log(flagged.length ? `${flagged.length} drawn partly with a system font:` : 'no glyph falls back to a system font');
   for (const x of flagged) console.log(`  ${x.t}s ${x.where} ${JSON.stringify(x.text)} — ${x.system.join(', ')}`);
+  if (still.length) console.log(`${still.length} number(s) the narration says never count up (S.count on the word):`);
+  for (const n of still) console.log(`  ${n.t}s ${n.where} ${JSON.stringify([...n.texts][0])}`);
   // CSS.enable makes Chromium log one 'Unsafe attempt to load URL file:' line about the page itself; it means nothing here
   const log = page.consoleLog.filter((l) => !/Unsafe attempt to load URL file:/.test(l));
   if (log.length) console.log('--- page console ---\n' + log.join('\n'));
 } finally {
   await browser.close();
 }
-process.exit(flagged.length ? 1 : 0);
+process.exit(flagged.length && !process.argv.includes('--no-fail') ? 1 : 0);

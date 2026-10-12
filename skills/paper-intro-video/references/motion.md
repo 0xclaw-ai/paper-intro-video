@@ -19,7 +19,7 @@ For each narration line ask: *what would a person at a whiteboard do while sayin
 | the line says | the screen does (from the example) |
 | --- | --- |
 | "Give this agent a hackathon link." | the link is typed into a prompt, the camera goes close on the Enter key, the key is pressed |
-| "…as seven fixed phases: research, idea, selection, …" | a baton frame hops from artifact to artifact, landing on each name as it is said |
+| "…as seven fixed phases: research, idea, selection, …" | a baton frame hops from artefact to artefact, landing on each name as it is said |
 | "…writes one control token: tokens, time, thinking, and repairs." | a ticket prints line by line; on each word a selector runs along the options and stops |
 | "fine-tuned on fifty thousand real hackathon projects" | a counter runs to 50,669 while 51 squares fill, then stream into the model |
 | "The same quality as Claude Code, with 59 % fewer tokens." | two bars grow at the same speed; one simply stops; a brace marks the missing length |
@@ -45,6 +45,15 @@ ticks and selections on the word, marks slightly after.
   S.fromTo(steps[i], { opacity: 0, y: 40 }, { opacity: 1, y: 0 }, { at: tt, dur: 0.5 });
   S.sfx('pop', tt, { n: i, g: 0.5 });
 });
+```
+
+**Numbers count up on their word.** A result runs to its value while it is said, as a bar grows or a
+point lands; a number that simply appears reads as a slide. Start just before the word (`decimals`,
+`prefix`, `suffix` and `sep` format the number):
+
+```js
+const tN = S.w('result', '93', 2.0) - 0.2;
+S.count('.result .n', 0, 93, { at: tN, dur: 1.0, suffix: ' %' });
 ```
 
 Between words, plain offsets from the line's start are fine (`c.token + 2.9`).

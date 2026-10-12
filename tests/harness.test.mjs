@@ -2,17 +2,19 @@
 // (tests/test_media.py covers the Python tools). Tests that drive a browser skip themselves where no Chromium is found.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, rmSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, cpSync, rmSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import vm from 'node:vm';
+import { findBrowser } from '../skills/paper-intro-video/template/tools/cdp.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const template = join(here, '../skills/paper-intro-video/template');
 const chat = join(here, '../examples/chat');
 const mediaSource = readFileSync(join(template, 'js/media.js'), 'utf8');
+function hasBrowser() { try { return Boolean(findBrowser()); } catch { return false; } }
 function media(manifest = {}) {
   const context = { window: { OXMEDIA_MANIFEST: manifest }, console: { warn() {} } };
   vm.runInNewContext(mediaSource, context);
@@ -122,6 +124,18 @@ test('template preflight passes and a broken scene contract fails', () => {
     const bad = spawnSync(process.execPath, [join(dir, 'tools/preflight.mjs')], { encoding: 'utf8', timeout: 5000 });
     assert.equal(bad.status, 1);
     assert.match(bad.stderr, /s-end/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('the font audit lists a said number that never counts up', { skip: !hasBrowser() && 'no Chromium on this machine' }, () => {
+  const dir = mkdtempSync(join(tmpdir(), 'numbers-test-'));
+  try {
+    cpSync(template, dir, { recursive: true });
+    const audit = () => spawnSync(process.execPath, [join(dir, 'tools/audit_fonts.mjs'), '--step', '0.5'], { encoding: 'utf8', timeout: 60000 }).stdout;
+    assert.doesNotMatch(audit(), /never count/);
+    const scenes = join(dir, 'js/scenes.js');
+    writeFileSync(scenes, readFileSync(scenes, 'utf8').replace(/^.*counter\(S, S\.\$\('#rule-n'\).*$/m, ''));
+    assert.match(audit(), /never count up[^]*s-how "12"/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

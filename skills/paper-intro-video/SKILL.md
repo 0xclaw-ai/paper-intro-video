@@ -78,8 +78,8 @@ with visuals.
 
 ## What the feedback taught
 
-These came from review rounds on a real film. They are the default taste of this skill; a user's
-explicit wish overrides them.
+These came from review rounds on real films and from people using the skill. They are the default
+taste of this skill; a user's explicit wish overrides them.
 
 - **It must not look machine-made.** Dark gradient + glowing rounded cards + pill chips + generic
   line icons reads as "AI" and viewers leave. Pick a deliberate art direction (the template's is an
@@ -92,6 +92,9 @@ explicit wish overrides them.
 - **It is a film, not slides.** Stills that fade in are not enough; measure it
   (`node tools/stillness.mjs`: a good film is still for about 6 % of its time, never longer than
   2 s). No chapter labels above headlines that repeat the progress bar.
+- **Numbers count up.** A number that is said runs to its value on its word (`S.count`), as bars
+  grow and points land on theirs; one that simply appears reads as a slide. The build lists said
+  numbers that stay still.
 - **Narration is not optional.** People cannot read captions and follow pictures at once; the
   voice carries the words. Captions and pictures follow the voice.
 - **Captions are words only** — no box — readable on every ground (an outline in the ground colour).

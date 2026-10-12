@@ -323,8 +323,10 @@
       // viewers notice too
       S.fromTo('#viewers', { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, { at: c.viewers - 0.1, dur: 0.5 });
       S.fromTo('#vw-hi', { opacity: 0 }, { opacity: 1 }, { at: S.w('viewers', '4.8', 2.4) - 0.15, dur: 0.3 });
+      S.count('#vw-hi', 0, 4.8, { at: S.w('viewers', '4.8', 2.4) - 0.15, dur: 0.6, decimals: 1 });
       S.fromTo('#viewers .arrow', { opacity: 0, x: -14 }, { opacity: 1, x: 0 }, { at: S.w('viewers', '2.1.', 3.4) - 0.4, dur: 0.3 });
       S.fromTo('#vw-lo', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1 }, { at: S.w('viewers', '2.1.', 3.4) - 0.15, dur: 0.45, ease: 'outBack' });
+      S.count('#vw-lo', 4.8, 2.1, { at: S.w('viewers', '2.1.', 3.4) - 0.15, dur: 0.6, decimals: 1 });   // the drop, counted down
     }
 
     /* ═════════════════ STYLISED ═════════════════ */
