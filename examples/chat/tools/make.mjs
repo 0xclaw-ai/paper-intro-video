@@ -37,11 +37,14 @@ if (flag('help') || argv.includes('-h')) {
   console.log(self.slice(0, self.indexOf('\nimport ')).replace(/^\/\/ ?/gm, ''));
   process.exit(0);
 }
+const refuse = (why) => { console.error(`${why}  (node tools/make.mjs --help lists the options)`); process.exit(1); };
 for (let i = 0; i < argv.length; i++) {
-  const name = argv[i].replace(/^--/, '');
-  if (VALUES.includes(name)) i++;
-  else if (!FLAGS.includes(name)) { console.error(`unknown option ${argv[i]}  (node tools/make.mjs --help lists them)`); process.exit(1); }
+  const name = argv[i].startsWith('--') ? argv[i].slice(2) : null;
+  if (VALUES.includes(name)) { if (i + 1 >= argv.length || argv[i + 1].startsWith('--')) refuse(`${argv[i]} needs a value`); i++; }
+  else if (!FLAGS.includes(name)) refuse(`unknown option ${argv[i]}`);
 }
+const span = arg('range', null)?.match(/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/);
+if (arg('range', null) && !(span && Number(span[1]) < Number(span[2]))) refuse('--range needs two times, start before end: --range 75-110');
 const cut = arg('cut', 'full');
 const tool = (f) => join(root, 'tools', f);
 function run(what, cmd, args) {

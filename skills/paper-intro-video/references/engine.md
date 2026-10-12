@@ -160,7 +160,9 @@ caption-free and the captioned file come from one capture pass.
 `<i data-ph="name" data-w="light|regular|duotone|bold|fill|brand"></i>`; the bundle is built from
 `assets/icons/` by `node tools/build_icons.mjs`. Other typefaces: change the Google Fonts link and
 the `--serif/--sans/--mono/--hand` tokens, and set `window.OXFACES = ['500 20px "Your Font"', …]`
-before `player.js` so the page waits for them (marks are measured against real glyphs).
+before `player.js` so the page waits for them (marks are measured against real glyphs). Each of
+those families has to arrive as a web font: the render stops when one does not, because a font
+installed on this machine would make the film differ elsewhere (`--allow-font-fallback` overrides).
 
 ## Looking at frames
 

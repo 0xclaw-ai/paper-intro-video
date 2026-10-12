@@ -59,6 +59,7 @@ if (!args('audio').length && existsSync(defaultAudio) && Math.abs(wavSeconds(def
 }
 const fps = timing.fps;
 const t0 = Number(arg('from', '0')), t1 = Number(arg('to', String(timing.duration)));
+if (!(t0 >= 0 && t1 > t0 && t1 <= timing.duration + 1e-6)) throw new Error(`--from ${t0} --to ${t1}: the range must lie inside the film (0 – ${timing.duration}s), start before end`);
 const first = Math.round(t0 * fps), last = Math.round(t1 * fps);
 const total = last - first;
 const partial = t0 > 0 || t1 < timing.duration;

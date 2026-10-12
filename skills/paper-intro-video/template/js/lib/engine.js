@@ -34,7 +34,7 @@
   /** an ease by name (or a function); a name that is not in EASE is a typo, and a typo should not move the film */
   const easing = (e) => {
     if (typeof e === 'function') return e;
-    if (!EASE[e]) throw new Error('unknown ease: ' + e);
+    if (!Object.hasOwn(EASE, e)) throw new Error('unknown ease: ' + e);
     return EASE[e];
   };
 

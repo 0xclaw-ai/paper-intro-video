@@ -139,6 +139,37 @@ test('preflight stops on a local file the page names but does not have', () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('make.mjs refuses an option it does not know, before doing anything', () => {
+  for (const [argv, said] of [[['voice', 'kokoro:af_heart'], /unknown option voice/], [['--voice'], /--voice needs a value/], [['--web'], /unknown option --web/], [['--range', '2'], /--range needs two times/], [['--range', '9-3'], /--range needs two times/]]) {
+    const r = spawnSync(process.execPath, [join(template, 'tools/make.mjs'), ...argv], { encoding: 'utf8', timeout: 5000 });
+    assert.equal(r.status, 1, argv.join(' '));
+    assert.match(r.stderr, said);
+  }
+});
+
+test('preflight reads local references the way a browser does', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'preflight-refs-'));
+  try {
+    cpSync(template, dir, { recursive: true });
+    const css = join(dir, 'css/film.css'), html = join(dir, 'index.html');
+    writeFileSync(css, readFileSync(css, 'utf8') + '\n.x { background: url("../index.html?v=2"); } .y { background: url( ../index.html#top ); } .z { background: url(//example.org/a.png); }\n');
+    const run = () => spawnSync(process.execPath, [join(dir, 'tools/preflight.mjs')], { encoding: 'utf8', timeout: 5000 });
+    assert.equal(run().status, 0, run().stderr);
+    writeFileSync(html, readFileSync(html, 'utf8').replace('</body>', '<img src="assets/100%.png"></body>'));
+    const r = run();
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /assets\/100%\.png, which does not exist/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an ease that is not in the table throws, inherited names included', () => {
+  const context = { window: {} };
+  vm.runInNewContext(readFileSync(join(template, 'js/lib/engine.js'), 'utf8'), context);
+  const { easing } = context.window.OX;
+  assert.equal(typeof easing('outCubic'), 'function');
+  for (const name of ['outCubicc', 'constructor', 'toString']) assert.throws(() => easing(name), /unknown ease/);
+});
+
 test('closing a browser that has already gone returns instead of hanging', { skip: !hasBrowser() && 'no Chromium on this machine' }, () => {
   const probe = `const { launch } = await import(${JSON.stringify(pathToFileURL(join(template, 'tools/cdp.mjs')).href)});
     const b = await launch({ width: 320, height: 240 });
